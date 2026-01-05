@@ -151,16 +151,15 @@
     // Draw scaled image to canvas with MAXIMUM quality
     // Uses multi-step downscaling for best results
     function drawScaledImage(canvas, targetSize) {
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext('2d', { alpha: true });
         const img = state.sourceImage;
         
+        // Set canvas dimensions (this clears it automatically)
         canvas.width = targetSize;
         canvas.height = targetSize;
         
-        // Clear with background
-        if (state.bgColor === 'transparent') {
-            ctx.clearRect(0, 0, targetSize, targetSize);
-        } else {
+        // Apply background
+        if (state.bgColor !== 'transparent') {
             ctx.fillStyle = state.bgColor;
             ctx.fillRect(0, 0, targetSize, targetSize);
         }
@@ -172,13 +171,18 @@
         const finalX = Math.round((targetSize - finalW) / 2);
         const finalY = Math.round((targetSize - finalH) / 2);
         
-        // Use multi-step downscaling for better quality
-        // This prevents quality loss when scaling down to small sizes
-        const scaledImg = multiStepDownscale(img, finalW, finalH);
-        
-        ctx.imageSmoothingEnabled = true;
-        ctx.imageSmoothingQuality = 'high';
-        ctx.drawImage(scaledImg, finalX, finalY, finalW, finalH);
+        // For small sizes, use multi-step downscaling for better quality
+        if (targetSize <= 64 && (img.width > targetSize * 2 || img.height > targetSize * 2)) {
+            const scaledCanvas = multiStepDownscale(img, finalW, finalH);
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(scaledCanvas, finalX, finalY, finalW, finalH);
+        } else {
+            // Direct drawing for larger sizes or when source is already small
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(img, finalX, finalY, finalW, finalH);
+        }
     }
     
     // Multi-step downscaling algorithm for maximum quality
@@ -189,32 +193,35 @@
             return img;
         }
         
+        let currentCanvas = document.createElement('canvas');
+        let currentCtx = currentCanvas.getContext('2d');
+        
+        // Start with original size
+        currentCanvas.width = img.width;
+        currentCanvas.height = img.height;
+        currentCtx.drawImage(img, 0, 0);
+        
         let currentW = img.width;
         let currentH = img.height;
-        let currentSource = img;
-        
-        // Create temporary canvas for step-down scaling
-        const tempCanvas = document.createElement('canvas');
-        const tempCtx = tempCanvas.getContext('2d');
         
         // Step down by 50% until we're close to target size
         while (currentW * 0.5 > targetW && currentH * 0.5 > targetH) {
             const nextW = Math.round(currentW * 0.5);
             const nextH = Math.round(currentH * 0.5);
             
-            tempCanvas.width = nextW;
-            tempCanvas.height = nextH;
+            // Create new canvas for next step
+            const nextCanvas = document.createElement('canvas');
+            nextCanvas.width = nextW;
+            nextCanvas.height = nextH;
+            const nextCtx = nextCanvas.getContext('2d');
             
-            tempCtx.imageSmoothingEnabled = true;
-            tempCtx.imageSmoothingQuality = 'high';
-            tempCtx.clearRect(0, 0, nextW, nextH);
-            tempCtx.drawImage(currentSource, 0, 0, nextW, nextH);
+            nextCtx.imageSmoothingEnabled = true;
+            nextCtx.imageSmoothingQuality = 'high';
+            nextCtx.drawImage(currentCanvas, 0, 0, nextW, nextH);
             
-            // Create new image from this step
-            const stepImg = new Image();
-            stepImg.src = tempCanvas.toDataURL('image/png');
-            
-            currentSource = tempCanvas;
+            // Update current canvas
+            currentCanvas = nextCanvas;
+            currentCtx = nextCtx;
             currentW = nextW;
             currentH = nextH;
         }
@@ -227,7 +234,7 @@
         
         finalCtx.imageSmoothingEnabled = true;
         finalCtx.imageSmoothingQuality = 'high';
-        finalCtx.drawImage(currentSource, 0, 0, targetW, targetH);
+        finalCtx.drawImage(currentCanvas, 0, 0, targetW, targetH);
         
         return finalCanvas;
     }
