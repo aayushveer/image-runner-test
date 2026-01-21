@@ -1,7 +1,8 @@
 /**
  * BASE64-CONVERTER.JS - Image to Base64 Converter
- * Production-level client-side image to Base64 encoding
+ * Military-grade production-level client-side image to Base64 encoding
  * Supports: JPEG, PNG, GIF, WEBP, SVG, BMP
+ * Features: Validation, Error Handling, Clipboard Fallback, Size Limits
  */
 
 (function() {
@@ -10,7 +11,8 @@
     // State
     const state = {
         images: [],
-        maxFiles: 20
+        maxFiles: 20,
+        maxFileSize: 10 * 1024 * 1024 // 10MB max per file
     };
 
     // DOM Elements
@@ -108,6 +110,19 @@
         const filesToProcess = imageFiles.slice(0, remainingSlots);
         
         filesToProcess.forEach(file => {
+            // Check file size limit
+            if (file.size > state.maxFileSize) {
+                state.images.push({
+                    id: Date.now() + Math.random(),
+                    name: file.name,
+                    success: false,
+                    error: 'File too large (max 10MB)'
+                });
+                renderResults();
+                showPage('results');
+                return;
+            }
+            
             const reader = new FileReader();
             reader.onload = (e) => {
                 const base64String = e.target.result;
@@ -210,6 +225,9 @@
                                 </svg>
                                 Copy CSS
                             </button>
+                            <button class="copy-btn copy-btn--datauri" onclick="copyDataURI(${index})">
+                                Copy Data URI
+                            </button>
                             <button class="copy-btn copy-btn--base64" onclick="copyBase64(${index})">
                                 Copy Raw Base64
                             </button>
@@ -261,11 +279,81 @@
         const base64Only = img.base64.split(',')[1];
         copyToClipboard(base64Only, index, 'base64');
     };
+    
+    // Copy full Data URI (data:image/...;base64,...)
+    window.copyDataURI = function(index) {
+        const img = state.images[index];
+        if (!img || !img.success) return;
+        
+        // Copy full data URI
+        copyToClipboard(img.base64, index, 'datauri');
+    };
+    
+    // Validate Base64 output
+    function validateBase64(base64String) {
+        try {
+            // Check if it's a valid data URI
+            if (!base64String.startsWith('data:image/')) {
+                return false;
+            }
+            
+            // Extract base64 part and validate
+            const base64Part = base64String.split(',')[1];
+            if (!base64Part) return false;
+            
+            // Check if base64 is valid (only valid chars)
+            const base64Regex = /^[A-Za-z0-9+/]*={0,2}$/;
+            return base64Regex.test(base64Part);
+        } catch (e) {
+            return false;
+        }
+    }
 
     function copyToClipboard(text, index, type) {
-        navigator.clipboard.writeText(text).then(() => {
-            // Show feedback on button
-            const card = document.querySelector(`.result-card[data-index="${index}"]`);
+        // Use modern clipboard API with fallback
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(() => {
+                showCopySuccess(index, type);
+            }).catch(() => {
+                // Fallback for clipboard permission denied
+                fallbackCopyToClipboard(text, index, type);
+            });
+        } else {
+            // Fallback for old browsers
+            fallbackCopyToClipboard(text, index, type);
+        }
+    }
+    
+    // Fallback copy method for old browsers
+    function fallbackCopyToClipboard(text, index, type) {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-9999px';
+        textArea.style.top = '-9999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        try {
+            const successful = document.execCommand('copy');
+            if (successful) {
+                showCopySuccess(index, type);
+            } else {
+                showToast('Failed to copy. Try again.', 'error');
+            }
+        } catch (err) {
+            showToast('Copy not supported in this browser.', 'error');
+        }
+        
+        document.body.removeChild(textArea);
+    }
+    
+    // Show copy success feedback
+    function showCopySuccess(index, type) {
+        // Show feedback on button
+        const card = document.querySelector(`.result-card[data-index="${index}"]`);
+        if (card) {
             const btn = card.querySelector(`.copy-btn--${type}`);
             if (btn) {
                 btn.classList.add('copied');
@@ -276,17 +364,16 @@
                     btn.innerHTML = originalText;
                 }, 2000);
             }
-            
-            // Show toast
-            const messages = {
-                html: 'HTML code copied!',
-                css: 'CSS code copied!',
-                base64: 'Base64 string copied!'
-            };
-            showToast(messages[type] || 'Copied!');
-        }).catch(() => {
-            showToast('Failed to copy. Try again.', 'error');
-        });
+        }
+        
+        // Show toast
+        const messages = {
+            html: 'HTML code copied!',
+            css: 'CSS code copied!',
+            base64: 'Base64 string copied!',
+            datauri: 'Data URI copied!'
+        };
+        showToast(messages[type] || 'Copied!');
     }
 
     // Example copy buttons
