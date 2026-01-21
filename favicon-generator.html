@@ -97,8 +97,7 @@
                 </p>
                 
                 <div class="dropzone" id="dropzone">
-                    <label class="upload-btn">
-                        <input type="file" id="file-input" accept="image/png,image/jpeg,image/gif,image/webp,image/svg+xml" hidden>
+                    <label class="upload-btn" for="file-input">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
                             <polyline points="17 8 12 3 7 8"/>
@@ -106,6 +105,7 @@
                         </svg>
                         Select Image
                     </label>
+                    <input type="file" id="file-input" accept="image/png,image/jpeg,image/gif,image/webp,image/svg+xml" hidden>
                     <p class="upload-hint">or drop image here • PNG, JPG, GIF, WebP, SVG</p>
                 </div>
                 

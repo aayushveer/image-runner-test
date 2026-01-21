@@ -2,6 +2,7 @@
  * FAVICON-GENERATOR.JS - Favicon Generator Tool
  * High-quality multi-platform favicon/app icon generation
  * NO QUALITY LOSS - Uses high-quality canvas rendering
+ * Production-Level Code with Full Error Handling
  */
 
 (function() {
@@ -84,87 +85,168 @@
     // =====================================================
     
     let sourceImage = null;
-    let sourceImageInfo = { width: 0, height: 0, type: '' };
+    let sourceImageDataURL = null;
+    let sourceFileSize = 0;
     let generatedIcons = [];
+    let generationStartTime = 0;
 
     // =====================================================
-    // DOM ELEMENTS
+    // HELPER
     // =====================================================
     
     const $ = (sel) => document.querySelector(sel);
     const $$ = (sel) => document.querySelectorAll(sel);
 
-    const fileInput = $('#file-input');
-    const dropzone = $('.dropzone');
-    const pages = {
-        upload: $('#page-upload'),
-        options: $('#page-options'),
-        results: $('#page-results')
-    };
-    const previewImg = $('#preview-img');
-    const imageSize = $('#image-size');
-    const imageType = $('#image-type');
-    const platformChecks = $$('.platform-checkbox');
-    const quickOptions = $$('input[name="quick-option"]');
-    const advancedOptions = {
-        maintainRatio: $('#opt-ratio'),
-        transparency: $('#opt-transparency'),
-        htmlCode: $('#opt-html')
-    };
-    const generateBtn = $('#generate-btn');
-    const processing = $('#processing');
-    const progressBar = $('.progress__bar');
-    const progressCount = $('.processing__count');
-    const iconsGrid = $('#icons-grid');
-    const htmlCodeOutput = $('#html-code-output');
-    const downloadAllBtn = $('#download-all-btn');
-    const copyCodeBtn = $('#copy-code-btn');
-    const newBtn = $('#new-btn');
-    const changeImageBtn = $('#change-image-btn');
-    const toast = $('#toast');
+    function formatBytes(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    // =====================================================
+    // DOM ELEMENTS - CORRECT IDs matching HTML
+    // =====================================================
+    
+    let elements = {};
+
+    function cacheElements() {
+        elements = {
+            // File input
+            fileInput: $('#file-input'),
+            dropzone: $('#dropzone') || $('.dropzone'),
+            
+            // Pages
+            pageUpload: $('#page-upload'),
+            pageOptions: $('#page-options'),
+            pageResults: $('#page-results'),
+            
+            // Preview (Options page)
+            previewImage: $('#preview-image'),
+            infoDimensions: $('#info-dimensions'),
+            infoSize: $('#info-size'),
+            btnChangeImage: $('#btn-change-image'),
+            
+            // Platform checkboxes
+            platformCheckboxes: $$('.platform-checkbox'),
+            
+            // Options
+            btnGenerate: $('#btn-generate'),
+            optMaintainRatio: $('#opt-maintain-ratio'),
+            optTransparentBg: $('#opt-transparent-bg'),
+            optIncludeHtml: $('#opt-include-html'),
+            
+            // Processing
+            processing: $('#processing'),
+            processingText: $('#processing-text'),
+            progressBar: $('#progress-bar'),
+            processingCount: $('#processing-count'),
+            
+            // Results
+            iconsSections: $('#icons-sections'),
+            totalIcons: $('#total-icons'),
+            generationTime: $('#generation-time'),
+            btnDownloadAll: $('#btn-download-all'),
+            btnNew: $('#btn-new'),
+            htmlCodeSection: $('#html-code-section'),
+            htmlCode: $('#html-code'),
+            btnCopyHtml: $('#btn-copy-html'),
+            
+            // Toast
+            toast: $('#toast'),
+            toastText: $('#toast-text')
+        };
+    }
 
     // =====================================================
     // INITIALIZATION
     // =====================================================
     
     function init() {
+        console.log('[Favicon Generator] Initializing...');
+        
+        cacheElements();
+        
+        if (!elements.fileInput) {
+            console.error('[Favicon Generator] Critical: file-input not found!');
+            return;
+        }
+        
         setupEventListeners();
         showPage('upload');
+        
+        console.log('[Favicon Generator] Ready!');
     }
 
     function setupEventListeners() {
-        // File input
-        fileInput.addEventListener('change', handleFileSelect);
+        // File input change
+        elements.fileInput.addEventListener('change', handleFileSelect);
         
-        // Dropzone
-        dropzone.addEventListener('click', () => fileInput.click());
-        dropzone.addEventListener('dragover', handleDragOver);
-        dropzone.addEventListener('dragleave', handleDragLeave);
-        dropzone.addEventListener('drop', handleDrop);
-        
-        // Platform checkboxes
-        platformChecks.forEach(pc => {
-            pc.addEventListener('click', () => {
-                pc.classList.toggle('checked');
-                pc.querySelector('input').checked = !pc.querySelector('input').checked;
+        // Dropzone events
+        const dropzone = elements.dropzone;
+        if (dropzone) {
+            // Click to upload
+            dropzone.addEventListener('click', (e) => {
+                // Don't trigger if clicking on file input itself
+                if (e.target !== elements.fileInput) {
+                    elements.fileInput.click();
+                }
             });
+            
+            // Drag and drop
+            dropzone.addEventListener('dragover', handleDragOver);
+            dropzone.addEventListener('dragleave', handleDragLeave);
+            dropzone.addEventListener('drop', handleDrop);
+        }
+        
+        // Platform checkboxes - toggle on click
+        elements.platformCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('click', (e) => {
+                // Don't trigger twice if clicking on the input itself
+                if (e.target.tagName !== 'INPUT') {
+                    checkbox.classList.toggle('checked');
+                    const input = checkbox.querySelector('input');
+                    if (input) input.checked = checkbox.classList.contains('checked');
+                }
+            });
+            
+            // Also handle input change
+            const input = checkbox.querySelector('input');
+            if (input) {
+                input.addEventListener('change', () => {
+                    checkbox.classList.toggle('checked', input.checked);
+                });
+            }
         });
         
         // Generate button
-        generateBtn.addEventListener('click', generateIcons);
+        if (elements.btnGenerate) {
+            elements.btnGenerate.addEventListener('click', generateIcons);
+        }
         
         // Download all
-        downloadAllBtn.addEventListener('click', downloadAll);
+        if (elements.btnDownloadAll) {
+            elements.btnDownloadAll.addEventListener('click', downloadAll);
+        }
         
         // Copy HTML code
-        copyCodeBtn.addEventListener('click', copyHtmlCode);
+        if (elements.btnCopyHtml) {
+            elements.btnCopyHtml.addEventListener('click', copyHtmlCode);
+        }
         
-        // New generation
-        newBtn.addEventListener('click', () => showPage('upload'));
+        // New image button
+        if (elements.btnNew) {
+            elements.btnNew.addEventListener('click', () => {
+                showPage('upload');
+            });
+        }
         
-        // Change image
-        if (changeImageBtn) {
-            changeImageBtn.addEventListener('click', () => fileInput.click());
+        // Change image button
+        if (elements.btnChangeImage) {
+            elements.btnChangeImage.addEventListener('click', () => {
+                elements.fileInput.click();
+            });
         }
     }
 
@@ -173,66 +255,102 @@
     // =====================================================
     
     function handleFileSelect(e) {
+        console.log('[Favicon Generator] File selected');
         const file = e.target.files[0];
-        if (file) processFile(file);
-    }
-
-    function handleDragOver(e) {
-        e.preventDefault();
-        dropzone.classList.add('dragover');
-    }
-
-    function handleDragLeave() {
-        dropzone.classList.remove('dragover');
-    }
-
-    function handleDrop(e) {
-        e.preventDefault();
-        dropzone.classList.remove('dragover');
-        
-        const file = e.dataTransfer.files[0];
-        if (file && file.type.startsWith('image/')) {
+        if (file) {
             processFile(file);
         }
     }
 
+    function handleDragOver(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        elements.dropzone.classList.add('dragover');
+    }
+
+    function handleDragLeave(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        elements.dropzone.classList.remove('dragover');
+    }
+
+    function handleDrop(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        elements.dropzone.classList.remove('dragover');
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            const file = files[0];
+            if (file.type.startsWith('image/')) {
+                processFile(file);
+            } else {
+                showToast('Please drop an image file', 'error');
+            }
+        }
+    }
+
     function processFile(file) {
+        console.log('[Favicon Generator] Processing file:', file.name, file.type, file.size);
+        
         // Validate file type
         const validTypes = ['image/png', 'image/jpeg', 'image/gif', 'image/webp', 'image/svg+xml'];
         if (!validTypes.includes(file.type)) {
-            showToast('Please upload a valid image file (PNG, JPG, GIF, WebP, SVG)', 'error');
+            showToast('Please upload PNG, JPG, GIF, WebP or SVG', 'error');
             return;
         }
         
         // Check file size (max 50MB)
         if (file.size > 50 * 1024 * 1024) {
-            showToast('Image file is too large. Maximum size is 50MB.', 'error');
+            showToast('Image too large. Max 50MB allowed.', 'error');
             return;
         }
         
+        sourceFileSize = file.size;
+        
         const reader = new FileReader();
+        
         reader.onload = (e) => {
+            console.log('[Favicon Generator] File read complete');
+            sourceImageDataURL = e.target.result;
+            
             const img = new Image();
+            
             img.onload = () => {
+                console.log('[Favicon Generator] Image loaded:', img.naturalWidth, 'x', img.naturalHeight);
                 sourceImage = img;
-                sourceImageInfo = {
-                    width: img.naturalWidth,
-                    height: img.naturalHeight,
-                    type: file.type.split('/')[1].toUpperCase()
-                };
                 
-                // Show preview
-                previewImg.src = e.target.result;
-                imageSize.textContent = `${img.naturalWidth} × ${img.naturalHeight}px`;
-                imageType.textContent = file.type.split('/')[1].toUpperCase();
+                // Update preview
+                if (elements.previewImage) {
+                    elements.previewImage.src = sourceImageDataURL;
+                }
                 
+                if (elements.infoDimensions) {
+                    elements.infoDimensions.textContent = `${img.naturalWidth} × ${img.naturalHeight}`;
+                }
+                
+                if (elements.infoSize) {
+                    elements.infoSize.textContent = formatBytes(sourceFileSize);
+                }
+                
+                // Show options page
                 showPage('options');
+                showToast('Image loaded successfully!');
             };
+            
             img.onerror = () => {
-                showToast('Failed to load image. Please try another file.', 'error');
+                console.error('[Favicon Generator] Failed to load image');
+                showToast('Failed to load image. Try another file.', 'error');
             };
-            img.src = e.target.result;
+            
+            img.src = sourceImageDataURL;
         };
+        
+        reader.onerror = () => {
+            console.error('[Favicon Generator] FileReader error');
+            showToast('Failed to read file. Try again.', 'error');
+        };
+        
         reader.readAsDataURL(file);
     }
 
@@ -241,15 +359,29 @@
     // =====================================================
     
     function showPage(pageName) {
-        Object.values(pages).forEach(p => p.classList.remove('active'));
-        pages[pageName].classList.add('active');
+        console.log('[Favicon Generator] Showing page:', pageName);
         
-        // Reset state if going back to upload
-        if (pageName === 'upload') {
+        // Hide all pages
+        [elements.pageUpload, elements.pageOptions, elements.pageResults].forEach(page => {
+            if (page) page.classList.remove('active');
+        });
+        
+        // Show target page
+        if (pageName === 'upload' && elements.pageUpload) {
+            elements.pageUpload.classList.add('active');
+            // Reset state
             sourceImage = null;
+            sourceImageDataURL = null;
             generatedIcons = [];
-            fileInput.value = '';
+            if (elements.fileInput) elements.fileInput.value = '';
+        } else if (pageName === 'options' && elements.pageOptions) {
+            elements.pageOptions.classList.add('active');
+        } else if (pageName === 'results' && elements.pageResults) {
+            elements.pageResults.classList.add('active');
         }
+        
+        // Scroll to top
+        window.scrollTo(0, 0);
     }
 
     // =====================================================
@@ -257,13 +389,23 @@
     // =====================================================
     
     async function generateIcons() {
+        console.log('[Favicon Generator] Starting generation...');
+        
+        if (!sourceImage) {
+            showToast('Please upload an image first', 'error');
+            return;
+        }
+        
         // Get selected platforms
         const selectedPlatforms = [];
-        platformChecks.forEach(pc => {
-            if (pc.classList.contains('checked')) {
-                selectedPlatforms.push(pc.dataset.platform);
+        elements.platformCheckboxes.forEach(checkbox => {
+            const input = checkbox.querySelector('input');
+            if (input && input.checked) {
+                selectedPlatforms.push(input.value);
             }
         });
+        
+        console.log('[Favicon Generator] Selected platforms:', selectedPlatforms);
         
         if (selectedPlatforms.length === 0) {
             showToast('Please select at least one platform', 'error');
@@ -271,29 +413,47 @@
         }
         
         // Get options
-        const useAllSizes = $('input[name="quick-option"]:checked').value === 'all';
-        const maintainRatio = advancedOptions.maintainRatio.checked;
-        const preserveTransparency = advancedOptions.transparency.checked;
-        const generateHtml = advancedOptions.htmlCode.checked;
+        const quickOption = $('input[name="quick-option"]:checked');
+        const useAllSizes = quickOption ? quickOption.value === 'all' : true;
+        const maintainRatio = elements.optMaintainRatio ? elements.optMaintainRatio.checked : false;
+        const preserveTransparency = elements.optTransparentBg ? elements.optTransparentBg.checked : true;
+        const generateHtml = elements.optIncludeHtml ? elements.optIncludeHtml.checked : true;
+        
+        console.log('[Favicon Generator] Options:', { useAllSizes, maintainRatio, preserveTransparency, generateHtml });
         
         // Build icons list
         const iconsToGenerate = [];
         selectedPlatforms.forEach(platform => {
-            const sizes = useAllSizes ? ICON_CONFIGS[platform].sizes : BASIC_SIZES[platform];
-            sizes.forEach(size => {
+            const config = ICON_CONFIGS[platform];
+            if (!config) return;
+            
+            const sizes = useAllSizes ? config.sizes : (BASIC_SIZES[platform] || config.sizes);
+            sizes.forEach(sizeConfig => {
                 iconsToGenerate.push({
-                    ...size,
+                    ...sizeConfig,
                     platform: platform
                 });
             });
         });
         
-        // Show processing
-        processing.classList.add('active');
-        progressBar.style.width = '0%';
-        progressCount.textContent = `0 / ${iconsToGenerate.length}`;
+        console.log('[Favicon Generator] Icons to generate:', iconsToGenerate.length);
+        
+        // Show processing overlay
+        if (elements.processing) {
+            elements.processing.classList.add('active');
+        }
+        if (elements.progressBar) {
+            elements.progressBar.style.width = '0%';
+        }
+        if (elements.processingCount) {
+            elements.processingCount.textContent = `0 / ${iconsToGenerate.length}`;
+        }
+        if (elements.processingText) {
+            elements.processingText.textContent = 'Generating favicons...';
+        }
         
         generatedIcons = [];
+        generationStartTime = Date.now();
         
         try {
             for (let i = 0; i < iconsToGenerate.length; i++) {
@@ -301,9 +461,9 @@
                 
                 // Generate icon
                 const iconData = await generateSingleIcon(
-                    iconConfig.size, 
-                    iconConfig.format, 
-                    maintainRatio, 
+                    iconConfig.size,
+                    iconConfig.format,
+                    maintainRatio,
                     preserveTransparency
                 );
                 
@@ -314,30 +474,41 @@
                 
                 // Update progress
                 const progress = ((i + 1) / iconsToGenerate.length) * 100;
-                progressBar.style.width = `${progress}%`;
-                progressCount.textContent = `${i + 1} / ${iconsToGenerate.length}`;
+                if (elements.progressBar) {
+                    elements.progressBar.style.width = `${progress}%`;
+                }
+                if (elements.processingCount) {
+                    elements.processingCount.textContent = `${i + 1} / ${iconsToGenerate.length}`;
+                }
                 
                 // Small delay for UI update
-                await new Promise(r => setTimeout(r, 10));
+                await new Promise(r => setTimeout(r, 5));
             }
             
+            const generationTime = Date.now() - generationStartTime;
+            console.log('[Favicon Generator] Generation complete:', generatedIcons.length, 'icons in', generationTime, 'ms');
+            
             // Hide processing
-            processing.classList.remove('active');
+            if (elements.processing) {
+                elements.processing.classList.remove('active');
+            }
             
             // Display results
-            displayResults(selectedPlatforms, generateHtml);
+            displayResults(selectedPlatforms, generateHtml, generationTime);
             showPage('results');
             
-            showToast(`✨ Generated ${generatedIcons.length} icons successfully!`);
+            showToast(`✨ Generated ${generatedIcons.length} icons!`);
             
         } catch (error) {
-            console.error('Generation error:', error);
-            processing.classList.remove('active');
-            showToast('Failed to generate icons. Please try again.', 'error');
+            console.error('[Favicon Generator] Generation error:', error);
+            if (elements.processing) {
+                elements.processing.classList.remove('active');
+            }
+            showToast('Generation failed. Please try again.', 'error');
         }
     }
 
-    async function generateSingleIcon(size, format, maintainRatio, preserveTransparency) {
+    function generateSingleIcon(size, format, maintainRatio, preserveTransparency) {
         return new Promise((resolve, reject) => {
             try {
                 const canvas = document.createElement('canvas');
@@ -350,7 +521,7 @@
                 ctx.imageSmoothingEnabled = true;
                 ctx.imageSmoothingQuality = 'high';
                 
-                // Clear canvas (for transparency)
+                // Background
                 if (preserveTransparency) {
                     ctx.clearRect(0, 0, size, size);
                 } else {
@@ -358,38 +529,50 @@
                     ctx.fillRect(0, 0, size, size);
                 }
                 
-                let sx = 0, sy = 0, sw = sourceImage.naturalWidth, sh = sourceImage.naturalHeight;
+                const sw = sourceImage.naturalWidth;
+                const sh = sourceImage.naturalHeight;
                 let dx = 0, dy = 0, dw = size, dh = size;
                 
-                if (maintainRatio) {
-                    const ratio = Math.min(sw / sh, sh / sw);
+                if (maintainRatio && sw !== sh) {
                     const imgRatio = sw / sh;
                     
                     if (imgRatio > 1) {
-                        // Landscape
+                        // Landscape - fit width
                         dh = size / imgRatio;
                         dy = (size - dh) / 2;
-                    } else if (imgRatio < 1) {
-                        // Portrait
+                    } else {
+                        // Portrait - fit height
                         dw = size * imgRatio;
                         dx = (size - dw) / 2;
                     }
                 }
                 
-                // Draw with high quality
-                ctx.drawImage(sourceImage, sx, sy, sw, sh, dx, dy, dw, dh);
+                // Draw image
+                ctx.drawImage(sourceImage, 0, 0, sw, sh, dx, dy, dw, dh);
                 
                 if (format === 'ico') {
-                    // Generate ICO format (embedded PNG in ICO container)
+                    // Generate ICO format
                     canvas.toBlob((blob) => {
+                        if (!blob) {
+                            reject(new Error('Failed to create blob'));
+                            return;
+                        }
                         blob.arrayBuffer().then(buffer => {
-                            const icoData = createICO([{ size, buffer: new Uint8Array(buffer) }]);
-                            resolve(icoData);
-                        });
+                            try {
+                                const icoData = createICO([{ size, buffer: new Uint8Array(buffer) }]);
+                                resolve(icoData);
+                            } catch (e) {
+                                reject(e);
+                            }
+                        }).catch(reject);
                     }, 'image/png', 1.0);
                 } else {
-                    // Generate PNG - MAX QUALITY (1.0)
+                    // Generate PNG
                     canvas.toBlob((blob) => {
+                        if (!blob) {
+                            reject(new Error('Failed to create blob'));
+                            return;
+                        }
                         resolve(blob);
                     }, 'image/png', 1.0);
                 }
@@ -402,19 +585,13 @@
 
     /**
      * Create ICO file from PNG data
-     * ICO format: https://en.wikipedia.org/wiki/ICO_(file_format)
      */
     function createICO(images) {
-        // ICO Header: 6 bytes
-        // ICONDIR entries: 16 bytes each
-        // Image data follows
-        
         const numImages = images.length;
         const headerSize = 6;
         const entrySize = 16;
         const dataOffset = headerSize + (entrySize * numImages);
         
-        // Calculate total size
         let totalDataSize = 0;
         images.forEach(img => totalDataSize += img.buffer.length);
         
@@ -424,28 +601,25 @@
         const bytes = new Uint8Array(buffer);
         
         // ICO Header
-        view.setUint16(0, 0, true);      // Reserved, must be 0
-        view.setUint16(2, 1, true);      // Image type: 1 = ICO
-        view.setUint16(4, numImages, true); // Number of images
+        view.setUint16(0, 0, true);           // Reserved
+        view.setUint16(2, 1, true);           // Type: 1 = ICO
+        view.setUint16(4, numImages, true);   // Number of images
         
-        // Write ICONDIR entries and image data
         let currentOffset = dataOffset;
         
         images.forEach((img, index) => {
             const entryOffset = headerSize + (index * entrySize);
             const size = img.size;
             
-            // ICONDIR entry
-            view.setUint8(entryOffset + 0, size < 256 ? size : 0);    // Width (0 = 256)
-            view.setUint8(entryOffset + 1, size < 256 ? size : 0);    // Height (0 = 256)
-            view.setUint8(entryOffset + 2, 0);                         // Color palette (0 = no palette)
-            view.setUint8(entryOffset + 3, 0);                         // Reserved
-            view.setUint16(entryOffset + 4, 1, true);                  // Color planes
-            view.setUint16(entryOffset + 6, 32, true);                 // Bits per pixel
-            view.setUint32(entryOffset + 8, img.buffer.length, true);  // Image data size
-            view.setUint32(entryOffset + 12, currentOffset, true);     // Offset to image data
+            view.setUint8(entryOffset + 0, size < 256 ? size : 0);
+            view.setUint8(entryOffset + 1, size < 256 ? size : 0);
+            view.setUint8(entryOffset + 2, 0);
+            view.setUint8(entryOffset + 3, 0);
+            view.setUint16(entryOffset + 4, 1, true);
+            view.setUint16(entryOffset + 6, 32, true);
+            view.setUint32(entryOffset + 8, img.buffer.length, true);
+            view.setUint32(entryOffset + 12, currentOffset, true);
             
-            // Copy image data
             bytes.set(img.buffer, currentOffset);
             currentOffset += img.buffer.length;
         });
@@ -468,7 +642,6 @@
             
             ctx.imageSmoothingEnabled = true;
             ctx.imageSmoothingQuality = 'high';
-            
             ctx.drawImage(sourceImage, 0, 0, size, size);
             
             const blob = await new Promise(resolve => {
@@ -486,7 +659,15 @@
     // DISPLAY RESULTS
     // =====================================================
     
-    function displayResults(selectedPlatforms, generateHtml) {
+    function displayResults(selectedPlatforms, generateHtml, generationTime) {
+        // Update stats
+        if (elements.totalIcons) {
+            elements.totalIcons.textContent = generatedIcons.length;
+        }
+        if (elements.generationTime) {
+            elements.generationTime.textContent = generationTime;
+        }
+        
         // Group icons by platform
         const groupedIcons = {};
         generatedIcons.forEach(icon => {
@@ -501,6 +682,8 @@
         
         selectedPlatforms.forEach(platform => {
             const config = ICON_CONFIGS[platform];
+            if (!config) return;
+            
             const icons = groupedIcons[platform] || [];
             
             gridHtml += `
@@ -516,7 +699,7 @@
                         ${icons.map((icon, idx) => {
                             const url = URL.createObjectURL(icon.data);
                             return `
-                                <div class="icon-item" data-platform="${platform}" data-index="${idx}">
+                                <div class="icon-item" data-platform="${platform}" data-index="${idx}" title="Click to download">
                                     <div class="icon-preview">
                                         <img src="${url}" alt="${icon.size}x${icon.size}">
                                     </div>
@@ -530,32 +713,32 @@
             `;
         });
         
-        iconsGrid.innerHTML = gridHtml;
-        
-        // Add click handlers for individual downloads
-        $$('.icon-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const platform = item.dataset.platform;
-                const index = parseInt(item.dataset.index);
-                const icons = groupedIcons[platform];
-                const icon = icons[index];
-                
-                downloadSingleIcon(icon);
+        if (elements.iconsSections) {
+            elements.iconsSections.innerHTML = gridHtml;
+            
+            // Add click handlers for individual downloads
+            elements.iconsSections.querySelectorAll('.icon-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const platform = item.dataset.platform;
+                    const index = parseInt(item.dataset.index);
+                    const icons = groupedIcons[platform];
+                    if (icons && icons[index]) {
+                        downloadSingleIcon(icons[index]);
+                    }
+                });
             });
-        });
-        
-        // Generate HTML code
-        if (generateHtml) {
-            const htmlCode = generateHtmlCode(selectedPlatforms);
-            htmlCodeOutput.textContent = htmlCode;
-            $('.html-code-section').style.display = 'block';
-        } else {
-            $('.html-code-section').style.display = 'none';
         }
         
-        // Update results header
-        const totalIcons = generatedIcons.length;
-        $('#results-count').textContent = totalIcons;
+        // Generate HTML code
+        if (generateHtml && elements.htmlCode) {
+            const htmlCode = generateHtmlCode(selectedPlatforms);
+            elements.htmlCode.textContent = htmlCode;
+            if (elements.htmlCodeSection) {
+                elements.htmlCodeSection.style.display = 'block';
+            }
+        } else if (elements.htmlCodeSection) {
+            elements.htmlCodeSection.style.display = 'none';
+        }
     }
 
     function generateHtmlCode(selectedPlatforms) {
@@ -585,7 +768,7 @@
         }
         
         if (selectedPlatforms.includes('android')) {
-            code += `\n<!-- Android Icons -->\n`;
+            code += `\n<!-- Android / Chrome -->\n`;
             code += `<link rel="manifest" href="/manifest.json">\n`;
             code += `<meta name="theme-color" content="#ffffff">\n`;
         }
@@ -619,18 +802,35 @@
     }
 
     async function downloadAll() {
-        if (generatedIcons.length === 0) return;
+        if (generatedIcons.length === 0) {
+            showToast('No icons to download', 'error');
+            return;
+        }
+        
+        // Check JSZip
+        if (typeof JSZip === 'undefined') {
+            showToast('ZIP library not loaded. Refresh and try again.', 'error');
+            return;
+        }
         
         // Show processing
-        processing.classList.add('active');
-        progressBar.style.width = '0%';
-        $('.processing__text').textContent = 'Creating ZIP file...';
-        progressCount.textContent = 'Please wait...';
+        if (elements.processing) {
+            elements.processing.classList.add('active');
+        }
+        if (elements.processingText) {
+            elements.processingText.textContent = 'Creating ZIP file...';
+        }
+        if (elements.progressBar) {
+            elements.progressBar.style.width = '0%';
+        }
+        if (elements.processingCount) {
+            elements.processingCount.textContent = 'Packaging icons...';
+        }
         
         try {
             const zip = new JSZip();
             
-            // Group by platform for organized folders
+            // Group by platform
             const platforms = {};
             generatedIcons.forEach(icon => {
                 if (!platforms[icon.platform]) {
@@ -650,17 +850,26 @@
                     
                     processed++;
                     const progress = (processed / generatedIcons.length) * 100;
-                    progressBar.style.width = `${progress}%`;
+                    if (elements.progressBar) {
+                        elements.progressBar.style.width = `${progress}%`;
+                    }
                 }
             }
             
             // Add multi-size favicon.ico to root
-            progressCount.textContent = 'Generating multi-size favicon.ico...';
-            const multiIco = await createMultiSizeICO([16, 32, 48]);
-            zip.file('favicon.ico', multiIco);
+            if (elements.processingCount) {
+                elements.processingCount.textContent = 'Creating favicon.ico...';
+            }
             
-            // Add HTML code if available
-            const htmlCode = htmlCodeOutput.textContent;
+            try {
+                const multiIco = await createMultiSizeICO([16, 32, 48]);
+                zip.file('favicon.ico', multiIco);
+            } catch (e) {
+                console.warn('Could not create multi-size ICO:', e);
+            }
+            
+            // Add HTML code
+            const htmlCode = elements.htmlCode ? elements.htmlCode.textContent : '';
             if (htmlCode) {
                 zip.file('favicon-html-code.txt', htmlCode);
             }
@@ -700,8 +909,11 @@
             }
             
             // Generate ZIP
-            progressCount.textContent = 'Compressing...';
-            const zipBlob = await zip.generateAsync({ 
+            if (elements.processingCount) {
+                elements.processingCount.textContent = 'Compressing...';
+            }
+            
+            const zipBlob = await zip.generateAsync({
                 type: 'blob',
                 compression: 'DEFLATE',
                 compressionOptions: { level: 6 }
@@ -718,12 +930,17 @@
             
             setTimeout(() => URL.revokeObjectURL(url), 1000);
             
-            processing.classList.remove('active');
+            if (elements.processing) {
+                elements.processing.classList.remove('active');
+            }
+            
             showToast(`✅ Downloaded ZIP with ${generatedIcons.length} icons!`);
             
         } catch (error) {
-            console.error('ZIP error:', error);
-            processing.classList.remove('active');
+            console.error('[Favicon Generator] ZIP error:', error);
+            if (elements.processing) {
+                elements.processing.classList.remove('active');
+            }
             showToast('Failed to create ZIP file', 'error');
         }
     }
@@ -733,15 +950,18 @@
     // =====================================================
     
     async function copyHtmlCode() {
-        const code = htmlCodeOutput.textContent;
+        const code = elements.htmlCode ? elements.htmlCode.textContent : '';
+        
+        if (!code) {
+            showToast('No code to copy', 'error');
+            return;
+        }
         
         try {
-            // Modern API
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 await navigator.clipboard.writeText(code);
                 copySuccess();
             } else {
-                // Fallback
                 fallbackCopy(code);
             }
         } catch (error) {
@@ -753,26 +973,28 @@
         try {
             const textarea = document.createElement('textarea');
             textarea.value = text;
-            textarea.style.cssText = 'position:fixed;top:0;left:0;opacity:0;';
+            textarea.style.cssText = 'position:fixed;top:0;left:0;opacity:0;pointer-events:none;';
             document.body.appendChild(textarea);
             textarea.select();
             document.execCommand('copy');
             document.body.removeChild(textarea);
             copySuccess();
         } catch (error) {
-            showToast('Failed to copy code', 'error');
+            showToast('Failed to copy', 'error');
         }
     }
 
     function copySuccess() {
-        copyCodeBtn.textContent = 'Copied!';
-        copyCodeBtn.classList.add('copied');
-        showToast('HTML code copied to clipboard!');
-        
-        setTimeout(() => {
-            copyCodeBtn.textContent = 'Copy Code';
-            copyCodeBtn.classList.remove('copied');
-        }, 2000);
+        if (elements.btnCopyHtml) {
+            elements.btnCopyHtml.textContent = 'Copied!';
+            elements.btnCopyHtml.classList.add('copied');
+            
+            setTimeout(() => {
+                elements.btnCopyHtml.textContent = 'Copy Code';
+                elements.btnCopyHtml.classList.remove('copied');
+            }, 2000);
+        }
+        showToast('HTML code copied!');
     }
 
     // =====================================================
@@ -780,20 +1002,24 @@
     // =====================================================
     
     function showToast(message, type = 'success') {
-        toast.innerHTML = `
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                ${type === 'success' 
-                    ? '<path d="M20 6L9 17l-5-5"/>' 
-                    : '<circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>'}
-            </svg>
-            ${message}
-        `;
-        toast.querySelector('svg').style.color = type === 'success' ? '#22c55e' : '#ef4444';
+        if (!elements.toast) return;
         
-        toast.classList.add('show');
+        if (elements.toastText) {
+            elements.toastText.textContent = message;
+        }
+        
+        const svg = elements.toast.querySelector('svg');
+        if (svg) {
+            svg.style.color = type === 'success' ? '#22c55e' : '#ef4444';
+            svg.innerHTML = type === 'success'
+                ? '<path d="M20 6L9 17l-5-5"/>'
+                : '<circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>';
+        }
+        
+        elements.toast.classList.add('show');
         
         setTimeout(() => {
-            toast.classList.remove('show');
+            elements.toast.classList.remove('show');
         }, 3000);
     }
 
@@ -801,6 +1027,11 @@
     // START
     // =====================================================
     
-    document.addEventListener('DOMContentLoaded', init);
+    // Wait for DOM
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
     
 })();
