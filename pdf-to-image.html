@@ -31,7 +31,179 @@
     
     <!-- JSON-LD Schema -->
     <script type="application/ld+json">
-    {"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "PDF to Image Converter - Image Runner", "applicationCategory": "MultimediaApplication", "operatingSystem": "Web Browser", "offers": {"@type": "Offer", "price": "0"}, "aggregateRating": {"@type": "AggregateRating", "ratingValue": "4.8", "ratingCount": "5100"}, "featureList": ["PDF to JPG", "PDF to PNG", "All Pages Convert", "High Quality Output", "Batch Download"]}
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "WebApplication",
+                "@id": "https://www.imgrunner.com/pdf-to-image.html#app",
+                "name": "PDF to Image Converter - Image Runner",
+                "description": "Convert PDF to high-quality JPG or PNG images instantly. Extract all pages with one click. 100% private - PDF never leaves your device.",
+                "url": "https://www.imgrunner.com/pdf-to-image.html",
+                "applicationCategory": "MultimediaApplication",
+                "operatingSystem": "Web Browser (Chrome, Firefox, Safari, Edge)",
+                "browserRequirements": "Requires JavaScript and HTML5 Canvas support",
+                "softwareVersion": "2.0",
+                "datePublished": "2024-01-01",
+                "dateModified": "2026-01-22",
+                "offers": {
+                    "@type": "Offer",
+                    "price": "0",
+                    "priceCurrency": "USD"
+                },
+                "aggregateRating": {
+                    "@type": "AggregateRating",
+                    "ratingValue": "4.8",
+                    "bestRating": "5",
+                    "worstRating": "1",
+                    "ratingCount": "5100"
+                },
+                "featureList": [
+                    "PDF to JPG conversion",
+                    "PDF to PNG conversion",
+                    "Multi-page PDF support",
+                    "High resolution output (up to 3x)",
+                    "Batch download as ZIP",
+                    "Page selection",
+                    "Adjustable quality settings",
+                    "100% client-side processing"
+                ],
+                "screenshot": "https://www.imgrunner.com/screenshots/pdf-to-image.jpg",
+                "author": {
+                    "@type": "Organization",
+                    "name": "Image Runner",
+                    "url": "https://www.imgrunner.com"
+                }
+            },
+            {
+                "@type": "FAQPage",
+                "@id": "https://www.imgrunner.com/pdf-to-image.html#faq",
+                "mainEntity": [
+                    {
+                        "@type": "Question",
+                        "name": "How to convert PDF to JPG?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Simply drag and drop your PDF file or click 'Select PDF File' to upload. Choose JPG as the output format, adjust quality settings if needed, and click 'Convert to Images'. All pages will be converted instantly and you can download them individually or as a ZIP file."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Can I convert multi-page PDF to images?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Yes! Our converter handles multi-page PDFs with ease. All pages are automatically converted at once. You can preview each page, select specific pages to convert, or convert all pages. Download individually or get all images in a single ZIP file."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "What image formats are supported for PDF conversion?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "We support two popular image formats: JPG (JPEG) for smaller file sizes ideal for web and sharing, and PNG for maximum quality with lossless compression perfect for printing and editing. Choose based on your needs."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Is the PDF to image conversion private and secure?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Absolutely! Your PDF never leaves your device. All conversion happens directly in your browser using JavaScript. No files are uploaded to any server, making it 100% private and secure for confidential documents."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Does the PDF converter work offline?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "The initial page load requires internet to load the converter. Once loaded, the conversion process works entirely in your browser. For offline use, you can save the page locally, though some features may require the PDF.js library to be cached."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "How to convert PDF to high quality images?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "For highest quality: 1) Choose PNG format for lossless output, 2) Set resolution to 'Ultra (3x)' for maximum detail, 3) If using JPG, set quality to 100%. Higher resolution settings produce larger files but are ideal for printing at 300 DPI or above."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Can I select specific pages to convert from PDF?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Yes! After uploading your PDF, you'll see thumbnails of all pages. Select 'Selected Pages' option, then click on the pages you want to convert. Selected pages are highlighted. This is perfect when you only need certain pages from a large document."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "What's the maximum PDF file size I can convert?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "There's no hard limit since processing happens in your browser. However, very large PDFs (100+ pages or 100MB+) may be slower depending on your device's memory and processing power. For best performance, we recommend PDFs under 50MB."
+                        }
+                    }
+                ]
+            },
+            {
+                "@type": "BreadcrumbList",
+                "@id": "https://www.imgrunner.com/pdf-to-image.html#breadcrumb",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "Home",
+                        "item": "https://www.imgrunner.com"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 2,
+                        "name": "PDF to Image Converter",
+                        "item": "https://www.imgrunner.com/pdf-to-image.html"
+                    }
+                ]
+            },
+            {
+                "@type": "HowTo",
+                "@id": "https://www.imgrunner.com/pdf-to-image.html#howto",
+                "name": "How to Convert PDF to Image",
+                "description": "Convert any PDF document to high-quality JPG or PNG images in 3 easy steps.",
+                "totalTime": "PT1M",
+                "estimatedCost": {
+                    "@type": "MonetaryAmount",
+                    "currency": "USD",
+                    "value": "0"
+                },
+                "tool": {
+                    "@type": "HowToTool",
+                    "name": "Web browser (Chrome, Firefox, Safari, or Edge)"
+                },
+                "step": [
+                    {
+                        "@type": "HowToStep",
+                        "position": 1,
+                        "name": "Upload PDF",
+                        "text": "Click 'Select PDF File' or drag and drop your PDF document onto the upload area.",
+                        "image": "https://www.imgrunner.com/steps/pdf-upload.jpg"
+                    },
+                    {
+                        "@type": "HowToStep",
+                        "position": 2,
+                        "name": "Choose Settings",
+                        "text": "Select output format (JPG or PNG), adjust quality and resolution, and choose which pages to convert.",
+                        "image": "https://www.imgrunner.com/steps/pdf-settings.jpg"
+                    },
+                    {
+                        "@type": "HowToStep",
+                        "position": 3,
+                        "name": "Download Images",
+                        "text": "Click 'Convert to Images' and download individual images or all at once as a ZIP file.",
+                        "image": "https://www.imgrunner.com/steps/pdf-download.jpg"
+                    }
+                ]
+            }
+        ]
+    }
     </script>
     
     <!-- Favicon -->
@@ -328,6 +500,90 @@
                         <div><div style="font-weight: 600; color: #1a1a1a; font-size: 13px;">Varun Singh</div><div style="font-size: 11px; color: #64748b;">Student, Lucknow</div></div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section" style="padding: 60px 0; background: #fff;">
+        <div class="container" style="max-width: 900px;">
+            <h2 style="text-align: center; font-size: 28px; font-weight: 700; color: #1a1a1a; margin-bottom: 12px;">Frequently Asked Questions</h2>
+            <p style="text-align: center; color: #64748b; margin-bottom: 40px; font-size: 15px;">Everything you need to know about converting PDF to images</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <details style="background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden;">
+                    <summary style="padding: 18px 24px; font-weight: 600; color: #1a1a1a; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center;">How to convert PDF to JPG?<span style="color: #2563eb; font-size: 20px; transition: transform 0.2s;">+</span></summary>
+                    <div style="padding: 0 24px 18px; color: #475569; line-height: 1.7; font-size: 14px;">Simply drag and drop your PDF file or click 'Select PDF File' to upload. Choose JPG as the output format, adjust quality settings if needed, and click 'Convert to Images'. All pages will be converted instantly and you can download them individually or as a ZIP file.</div>
+                </details>
+                
+                <details style="background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden;">
+                    <summary style="padding: 18px 24px; font-weight: 600; color: #1a1a1a; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center;">Can I convert multi-page PDF to images?<span style="color: #2563eb; font-size: 20px; transition: transform 0.2s;">+</span></summary>
+                    <div style="padding: 0 24px 18px; color: #475569; line-height: 1.7; font-size: 14px;">Yes! Our converter handles multi-page PDFs with ease. All pages are automatically converted at once. You can preview each page, select specific pages to convert, or convert all pages. Download individually or get all images in a single ZIP file.</div>
+                </details>
+                
+                <details style="background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden;">
+                    <summary style="padding: 18px 24px; font-weight: 600; color: #1a1a1a; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center;">What image formats are supported for PDF conversion?<span style="color: #2563eb; font-size: 20px; transition: transform 0.2s;">+</span></summary>
+                    <div style="padding: 0 24px 18px; color: #475569; line-height: 1.7; font-size: 14px;">We support two popular image formats: JPG (JPEG) for smaller file sizes ideal for web and sharing, and PNG for maximum quality with lossless compression perfect for printing and editing. Choose based on your needs.</div>
+                </details>
+                
+                <details style="background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden;">
+                    <summary style="padding: 18px 24px; font-weight: 600; color: #1a1a1a; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center;">Is the PDF to image conversion private and secure?<span style="color: #2563eb; font-size: 20px; transition: transform 0.2s;">+</span></summary>
+                    <div style="padding: 0 24px 18px; color: #475569; line-height: 1.7; font-size: 14px;">Absolutely! Your PDF never leaves your device. All conversion happens directly in your browser using JavaScript. No files are uploaded to any server, making it 100% private and secure for confidential documents.</div>
+                </details>
+                
+                <details style="background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden;">
+                    <summary style="padding: 18px 24px; font-weight: 600; color: #1a1a1a; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center;">Does the PDF converter work offline?<span style="color: #2563eb; font-size: 20px; transition: transform 0.2s;">+</span></summary>
+                    <div style="padding: 0 24px 18px; color: #475569; line-height: 1.7; font-size: 14px;">The initial page load requires internet to load the converter. Once loaded, the conversion process works entirely in your browser. For offline use, you can save the page locally, though some features may require the PDF.js library to be cached.</div>
+                </details>
+                
+                <details style="background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden;">
+                    <summary style="padding: 18px 24px; font-weight: 600; color: #1a1a1a; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center;">How to convert PDF to high quality images?<span style="color: #2563eb; font-size: 20px; transition: transform 0.2s;">+</span></summary>
+                    <div style="padding: 0 24px 18px; color: #475569; line-height: 1.7; font-size: 14px;">For highest quality: 1) Choose PNG format for lossless output, 2) Set resolution to 'Ultra (3x)' for maximum detail, 3) If using JPG, set quality to 100%. Higher resolution settings produce larger files but are ideal for printing at 300 DPI or above.</div>
+                </details>
+                
+                <details style="background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden;">
+                    <summary style="padding: 18px 24px; font-weight: 600; color: #1a1a1a; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center;">Can I select specific pages to convert from PDF?<span style="color: #2563eb; font-size: 20px; transition: transform 0.2s;">+</span></summary>
+                    <div style="padding: 0 24px 18px; color: #475569; line-height: 1.7; font-size: 14px;">Yes! After uploading your PDF, you'll see thumbnails of all pages. Select 'Selected Pages' option, then click on the pages you want to convert. Selected pages are highlighted. This is perfect when you only need certain pages from a large document.</div>
+                </details>
+                
+                <details style="background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden;">
+                    <summary style="padding: 18px 24px; font-weight: 600; color: #1a1a1a; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center;">What's the maximum PDF file size I can convert?<span style="color: #2563eb; font-size: 20px; transition: transform 0.2s;">+</span></summary>
+                    <div style="padding: 0 24px 18px; color: #475569; line-height: 1.7; font-size: 14px;">There's no hard limit since processing happens in your browser. However, very large PDFs (100+ pages or 100MB+) may be slower depending on your device's memory and processing power. For best performance, we recommend PDFs under 50MB.</div>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <!-- Related Tools Section -->
+    <section style="padding: 60px 0; background: linear-gradient(180deg, #f8fafc 0%, #fff 100%);">
+        <div class="container" style="max-width: 900px;">
+            <h2 style="text-align: center; font-size: 26px; font-weight: 700; color: #1a1a1a; margin-bottom: 12px;">Related Tools</h2>
+            <p style="text-align: center; color: #64748b; margin-bottom: 36px; font-size: 15px;">Explore more image tools you might find useful</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;">
+                <a href="image-to-pdf.html" style="text-decoration: none; background: white; padding: 28px 24px; border-radius: 16px; border: 1px solid #e2e8f0; transition: all 0.2s ease; display: flex; flex-direction: column; align-items: center; text-align: center;" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 24px rgba(37,99,235,0.12)';this.style.borderColor='#2563eb'" onmouseout="this.style.transform='none';this.style.boxShadow='none';this.style.borderColor='#e2e8f0'">
+                    <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" width="28" height="28"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M12 18v-6M9 15l3 3 3-3"/></svg>
+                    </div>
+                    <h3 style="font-size: 17px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">Image to PDF</h3>
+                    <p style="font-size: 13px; color: #64748b; line-height: 1.6;">Convert images to PDF documents. Merge multiple images into one PDF.</p>
+                </a>
+                
+                <a href="image-compress.html" style="text-decoration: none; background: white; padding: 28px 24px; border-radius: 16px; border: 1px solid #e2e8f0; transition: all 0.2s ease; display: flex; flex-direction: column; align-items: center; text-align: center;" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 24px rgba(37,99,235,0.12)';this.style.borderColor='#2563eb'" onmouseout="this.style.transform='none';this.style.boxShadow='none';this.style.borderColor='#e2e8f0'">
+                    <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" width="28" height="28"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    </div>
+                    <h3 style="font-size: 17px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">Image Compressor</h3>
+                    <p style="font-size: 13px; color: #64748b; line-height: 1.6;">Reduce image file size while maintaining quality. Perfect for web.</p>
+                </a>
+                
+                <a href="format-converter.html" style="text-decoration: none; background: white; padding: 28px 24px; border-radius: 16px; border: 1px solid #e2e8f0; transition: all 0.2s ease; display: flex; flex-direction: column; align-items: center; text-align: center;" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 24px rgba(37,99,235,0.12)';this.style.borderColor='#2563eb'" onmouseout="this.style.transform='none';this.style.boxShadow='none';this.style.borderColor='#e2e8f0'">
+                    <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" width="28" height="28"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+                    </div>
+                    <h3 style="font-size: 17px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">Format Converter</h3>
+                    <p style="font-size: 13px; color: #64748b; line-height: 1.6;">Convert between JPG, PNG, WebP, GIF and more image formats.</p>
+                </a>
             </div>
         </div>
     </section>

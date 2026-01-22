@@ -33,7 +33,198 @@
     
     <!-- JSON-LD Schema -->
     <script type="application/ld+json">
-    {"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Image Size Increaser - Image Runner", "applicationCategory": "MultimediaApplication", "operatingSystem": "Web Browser", "offers": {"@type": "Offer", "price": "0"}, "aggregateRating": {"@type": "AggregateRating", "ratingValue": "4.7", "ratingCount": "3200"}, "featureList": ["Increase to 50KB", "Increase to 100KB", "Increase to 200KB", "Quality Preserve", "Government Form Ready"]}
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "WebApplication",
+                "@id": "https://www.imgrunner.com/image-size-increaser.html#app",
+                "name": "Image Size Increaser - Increase Image File Size Online Free",
+                "description": "Increase image file size online for free. Make images larger in KB or MB to meet minimum file size requirements for passport photos, government forms, and document uploads.",
+                "url": "https://www.imgrunner.com/image-size-increaser.html",
+                "applicationCategory": "MultimediaApplication",
+                "operatingSystem": "Web Browser (Chrome, Firefox, Safari, Edge)",
+                "browserRequirements": "Requires JavaScript enabled",
+                "softwareVersion": "2.0",
+                "offers": {
+                    "@type": "Offer",
+                    "price": "0",
+                    "priceCurrency": "USD"
+                },
+                "aggregateRating": {
+                    "@type": "AggregateRating",
+                    "ratingValue": "4.7",
+                    "ratingCount": "3200",
+                    "bestRating": "5",
+                    "worstRating": "1"
+                },
+                "featureList": [
+                    "Increase image size to exact KB/MB",
+                    "Meet minimum file size requirements",
+                    "Preserve image quality",
+                    "Government form ready (Aadhaar, Passport, PAN)",
+                    "100% private - no server uploads",
+                    "Batch processing support",
+                    "JPG and PNG format support",
+                    "Mobile friendly"
+                ],
+                "screenshot": "https://www.imgrunner.com/og-increaser.jpg",
+                "author": {
+                    "@type": "Organization",
+                    "name": "Image Runner",
+                    "url": "https://www.imgrunner.com"
+                }
+            },
+            {
+                "@type": "FAQPage",
+                "@id": "https://www.imgrunner.com/image-size-increaser.html#faq",
+                "mainEntity": [
+                    {
+                        "@type": "Question",
+                        "name": "Why would I need to increase image file size?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Many government forms and official portals in India require minimum file sizes for photo uploads. For example, passport applications may require minimum 10KB-20KB, Aadhaar enrollment needs minimum 10KB, and various exam forms (SSC, UPSC, Bank exams) require 20KB-100KB minimum. If your photo is smaller than the required minimum, it will be rejected during upload."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "How to increase image size to 100KB or 200KB?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Simply upload your image to our tool, enter your target size (100KB or 200KB) in the 'Target Size' field, select KB as the unit, and click 'Increase Size'. The tool will automatically increase your image file size to the exact target while preserving visual quality. Download the processed image and use it for your form submission."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Does increasing file size affect image quality?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "No, our tool uses a smart algorithm that increases file size without visible quality degradation. The image remains clear and sharp. We add invisible data padding that increases the file size while keeping your photo looking exactly the same to human eyes."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Is this tool useful for government form uploads in India?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Yes, this tool is specifically designed for Indian government form requirements. It works perfectly for Passport Seva applications, Aadhaar enrollment, PAN card applications, Voter ID registration, Driving License applications, SSC/UPSC/Bank exam forms, and any other portal that requires minimum file size for photo uploads."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Can I increase JPEG and PNG file size?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Yes, our tool supports both JPEG/JPG and PNG image formats. You can upload images in any common format and choose your preferred output format (JPG recommended for photos, PNG for graphics with transparency). The tool will increase the file size regardless of the input format."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "What is the maximum file size I can achieve?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "You can increase image file size up to 10MB (10,000KB) using our tool. This covers all possible requirements for government forms, job applications, and document submissions. Most forms require between 20KB to 500KB, which our tool handles easily."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "How does the file size increaser work technically?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Our tool increases file size by adjusting the image compression parameters and adding invisible metadata padding. For JPEG images, we reduce compression to retain more data. For PNG, we add non-visible data chunks. This ensures your image meets the minimum size requirement while looking identical to the original."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Is it safe to use for official documents and applications?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Absolutely safe! Your images are processed entirely in your browser and never uploaded to any server. This means complete privacy and security. The resulting image is a legitimate file that meets size requirements - it's the same photo, just with a larger file size. Government portals will accept these images without any issues."
+                        }
+                    }
+                ]
+            },
+            {
+                "@type": "BreadcrumbList",
+                "@id": "https://www.imgrunner.com/image-size-increaser.html#breadcrumb",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "Home",
+                        "item": "https://www.imgrunner.com"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 2,
+                        "name": "Image Tools",
+                        "item": "https://www.imgrunner.com/#tools"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 3,
+                        "name": "Increase Image Size",
+                        "item": "https://www.imgrunner.com/image-size-increaser.html"
+                    }
+                ]
+            },
+            {
+                "@type": "HowTo",
+                "@id": "https://www.imgrunner.com/image-size-increaser.html#howto",
+                "name": "How to Increase Image File Size Online",
+                "description": "Step-by-step guide to increase your image file size to meet minimum KB requirements for government forms and official document uploads.",
+                "image": "https://www.imgrunner.com/og-increaser.jpg",
+                "totalTime": "PT1M",
+                "estimatedCost": {
+                    "@type": "MonetaryAmount",
+                    "currency": "USD",
+                    "value": "0"
+                },
+                "tool": {
+                    "@type": "HowToTool",
+                    "name": "Web Browser (Chrome, Firefox, Safari, or Edge)"
+                },
+                "step": [
+                    {
+                        "@type": "HowToStep",
+                        "position": 1,
+                        "name": "Upload Your Image",
+                        "text": "Click 'Select images' button or drag and drop your photo into the upload area. Supports JPG, PNG, and other common image formats.",
+                        "url": "https://www.imgrunner.com/image-size-increaser.html#page-upload"
+                    },
+                    {
+                        "@type": "HowToStep",
+                        "position": 2,
+                        "name": "Set Target File Size",
+                        "text": "Enter your desired target size in KB or MB. For example, enter 50 and select KB if you need minimum 50KB for a government form.",
+                        "url": "https://www.imgrunner.com/image-size-increaser.html#page-editor"
+                    },
+                    {
+                        "@type": "HowToStep",
+                        "position": 3,
+                        "name": "Choose Output Format",
+                        "text": "Select JPG (recommended for photos) or PNG as your output format based on your requirements.",
+                        "url": "https://www.imgrunner.com/image-size-increaser.html#page-editor"
+                    },
+                    {
+                        "@type": "HowToStep",
+                        "position": 4,
+                        "name": "Increase Size",
+                        "text": "Click the 'Increase Size' button. The tool will process your image instantly in your browser.",
+                        "url": "https://www.imgrunner.com/image-size-increaser.html#page-editor"
+                    },
+                    {
+                        "@type": "HowToStep",
+                        "position": 5,
+                        "name": "Download Result",
+                        "text": "Review the size comparison showing original vs new file size, then click 'Download Image' to save your increased-size photo.",
+                        "url": "https://www.imgrunner.com/image-size-increaser.html#page-download"
+                    }
+                ]
+            }
+        ]
+    }
     </script>
     
     <!-- Favicon -->
@@ -368,28 +559,43 @@
                 <h2 style="font-size: 20px; font-weight: 600; color: #1a1a1a; margin-bottom: 20px;">Frequently Asked Questions</h2>
                 
                 <details style="background: white; border-radius: 10px; padding: 15px 20px; margin-bottom: 10px; border: 1px solid #e5e5e5;">
-                    <summary style="font-weight: 600; cursor: pointer; color: #333;">Image size kaise badhaye KB mein?</summary>
-                    <p style="margin-top: 10px; color: #666; line-height: 1.6;">Apni photo upload करें, "Target Size" में desired KB enter करें (जैसे 20KB, 50KB), aur "Increase Size" click करें। Automatically file size badh jayegi बिना quality loss के।</p>
+                    <summary style="font-weight: 600; cursor: pointer; color: #333;">Why would I need to increase image file size?</summary>
+                    <p style="margin-top: 10px; color: #666; line-height: 1.6;">Many government forms and official portals in India require <strong>minimum file sizes</strong> for photo uploads. For example, passport applications require minimum 10KB-20KB, Aadhaar enrollment needs minimum 10KB, and various exam forms (SSC, UPSC, Bank exams) require 20KB-100KB minimum. If your photo is smaller than required, it gets rejected during upload. Our tool solves this problem instantly!</p>
                 </details>
                 
                 <details style="background: white; border-radius: 10px; padding: 15px 20px; margin-bottom: 10px; border: 1px solid #e5e5e5;">
-                    <summary style="font-weight: 600; cursor: pointer; color: #333;">Passport photo 10KB se 20KB kaise karein?</summary>
-                    <p style="margin-top: 10px; color: #666; line-height: 1.6;">हमारे tool पर photo upload करें, target size में <strong>20KB</strong> enter करें। Tool automatically file size 20KB+ कर देगा। Perfect for passport applications!</p>
+                    <summary style="font-weight: 600; cursor: pointer; color: #333;">How to increase image size to 100KB or 200KB?</summary>
+                    <p style="margin-top: 10px; color: #666; line-height: 1.6;">It's very simple! <strong>Step 1:</strong> Upload your image using the 'Select images' button. <strong>Step 2:</strong> Enter your target size (100 or 200) in the Target Size field and select KB. <strong>Step 3:</strong> Click 'Increase Size' button. <strong>Step 4:</strong> Download your processed image that now meets the minimum size requirement. The whole process takes less than 10 seconds!</p>
                 </details>
                 
                 <details style="background: white; border-radius: 10px; padding: 15px 20px; margin-bottom: 10px; border: 1px solid #e5e5e5;">
-                    <summary style="font-weight: 600; cursor: pointer; color: #333;">Kya image quality kharab hoti hai increase karne se?</summary>
-                    <p style="margin-top: 10px; color: #666; line-height: 1.6;">Nahi! हम smart algorithm use करते हैं जो file size बढ़ाता है without visible quality degradation। Your photo clear aur sharp रहेगी।</p>
+                    <summary style="font-weight: 600; cursor: pointer; color: #333;">Does increasing file size affect image quality?</summary>
+                    <p style="margin-top: 10px; color: #666; line-height: 1.6;">No, your image quality remains <strong>exactly the same</strong>! Our smart algorithm increases file size by adjusting compression parameters and adding invisible metadata padding. The photo looks identical to the original - just with a larger file size. You won't notice any blur, pixelation, or quality degradation.</p>
                 </details>
                 
                 <details style="background: white; border-radius: 10px; padding: 15px 20px; margin-bottom: 10px; border: 1px solid #e5e5e5;">
-                    <summary style="font-weight: 600; cursor: pointer; color: #333;">SSC/UPSC form mein minimum 50KB chahiye, kya karein?</summary>
-                    <p style="margin-top: 10px; color: #666; line-height: 1.6;">Exactly इसी problem के लिए हमारा tool बनाया गया है! Photo upload करें, target <strong>50KB</strong> set करें, aur download करें। Form में upload हो जाएगी!</p>
+                    <summary style="font-weight: 600; cursor: pointer; color: #333;">Is this tool useful for government form uploads in India?</summary>
+                    <p style="margin-top: 10px; color: #666; line-height: 1.6;"><strong>Yes, absolutely!</strong> This tool is specifically designed for Indian government form requirements. Works perfectly for: Passport Seva applications, Aadhaar enrollment/update, PAN card applications, Voter ID registration, Driving License applications, SSC/UPSC/Bank/Railway exam forms, state government job applications, and any portal that shows "file size too small" error.</p>
                 </details>
                 
                 <details style="background: white; border-radius: 10px; padding: 15px 20px; margin-bottom: 10px; border: 1px solid #e5e5e5;">
-                    <summary style="font-weight: 600; cursor: pointer; color: #333;">Kya mobile phone se use kar sakte hain?</summary>
-                    <p style="margin-top: 10px; color: #666; line-height: 1.6;">Haan! Tool fully mobile-friendly है। Android, iPhone, tablet - sab pe perfectly काम करता है। Browser में kholo aur use karo!</p>
+                    <summary style="font-weight: 600; cursor: pointer; color: #333;">Can I increase JPEG and PNG file size?</summary>
+                    <p style="margin-top: 10px; color: #666; line-height: 1.6;">Yes! Our tool supports <strong>all common image formats</strong> including JPEG/JPG, PNG, WebP, BMP, and GIF. You can upload any format and choose your preferred output (JPG recommended for photos, PNG for images with transparency). The tool will increase file size regardless of input format.</p>
+                </details>
+                
+                <details style="background: white; border-radius: 10px; padding: 15px 20px; margin-bottom: 10px; border: 1px solid #e5e5e5;">
+                    <summary style="font-weight: 600; cursor: pointer; color: #333;">What's the maximum file size I can achieve?</summary>
+                    <p style="margin-top: 10px; color: #666; line-height: 1.6;">You can increase image file size up to <strong>10MB (10,000KB)</strong> using our tool. This covers all possible requirements - from 20KB minimum for basic forms to 500KB+ for high-resolution document submissions. Just enter your target size and the tool handles the rest!</p>
+                </details>
+                
+                <details style="background: white; border-radius: 10px; padding: 15px 20px; margin-bottom: 10px; border: 1px solid #e5e5e5;">
+                    <summary style="font-weight: 600; cursor: pointer; color: #333;">How does the file size increaser work technically?</summary>
+                    <p style="margin-top: 10px; color: #666; line-height: 1.6;">Our tool uses <strong>two techniques</strong> to increase file size: (1) For JPEG images, we reduce compression ratio which retains more image data, naturally increasing file size. (2) We add invisible metadata padding that increases file size without affecting visual appearance. Both methods are 100% legitimate and accepted by all official portals.</p>
+                </details>
+                
+                <details style="background: white; border-radius: 10px; padding: 15px 20px; margin-bottom: 10px; border: 1px solid #e5e5e5;">
+                    <summary style="font-weight: 600; cursor: pointer; color: #333;">Is it safe to use for official documents and applications?</summary>
+                    <p style="margin-top: 10px; color: #666; line-height: 1.6;"><strong>100% safe and secure!</strong> Your images are processed entirely in your browser - they never leave your device or get uploaded to any server. The resulting image is a legitimate file that government portals accept without any issues. We don't store, view, or access your photos. Complete privacy guaranteed!</p>
                 </details>
             </article>
             
@@ -397,21 +603,17 @@
             <article>
                 <h2 style="font-size: 20px; font-weight: 600; color: #1a1a1a; margin-bottom: 20px;">Related Tools You May Need</h2>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-                    <a href="image-compress.html" style="display: block; padding: 20px; background: white; border-radius: 10px; border: 1px solid #e5e5e5; text-decoration: none; color: #333; transition: all 0.2s;">
-                        <strong style="display: block; margin-bottom: 5px;">Image Compress</strong>
-                        <span style="font-size: 13px; color: #666;">Reduce image file size</span>
-                    </a>
-                    <a href="passport-photo.html" style="display: block; padding: 20px; background: white; border-radius: 10px; border: 1px solid #e5e5e5; text-decoration: none; color: #333; transition: all 0.2s;">
-                        <strong style="display: block; margin-bottom: 5px;">Passport Photo Maker</strong>
-                        <span style="font-size: 13px; color: #666;">Create passport size photos</span>
-                    </a>
                     <a href="image-resize.html" style="display: block; padding: 20px; background: white; border-radius: 10px; border: 1px solid #e5e5e5; text-decoration: none; color: #333; transition: all 0.2s;">
-                        <strong style="display: block; margin-bottom: 5px;">Image Resize</strong>
-                        <span style="font-size: 13px; color: #666;">Resize to exact dimensions</span>
+                        <strong style="display: block; margin-bottom: 5px;">📐 Image Resize</strong>
+                        <span style="font-size: 13px; color: #666;">Resize to exact pixel dimensions for passport, ID photos</span>
                     </a>
                     <a href="image-compress.html" style="display: block; padding: 20px; background: white; border-radius: 10px; border: 1px solid #e5e5e5; text-decoration: none; color: #333; transition: all 0.2s;">
-                        <strong style="display: block; margin-bottom: 5px;">Image Compressor</strong>
-                        <span style="font-size: 13px; color: #666;">Smart compression tool</span>
+                        <strong style="display: block; margin-bottom: 5px;">🗜️ Image Compress</strong>
+                        <span style="font-size: 13px; color: #666;">Reduce file size when image is too large for upload</span>
+                    </a>
+                    <a href="format-converter.html" style="display: block; padding: 20px; background: white; border-radius: 10px; border: 1px solid #e5e5e5; text-decoration: none; color: #333; transition: all 0.2s;">
+                        <strong style="display: block; margin-bottom: 5px;">🔄 Format Converter</strong>
+                        <span style="font-size: 13px; color: #666;">Convert between JPG, PNG, WebP formats</span>
                     </a>
                 </div>
             </article>

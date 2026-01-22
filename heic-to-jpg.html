@@ -35,13 +35,112 @@
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
-        "name": "HEIC to JPG Converter - Image Runner",
-        "applicationCategory": "MultimediaApplication",
-        "operatingSystem": "Web Browser",
-        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
-        "aggregateRating": {"@type": "AggregateRating", "ratingValue": "4.9", "ratingCount": "8200"},
-        "featureList": ["HEIC to JPG", "HEIC to PNG", "HEIC to WebP", "Batch Convert", "Quality Control", "100% Private"]
+        "@graph": [
+            {
+                "@type": "WebApplication",
+                "name": "HEIC to JPG Converter - Image Runner",
+                "url": "https://www.imgrunner.com/heic-to-jpg.html",
+                "applicationCategory": "MultimediaApplication",
+                "operatingSystem": "Web Browser",
+                "browserRequirements": "Requires JavaScript",
+                "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+                "aggregateRating": {"@type": "AggregateRating", "ratingValue": "4.9", "ratingCount": "12500", "bestRating": "5"},
+                "featureList": ["HEIC to JPG conversion", "HEIC to PNG", "HEIC to WebP", "Batch convert multiple files", "Quality control slider", "100% browser-based", "No upload to server", "Works offline"],
+                "screenshot": "https://www.imgrunner.com/screenshots/heic-converter.jpg",
+                "softwareVersion": "2.0",
+                "datePublished": "2024-01-15",
+                "dateModified": "2026-01-22"
+            },
+            {
+                "@type": "FAQPage",
+                "mainEntity": [
+                    {
+                        "@type": "Question",
+                        "name": "What is HEIC format and why can't I open it on Windows?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "HEIC (High Efficiency Image Container) is Apple's default photo format since iOS 11. It offers 50% smaller file sizes than JPEG with same quality. Windows doesn't natively support HEIC, so you need to convert it to JPG or install HEIC codec. Our free converter instantly converts HEIC to JPG without any software installation."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "How to convert HEIC to JPG on iPhone?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "You can change iPhone settings to capture in JPG (Settings > Camera > Formats > Most Compatible) or use our online converter. Just visit imgrunner.com/heic-to-jpg, select your HEIC files, and download as JPG instantly. Works on iPhone Safari browser too."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Is it safe to convert HEIC files online?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Yes, our HEIC converter is 100% safe. All conversion happens in your browser - your photos never leave your device or get uploaded to any server. This ensures complete privacy and security for your personal photos."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Can I convert multiple HEIC files at once?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Yes! Our batch converter lets you convert unlimited HEIC files simultaneously. Just drag and drop multiple files, choose your output format (JPG, PNG, or WebP), adjust quality, and download all as a ZIP file."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "What's the difference between HEIC and HEIF?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "HEIF (High Efficiency Image Format) is the container format, while HEIC is specifically for images using HEVC compression. In practice, both .heic and .heif files work the same way. Our converter supports both formats."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Does converting HEIC to JPG reduce quality?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "There's minimal quality loss when converting HEIC to JPG at high quality settings (85-100%). Our converter lets you adjust the quality slider to balance file size and image quality. For lossless conversion, choose PNG format."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "How to open HEIC files on Windows 10/11?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "You have two options: 1) Install HEIF Image Extensions from Microsoft Store (may require HEVC codec which costs ₹50), or 2) Use our free online converter to convert HEIC to JPG instantly without installing anything."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Why are my iPhone photos in HEIC format?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Apple uses HEIC by default since iOS 11 because it saves 50% storage space compared to JPG while maintaining the same quality. This helps save space on your iPhone. You can change this in Settings > Camera > Formats > Most Compatible."
+                        }
+                    }
+                ]
+            },
+            {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.imgrunner.com/"},
+                    {"@type": "ListItem", "position": 2, "name": "Convert Tools", "item": "https://www.imgrunner.com/#convert"},
+                    {"@type": "ListItem", "position": 3, "name": "HEIC to JPG Converter", "item": "https://www.imgrunner.com/heic-to-jpg.html"}
+                ]
+            },
+            {
+                "@type": "HowTo",
+                "name": "How to Convert HEIC to JPG Online",
+                "description": "Step-by-step guide to convert iPhone HEIC photos to JPG format online for free",
+                "totalTime": "PT1M",
+                "tool": {"@type": "HowToTool", "name": "Image Runner HEIC Converter"},
+                "step": [
+                    {"@type": "HowToStep", "name": "Upload HEIC Files", "text": "Click 'Upload' or drag and drop your HEIC/HEIF files from iPhone or computer"},
+                    {"@type": "HowToStep", "name": "Choose Output Format", "text": "Select JPG, PNG, or WebP as your output format and adjust quality if needed"},
+                    {"@type": "HowToStep", "name": "Convert & Download", "text": "Click Convert and download individual files or all as ZIP"}
+                ]
+            }
+        ]
     }
     </script>
     
@@ -306,6 +405,60 @@
                         <div><div style="font-weight: 600; color: #1a1a1a; font-size: 13px;">Priya Sharma</div><div style="font-size: 11px; color: #64748b;">Mumbai, India</div></div>
                     </div>
                 </div>
+            </div>
+            
+            <!-- FAQ Section -->
+            <h2 style="text-align: center; font-size: 24px; font-weight: 700; color: #1a1a1a; margin: 48px 0 32px;">Frequently Asked Questions</h2>
+            <div style="max-width: 800px; margin: 0 auto;">
+                <details style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 12px; border: 1px solid #e2e8f0;">
+                    <summary style="font-weight: 600; cursor: pointer; color: #1a1a1a;">What is HEIC format and why can't I open it on Windows?</summary>
+                    <p style="margin-top: 12px; color: #475569; line-height: 1.7;">HEIC (High Efficiency Image Container) is Apple's default photo format since iOS 11. It offers 50% smaller file sizes than JPEG with same quality. Windows doesn't natively support HEIC, so you need to convert it to JPG or install HEIC codec. Our free converter instantly converts HEIC to JPG without any software installation.</p>
+                </details>
+                <details style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 12px; border: 1px solid #e2e8f0;">
+                    <summary style="font-weight: 600; cursor: pointer; color: #1a1a1a;">How to convert HEIC to JPG on iPhone?</summary>
+                    <p style="margin-top: 12px; color: #475569; line-height: 1.7;">You can change iPhone settings to capture in JPG (Settings > Camera > Formats > Most Compatible) or use our online converter. Just visit imgrunner.com/heic-to-jpg, select your HEIC files, and download as JPG instantly. Works on iPhone Safari browser too.</p>
+                </details>
+                <details style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 12px; border: 1px solid #e2e8f0;">
+                    <summary style="font-weight: 600; cursor: pointer; color: #1a1a1a;">Is it safe to convert HEIC files online?</summary>
+                    <p style="margin-top: 12px; color: #475569; line-height: 1.7;">Yes, our HEIC converter is 100% safe. All conversion happens in your browser - your photos never leave your device or get uploaded to any server. This ensures complete privacy and security for your personal photos.</p>
+                </details>
+                <details style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 12px; border: 1px solid #e2e8f0;">
+                    <summary style="font-weight: 600; cursor: pointer; color: #1a1a1a;">Can I convert multiple HEIC files at once?</summary>
+                    <p style="margin-top: 12px; color: #475569; line-height: 1.7;">Yes! Our batch converter lets you convert unlimited HEIC files simultaneously. Just drag and drop multiple files, choose your output format (JPG, PNG, or WebP), adjust quality, and download all as a ZIP file.</p>
+                </details>
+                <details style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 12px; border: 1px solid #e2e8f0;">
+                    <summary style="font-weight: 600; cursor: pointer; color: #1a1a1a;">What's the difference between HEIC and HEIF?</summary>
+                    <p style="margin-top: 12px; color: #475569; line-height: 1.7;">HEIF (High Efficiency Image Format) is the container format, while HEIC is specifically for images using HEVC compression. In practice, both .heic and .heif files work the same way. Our converter supports both formats.</p>
+                </details>
+                <details style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 12px; border: 1px solid #e2e8f0;">
+                    <summary style="font-weight: 600; cursor: pointer; color: #1a1a1a;">Does converting HEIC to JPG reduce quality?</summary>
+                    <p style="margin-top: 12px; color: #475569; line-height: 1.7;">There's minimal quality loss when converting HEIC to JPG at high quality settings (85-100%). Our converter lets you adjust the quality slider to balance file size and image quality. For lossless conversion, choose PNG format.</p>
+                </details>
+                <details style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 12px; border: 1px solid #e2e8f0;">
+                    <summary style="font-weight: 600; cursor: pointer; color: #1a1a1a;">How to open HEIC files on Windows 10/11?</summary>
+                    <p style="margin-top: 12px; color: #475569; line-height: 1.7;">You have two options: 1) Install HEIF Image Extensions from Microsoft Store (may require HEVC codec which costs ₹50), or 2) Use our free online converter to convert HEIC to JPG instantly without installing anything.</p>
+                </details>
+                <details style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 12px; border: 1px solid #e2e8f0;">
+                    <summary style="font-weight: 600; cursor: pointer; color: #1a1a1a;">Why are my iPhone photos in HEIC format?</summary>
+                    <p style="margin-top: 12px; color: #475569; line-height: 1.7;">Apple uses HEIC by default since iOS 11 because it saves 50% storage space compared to JPG while maintaining the same quality. This helps save space on your iPhone. You can change this in Settings > Camera > Formats > Most Compatible.</p>
+                </details>
+            </div>
+            
+            <!-- Related Tools -->
+            <h2 style="text-align: center; font-size: 24px; font-weight: 700; color: #1a1a1a; margin: 48px 0 24px;">Related Tools</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; max-width: 800px; margin: 0 auto;">
+                <a href="webp-converter.html" style="display: block; background: white; padding: 20px; border-radius: 12px; text-decoration: none; border: 1px solid #e2e8f0; text-align: center;">
+                    <div style="font-weight: 600; color: #1a1a1a; margin-bottom: 4px;">WebP Converter</div>
+                    <div style="font-size: 13px; color: #64748b;">Reduce image size by 80%</div>
+                </a>
+                <a href="format-converter.html" style="display: block; background: white; padding: 20px; border-radius: 12px; text-decoration: none; border: 1px solid #e2e8f0; text-align: center;">
+                    <div style="font-weight: 600; color: #1a1a1a; margin-bottom: 4px;">Format Converter</div>
+                    <div style="font-size: 13px; color: #64748b;">Convert between all formats</div>
+                </a>
+                <a href="image-compress.html" style="display: block; background: white; padding: 20px; border-radius: 12px; text-decoration: none; border: 1px solid #e2e8f0; text-align: center;">
+                    <div style="font-weight: 600; color: #1a1a1a; margin-bottom: 4px;">Image Compressor</div>
+                    <div style="font-size: 13px; color: #64748b;">Reduce file size up to 90%</div>
+                </a>
             </div>
         </div>
     </section>

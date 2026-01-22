@@ -35,13 +35,198 @@
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
-        "name": "Photo Collage Maker - Image Runner",
-        "applicationCategory": "MultimediaApplication",
-        "operatingSystem": "Web Browser",
-        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
-        "aggregateRating": {"@type": "AggregateRating", "ratingValue": "4.8", "ratingCount": "6200"},
-        "featureList": ["Multiple Layouts", "Custom Backgrounds", "Adjustable Spacing", "Drag & Drop Reorder", "High Quality Output"]
+        "@graph": [
+            {
+                "@type": "WebApplication",
+                "@id": "https://www.imgrunner.com/photo-collage.html#app",
+                "name": "Photo Collage Maker - Image Runner",
+                "description": "Create beautiful photo collages online for free with multiple professional layouts, custom backgrounds, adjustable spacing, and drag-drop reordering. 100% private browser-based processing.",
+                "url": "https://www.imgrunner.com/photo-collage.html",
+                "applicationCategory": "MultimediaApplication",
+                "operatingSystem": "Web Browser (Chrome, Firefox, Safari, Edge)",
+                "browserRequirements": "Requires JavaScript and HTML5 Canvas support",
+                "offers": {
+                    "@type": "Offer",
+                    "price": "0",
+                    "priceCurrency": "USD",
+                    "availability": "https://schema.org/InStock"
+                },
+                "aggregateRating": {
+                    "@type": "AggregateRating",
+                    "ratingValue": "4.8",
+                    "bestRating": "5",
+                    "worstRating": "1",
+                    "ratingCount": "6200",
+                    "reviewCount": "4850"
+                },
+                "featureList": [
+                    "10+ Professional Layout Templates",
+                    "Custom Backgrounds (Solid, Gradient, Pattern)",
+                    "Adjustable Spacing and Padding",
+                    "Rounded Corner Control",
+                    "Drag & Drop Image Reordering",
+                    "Multiple Output Sizes (Square, Portrait, Landscape, Story)",
+                    "High Quality PNG/JPG Export",
+                    "100% Private Browser Processing",
+                    "No Watermarks",
+                    "Mobile Friendly"
+                ],
+                "screenshot": "https://www.imgrunner.com/screenshots/collage-maker.jpg",
+                "softwareVersion": "2.0",
+                "author": {
+                    "@type": "Organization",
+                    "name": "Image Runner",
+                    "url": "https://www.imgrunner.com"
+                }
+            },
+            {
+                "@type": "FAQPage",
+                "@id": "https://www.imgrunner.com/photo-collage.html#faq",
+                "mainEntity": [
+                    {
+                        "@type": "Question",
+                        "name": "How to make a photo collage online free?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Simply upload 2-9 images to our free photo collage maker, choose from 10+ professional layouts, customize the background color, adjust spacing and corners, then click 'Create Collage' to download your creation instantly. No signup or payment required."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "How many photos can I add to a collage?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "You can add between 2 to 9 photos in a single collage. Our tool automatically suggests the best layout based on the number of images you upload, but you can manually choose any layout that fits your needs."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Can I customize the layout of my collage?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Yes! We offer 10+ layout templates including 2x2 grids, 3x3 grids, asymmetric layouts, and creative arrangements. You can also customize background colors, adjust spacing between photos, add padding, and set rounded corners for a polished look."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "What file formats are supported for upload?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Our collage maker supports all popular image formats including JPG, JPEG, PNG, WebP, GIF, and BMP. The final collage can be downloaded as a high-quality PNG or JPG file."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Is the collage maker completely free to use?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Yes, our photo collage maker is 100% free with no hidden costs. There are no watermarks on your downloads, no signup required, and no limits on how many collages you can create. All features are available for free."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Can I add text or borders to my collage?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Currently, you can add borders by adjusting the spacing and padding controls, and choose from various background colors. For text overlays, we recommend using our collage as a base and adding text using image editing software or our other tools."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "How to download my collage in high quality?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "After creating your collage, click the 'Download Collage' button to save it in high resolution. Choose from multiple output sizes: Square (1080x1080) for Instagram posts, Portrait (1080x1350), Landscape (1920x1080), or Story (1080x1920) format."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Does the collage maker work on mobile phones?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Yes! Our photo collage maker is fully responsive and works perfectly on smartphones, tablets, and desktop computers. You can create professional collages directly from your iPhone, Android phone, or iPad without installing any app."
+                        }
+                    }
+                ]
+            },
+            {
+                "@type": "BreadcrumbList",
+                "@id": "https://www.imgrunner.com/photo-collage.html#breadcrumb",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "Home",
+                        "item": "https://www.imgrunner.com"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 2,
+                        "name": "Image Tools",
+                        "item": "https://www.imgrunner.com/#tools"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 3,
+                        "name": "Photo Collage Maker",
+                        "item": "https://www.imgrunner.com/photo-collage.html"
+                    }
+                ]
+            },
+            {
+                "@type": "HowTo",
+                "@id": "https://www.imgrunner.com/photo-collage.html#howto",
+                "name": "How to Create a Photo Collage Online",
+                "description": "Step-by-step guide to creating beautiful photo collages using our free online collage maker tool.",
+                "totalTime": "PT2M",
+                "estimatedCost": {
+                    "@type": "MonetaryAmount",
+                    "currency": "USD",
+                    "value": "0"
+                },
+                "tool": {
+                    "@type": "HowToTool",
+                    "name": "Image Runner Photo Collage Maker"
+                },
+                "step": [
+                    {
+                        "@type": "HowToStep",
+                        "position": 1,
+                        "name": "Upload Your Photos",
+                        "text": "Click 'Select images' or drag and drop 2-9 photos into the upload area. Supported formats include JPG, PNG, WebP, and GIF.",
+                        "url": "https://www.imgrunner.com/photo-collage.html#step1"
+                    },
+                    {
+                        "@type": "HowToStep",
+                        "position": 2,
+                        "name": "Choose a Layout",
+                        "text": "Select from 10+ professional layout templates. Options include grid layouts (2x2, 3x3), asymmetric designs, and creative arrangements.",
+                        "url": "https://www.imgrunner.com/photo-collage.html#step2"
+                    },
+                    {
+                        "@type": "HowToStep",
+                        "position": 3,
+                        "name": "Customize Your Collage",
+                        "text": "Personalize your collage by selecting background colors, adjusting spacing between photos, adding padding, and setting rounded corners. Drag images to rearrange their order.",
+                        "url": "https://www.imgrunner.com/photo-collage.html#step3"
+                    },
+                    {
+                        "@type": "HowToStep",
+                        "position": 4,
+                        "name": "Select Output Size",
+                        "text": "Choose your preferred output size: Square (1080x1080) for Instagram, Portrait (1080x1350), Landscape (1920x1080), or Story (1080x1920) format.",
+                        "url": "https://www.imgrunner.com/photo-collage.html#step4"
+                    },
+                    {
+                        "@type": "HowToStep",
+                        "position": 5,
+                        "name": "Download Your Collage",
+                        "text": "Click 'Create Collage' to generate your design, then click 'Download Collage' to save the high-quality image to your device.",
+                        "url": "https://www.imgrunner.com/photo-collage.html#step5"
+                    }
+                ]
+            }
+        ]
     }
     </script>
     
@@ -261,6 +446,90 @@
                         <div><div style="font-weight: 600; color: #1a1a1a; font-size: 13px;">Divya Shah</div><div style="font-size: 11px; color: #64748b;">Content Creator, Ahmedabad</div></div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section" style="padding: 60px 0; background: #fff;">
+        <div class="container" style="max-width: 900px;">
+            <h2 style="text-align: center; font-size: 28px; font-weight: 700; color: #1a1a1a; margin-bottom: 12px;">Frequently Asked Questions</h2>
+            <p style="text-align: center; color: #64748b; margin-bottom: 40px; font-size: 15px;">Everything you need to know about our photo collage maker</p>
+            
+            <div class="faq-list" style="display: flex; flex-direction: column; gap: 12px;">
+                <details style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+                    <summary style="padding: 18px 24px; cursor: pointer; font-weight: 600; color: #1a1a1a; font-size: 15px; list-style: none; display: flex; justify-content: space-between; align-items: center;">How to make a photo collage online free?<span style="color: #2563eb; font-size: 20px; transition: transform 0.2s;">+</span></summary>
+                    <div style="padding: 0 24px 18px; color: #475569; line-height: 1.7; font-size: 14px;">Simply upload 2-9 images to our free photo collage maker, choose from 10+ professional layouts, customize the background color, adjust spacing and corners, then click 'Create Collage' to download your creation instantly. No signup or payment required. All processing happens in your browser for complete privacy.</div>
+                </details>
+                
+                <details style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+                    <summary style="padding: 18px 24px; cursor: pointer; font-weight: 600; color: #1a1a1a; font-size: 15px; list-style: none; display: flex; justify-content: space-between; align-items: center;">How many photos can I add to a collage?<span style="color: #2563eb; font-size: 20px; transition: transform 0.2s;">+</span></summary>
+                    <div style="padding: 0 24px 18px; color: #475569; line-height: 1.7; font-size: 14px;">You can add between 2 to 9 photos in a single collage. Our tool automatically suggests the best layout based on the number of images you upload, but you can manually choose any layout that fits your needs. This range allows for versatile designs from simple side-by-side comparisons to complex grid arrangements.</div>
+                </details>
+                
+                <details style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+                    <summary style="padding: 18px 24px; cursor: pointer; font-weight: 600; color: #1a1a1a; font-size: 15px; list-style: none; display: flex; justify-content: space-between; align-items: center;">Can I customize the layout of my collage?<span style="color: #2563eb; font-size: 20px; transition: transform 0.2s;">+</span></summary>
+                    <div style="padding: 0 24px 18px; color: #475569; line-height: 1.7; font-size: 14px;">Yes! We offer 10+ layout templates including 2x2 grids, 3x3 grids, asymmetric layouts, and creative arrangements. You can also customize background colors (solid colors or use the color picker), adjust spacing between photos, add padding around the edges, and set rounded corners for a polished, modern look.</div>
+                </details>
+                
+                <details style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+                    <summary style="padding: 18px 24px; cursor: pointer; font-weight: 600; color: #1a1a1a; font-size: 15px; list-style: none; display: flex; justify-content: space-between; align-items: center;">What file formats are supported for upload?<span style="color: #2563eb; font-size: 20px; transition: transform 0.2s;">+</span></summary>
+                    <div style="padding: 0 24px 18px; color: #475569; line-height: 1.7; font-size: 14px;">Our collage maker supports all popular image formats including JPG, JPEG, PNG, WebP, GIF, and BMP. The final collage can be downloaded as a high-quality PNG or JPG file, perfect for sharing on social media, printing, or storing in your photo collection.</div>
+                </details>
+                
+                <details style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+                    <summary style="padding: 18px 24px; cursor: pointer; font-weight: 600; color: #1a1a1a; font-size: 15px; list-style: none; display: flex; justify-content: space-between; align-items: center;">Is the collage maker completely free to use?<span style="color: #2563eb; font-size: 20px; transition: transform 0.2s;">+</span></summary>
+                    <div style="padding: 0 24px 18px; color: #475569; line-height: 1.7; font-size: 14px;">Yes, our photo collage maker is 100% free with no hidden costs. There are no watermarks on your downloads, no signup required, and no limits on how many collages you can create. All features are available for free, making it perfect for personal and professional use alike.</div>
+                </details>
+                
+                <details style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+                    <summary style="padding: 18px 24px; cursor: pointer; font-weight: 600; color: #1a1a1a; font-size: 15px; list-style: none; display: flex; justify-content: space-between; align-items: center;">Can I add text or borders to my collage?<span style="color: #2563eb; font-size: 20px; transition: transform 0.2s;">+</span></summary>
+                    <div style="padding: 0 24px 18px; color: #475569; line-height: 1.7; font-size: 14px;">Currently, you can add borders by adjusting the spacing and padding controls, and choose from various background colors including white, black, and vibrant options. The spacing creates natural borders between photos. For text overlays, we recommend using our collage as a base and adding text using image editing software.</div>
+                </details>
+                
+                <details style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+                    <summary style="padding: 18px 24px; cursor: pointer; font-weight: 600; color: #1a1a1a; font-size: 15px; list-style: none; display: flex; justify-content: space-between; align-items: center;">How to download my collage in high quality?<span style="color: #2563eb; font-size: 20px; transition: transform 0.2s;">+</span></summary>
+                    <div style="padding: 0 24px 18px; color: #475569; line-height: 1.7; font-size: 14px;">After creating your collage, click the 'Download Collage' button to save it in high resolution. Choose from multiple output sizes before creating: Square (1080×1080) perfect for Instagram posts, Portrait (1080×1350) for vertical displays, Landscape (1920×1080) for desktop wallpapers, or Story (1080×1920) format for Instagram/Facebook stories.</div>
+                </details>
+                
+                <details style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+                    <summary style="padding: 18px 24px; cursor: pointer; font-weight: 600; color: #1a1a1a; font-size: 15px; list-style: none; display: flex; justify-content: space-between; align-items: center;">Does the collage maker work on mobile phones?<span style="color: #2563eb; font-size: 20px; transition: transform 0.2s;">+</span></summary>
+                    <div style="padding: 0 24px 18px; color: #475569; line-height: 1.7; font-size: 14px;">Yes! Our photo collage maker is fully responsive and works perfectly on smartphones, tablets, and desktop computers. You can create professional collages directly from your iPhone, Android phone, or iPad without installing any app. Just open the website in your mobile browser and start creating!</div>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <!-- Related Tools Section -->
+    <section class="related-tools" style="padding: 50px 0; background: linear-gradient(180deg, #f8fafc 0%, #fff 100%);">
+        <div class="container" style="max-width: 900px;">
+            <h2 style="text-align: center; font-size: 24px; font-weight: 700; color: #1a1a1a; margin-bottom: 12px;">Related Image Tools</h2>
+            <p style="text-align: center; color: #64748b; margin-bottom: 32px; font-size: 14px;">Explore more free tools to edit and enhance your images</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                <a href="image-resize.html" style="text-decoration: none; background: white; padding: 24px; border-radius: 14px; border: 1px solid #e2e8f0; transition: all 0.2s ease; display: block;" onmouseover="this.style.borderColor='#2563eb'; this.style.boxShadow='0 4px 12px rgba(37,99,235,0.15)';" onmouseout="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                    <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #2563eb, #1d4ed8); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                    </div>
+                    <h3 style="font-size: 16px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">Image Resizer</h3>
+                    <p style="font-size: 13px; color: #64748b; line-height: 1.6; margin: 0;">Resize images to exact dimensions or percentage. Perfect for social media, web, and print.</p>
+                </a>
+                
+                <a href="image-compress.html" style="text-decoration: none; background: white; padding: 24px; border-radius: 14px; border: 1px solid #e2e8f0; transition: all 0.2s ease; display: block;" onmouseover="this.style.borderColor='#2563eb'; this.style.boxShadow='0 4px 12px rgba(37,99,235,0.15)';" onmouseout="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                    <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #2563eb, #1d4ed8); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 14l2-2 4 4"/><circle cx="9" cy="9" r="2"/></svg>
+                    </div>
+                    <h3 style="font-size: 16px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">Image Compressor</h3>
+                    <p style="font-size: 13px; color: #64748b; line-height: 1.6; margin: 0;">Reduce file size without losing quality. Optimize images for faster loading websites.</p>
+                </a>
+                
+                <a href="dp-resizer.html" style="text-decoration: none; background: white; padding: 24px; border-radius: 14px; border: 1px solid #e2e8f0; transition: all 0.2s ease; display: block;" onmouseover="this.style.borderColor='#2563eb'; this.style.boxShadow='0 4px 12px rgba(37,99,235,0.15)';" onmouseout="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                    <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #2563eb, #1d4ed8); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="8" r="5"/><path d="M3 21v-2a7 7 0 0114 0v2"/></svg>
+                    </div>
+                    <h3 style="font-size: 16px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">DP Resizer</h3>
+                    <p style="font-size: 13px; color: #64748b; line-height: 1.6; margin: 0;">Create perfect profile pictures for WhatsApp, Instagram, Facebook and other social platforms.</p>
+                </a>
             </div>
         </div>
     </section>

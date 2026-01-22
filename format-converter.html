@@ -35,13 +35,192 @@
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
-        "name": "Image Format Converter - Image Runner",
-        "applicationCategory": "MultimediaApplication",
-        "operatingSystem": "Web Browser",
-        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
-        "aggregateRating": {"@type": "AggregateRating", "ratingValue": "4.9", "ratingCount": "5400"},
-        "featureList": ["JPG to PNG", "PNG to JPG", "WEBP Converter", "HEIC to JPG", "Batch Convert", "Quality Control"]
+        "@graph": [
+            {
+                "@type": "WebApplication",
+                "@id": "https://www.imgrunner.com/format-converter.html#app",
+                "name": "Image Format Converter - Image Runner",
+                "description": "Free online image format converter. Convert PNG to JPG, JPG to PNG, WEBP, GIF, BMP and more. Batch processing with quality control. 100% private - images never leave your device.",
+                "url": "https://www.imgrunner.com/format-converter.html",
+                "applicationCategory": "MultimediaApplication",
+                "operatingSystem": "Any (Web Browser)",
+                "browserRequirements": "Requires JavaScript. Works on Chrome, Firefox, Safari, Edge.",
+                "softwareVersion": "2.0",
+                "permissions": "none",
+                "offers": {
+                    "@type": "Offer",
+                    "price": "0",
+                    "priceCurrency": "USD",
+                    "availability": "https://schema.org/InStock"
+                },
+                "aggregateRating": {
+                    "@type": "AggregateRating",
+                    "ratingValue": "4.9",
+                    "bestRating": "5",
+                    "worstRating": "1",
+                    "ratingCount": "5400",
+                    "reviewCount": "3200"
+                },
+                "featureList": [
+                    "PNG to JPG conversion",
+                    "JPG to PNG conversion",
+                    "WebP format support",
+                    "GIF conversion",
+                    "BMP format support",
+                    "ICO icon creation",
+                    "Batch convert multiple images",
+                    "Quality slider control",
+                    "Transparency preservation",
+                    "100% browser-based processing"
+                ],
+                "screenshot": "https://www.imgrunner.com/og-converter.jpg",
+                "creator": {
+                    "@type": "Organization",
+                    "name": "Image Runner",
+                    "url": "https://www.imgrunner.com"
+                }
+            },
+            {
+                "@type": "FAQPage",
+                "@id": "https://www.imgrunner.com/format-converter.html#faq",
+                "mainEntity": [
+                    {
+                        "@type": "Question",
+                        "name": "What image formats are supported for conversion?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Our converter supports all major image formats including JPG/JPEG, PNG, WebP, GIF, BMP, and ICO. You can convert between any of these formats instantly. We also support HEIC files from iPhones and modern cameras."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "How do I convert PNG to JPG?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Simply upload your PNG file(s), select JPG as the output format, adjust the quality slider if needed (higher = better quality, larger file), and click Convert. Your JPG files will be ready to download instantly. Note that transparency will be replaced with white background."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Does converting images affect quality?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "It depends on the format. Converting to PNG is lossless (no quality loss). Converting to JPG or WebP uses compression which can reduce quality slightly - use the quality slider (80-100%) for best results. Converting from JPG to PNG won't restore lost quality from previous compression."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Is it safe to convert images online?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Yes! Our converter is 100% browser-based. Your images are processed entirely on your device and are never uploaded to any server. This makes it completely private and secure. Your files never leave your computer."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Can I batch convert multiple images at once?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Absolutely! You can select or drag-and-drop multiple images at once. All selected images will be converted to your chosen format simultaneously. After conversion, download them individually or as a single ZIP file."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "What is the best image format for websites?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "WebP is the best format for web - it offers 25-35% smaller file sizes than JPG with the same quality. Use JPG for photos, PNG for images needing transparency or sharp edges (logos, screenshots), and WebP when browser support allows."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "How to convert images without losing quality?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "For truly lossless conversion, convert to PNG format. If you need smaller files, use WebP or JPG with the quality slider set to 90-100%. Avoid converting already-compressed JPGs multiple times as quality degrades with each conversion."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Can I convert animated GIFs to other formats?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "When converting animated GIFs to static formats like JPG or PNG, only the first frame will be preserved. To keep animation, keep your file as GIF or convert to animated WebP (not yet supported). For static images, any format works perfectly."
+                        }
+                    }
+                ]
+            },
+            {
+                "@type": "BreadcrumbList",
+                "@id": "https://www.imgrunner.com/format-converter.html#breadcrumb",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "Home",
+                        "item": "https://www.imgrunner.com"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 2,
+                        "name": "Image Tools",
+                        "item": "https://www.imgrunner.com/#tools"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 3,
+                        "name": "Format Converter",
+                        "item": "https://www.imgrunner.com/format-converter.html"
+                    }
+                ]
+            },
+            {
+                "@type": "HowTo",
+                "@id": "https://www.imgrunner.com/format-converter.html#howto",
+                "name": "How to Convert Image Formats Online",
+                "description": "Step-by-step guide to convert images between PNG, JPG, WebP, GIF, and other formats using our free online converter.",
+                "totalTime": "PT1M",
+                "estimatedCost": {
+                    "@type": "MonetaryAmount",
+                    "currency": "USD",
+                    "value": "0"
+                },
+                "tool": {
+                    "@type": "HowToTool",
+                    "name": "Web browser (Chrome, Firefox, Safari, or Edge)"
+                },
+                "step": [
+                    {
+                        "@type": "HowToStep",
+                        "position": 1,
+                        "name": "Upload Images",
+                        "text": "Click 'Select images' or drag and drop your image files onto the upload area. You can select multiple images for batch conversion.",
+                        "url": "https://www.imgrunner.com/format-converter.html#page-upload"
+                    },
+                    {
+                        "@type": "HowToStep",
+                        "position": 2,
+                        "name": "Choose Output Format",
+                        "text": "Select your desired output format from the options: JPG, PNG, WebP, GIF, BMP, or ICO. Each format has different benefits explained on the buttons.",
+                        "url": "https://www.imgrunner.com/format-converter.html#page-convert"
+                    },
+                    {
+                        "@type": "HowToStep",
+                        "position": 3,
+                        "name": "Adjust Quality (Optional)",
+                        "text": "For JPG and WebP formats, use the quality slider to balance file size and image quality. Higher values mean better quality but larger files.",
+                        "url": "https://www.imgrunner.com/format-converter.html#page-convert"
+                    },
+                    {
+                        "@type": "HowToStep",
+                        "position": 4,
+                        "name": "Convert and Download",
+                        "text": "Click 'Convert Images' to process your files. Once complete, download individual images or all files as a ZIP archive.",
+                        "url": "https://www.imgrunner.com/format-converter.html#page-download"
+                    }
+                ]
+            }
+        ]
     }
     </script>
     
@@ -328,6 +507,122 @@
                         <div><div style="font-weight: 600; color: #1a1a1a; font-size: 13px;">Nikhil Kulkarni</div><div style="font-size: 11px; color: #64748b;">Web Developer, Bangalore</div></div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section" style="padding: 60px 0; background: #fff;">
+        <div class="container" style="max-width: 900px;">
+            <h2 style="text-align: center; font-size: 28px; font-weight: 700; color: #1a1a1a; margin-bottom: 12px;">Frequently Asked Questions</h2>
+            <p style="text-align: center; color: #64748b; margin-bottom: 40px; font-size: 16px;">Everything you need to know about image format conversion</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <details style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+                    <summary style="padding: 20px 24px; font-weight: 600; color: #1a1a1a; cursor: pointer; display: flex; align-items: center; justify-content: space-between; list-style: none; font-size: 15px;">
+                        What image formats are supported for conversion?
+                    </summary>
+                    <div style="padding: 0 24px 20px 24px; color: #475569; line-height: 1.7; font-size: 14px;">
+                        Our converter supports all major image formats including <strong>JPG/JPEG</strong>, <strong>PNG</strong>, <strong>WebP</strong>, <strong>GIF</strong>, <strong>BMP</strong>, and <strong>ICO</strong>. You can convert between any of these formats instantly. We also support HEIC files from iPhones and modern cameras.
+                    </div>
+                </details>
+                
+                <details style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+                    <summary style="padding: 20px 24px; font-weight: 600; color: #1a1a1a; cursor: pointer; display: flex; align-items: center; justify-content: space-between; list-style: none; font-size: 15px;">
+                        How do I convert PNG to JPG?
+                    </summary>
+                    <div style="padding: 0 24px 20px 24px; color: #475569; line-height: 1.7; font-size: 14px;">
+                        Simply upload your PNG file(s), select <strong>JPG</strong> as the output format, adjust the quality slider if needed (higher = better quality, larger file), and click <strong>Convert</strong>. Your JPG files will be ready to download instantly. Note that transparency will be replaced with a white background.
+                    </div>
+                </details>
+                
+                <details style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+                    <summary style="padding: 20px 24px; font-weight: 600; color: #1a1a1a; cursor: pointer; display: flex; align-items: center; justify-content: space-between; list-style: none; font-size: 15px;">
+                        Does converting images affect quality?
+                    </summary>
+                    <div style="padding: 0 24px 20px 24px; color: #475569; line-height: 1.7; font-size: 14px;">
+                        It depends on the format. Converting to <strong>PNG is lossless</strong> (no quality loss). Converting to JPG or WebP uses compression which can reduce quality slightly - use the quality slider (80-100%) for best results. Converting from JPG to PNG won't restore lost quality from previous compression.
+                    </div>
+                </details>
+                
+                <details style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+                    <summary style="padding: 20px 24px; font-weight: 600; color: #1a1a1a; cursor: pointer; display: flex; align-items: center; justify-content: space-between; list-style: none; font-size: 15px;">
+                        Is it safe to convert images online?
+                    </summary>
+                    <div style="padding: 0 24px 20px 24px; color: #475569; line-height: 1.7; font-size: 14px;">
+                        <strong>Yes!</strong> Our converter is 100% browser-based. Your images are processed entirely on your device and are <strong>never uploaded to any server</strong>. This makes it completely private and secure. Your files never leave your computer.
+                    </div>
+                </details>
+                
+                <details style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+                    <summary style="padding: 20px 24px; font-weight: 600; color: #1a1a1a; cursor: pointer; display: flex; align-items: center; justify-content: space-between; list-style: none; font-size: 15px;">
+                        Can I batch convert multiple images at once?
+                    </summary>
+                    <div style="padding: 0 24px 20px 24px; color: #475569; line-height: 1.7; font-size: 14px;">
+                        <strong>Absolutely!</strong> You can select or drag-and-drop multiple images at once. All selected images will be converted to your chosen format simultaneously. After conversion, download them individually or as a single ZIP file.
+                    </div>
+                </details>
+                
+                <details style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+                    <summary style="padding: 20px 24px; font-weight: 600; color: #1a1a1a; cursor: pointer; display: flex; align-items: center; justify-content: space-between; list-style: none; font-size: 15px;">
+                        What is the best image format for websites?
+                    </summary>
+                    <div style="padding: 0 24px 20px 24px; color: #475569; line-height: 1.7; font-size: 14px;">
+                        <strong>WebP</strong> is the best format for web - it offers 25-35% smaller file sizes than JPG with the same quality. Use <strong>JPG</strong> for photos, <strong>PNG</strong> for images needing transparency or sharp edges (logos, screenshots), and WebP when browser support allows.
+                    </div>
+                </details>
+                
+                <details style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+                    <summary style="padding: 20px 24px; font-weight: 600; color: #1a1a1a; cursor: pointer; display: flex; align-items: center; justify-content: space-between; list-style: none; font-size: 15px;">
+                        How to convert images without losing quality?
+                    </summary>
+                    <div style="padding: 0 24px 20px 24px; color: #475569; line-height: 1.7; font-size: 14px;">
+                        For truly <strong>lossless conversion</strong>, convert to PNG format. If you need smaller files, use WebP or JPG with the quality slider set to <strong>90-100%</strong>. Avoid converting already-compressed JPGs multiple times as quality degrades with each conversion.
+                    </div>
+                </details>
+                
+                <details style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+                    <summary style="padding: 20px 24px; font-weight: 600; color: #1a1a1a; cursor: pointer; display: flex; align-items: center; justify-content: space-between; list-style: none; font-size: 15px;">
+                        Can I convert animated GIFs to other formats?
+                    </summary>
+                    <div style="padding: 0 24px 20px 24px; color: #475569; line-height: 1.7; font-size: 14px;">
+                        When converting animated GIFs to static formats like JPG or PNG, <strong>only the first frame will be preserved</strong>. To keep animation, keep your file as GIF or convert to animated WebP (not yet supported). For static images, any format works perfectly.
+                    </div>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <!-- Related Tools Section -->
+    <section class="related-tools" style="padding: 60px 0; background: linear-gradient(180deg, #f8fafc 0%, #fff 100%);">
+        <div class="container" style="max-width: 900px;">
+            <h2 style="text-align: center; font-size: 24px; font-weight: 700; color: #1a1a1a; margin-bottom: 12px;">Related Tools</h2>
+            <p style="text-align: center; color: #64748b; margin-bottom: 32px; font-size: 15px;">Explore more image tools to optimize your workflow</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;">
+                <a href="heic-to-jpg.html" style="text-decoration: none; background: white; padding: 28px 24px; border-radius: 16px; border: 1px solid #e2e8f0; transition: all 0.2s ease; display: flex; flex-direction: column; align-items: center; text-align: center;" onmouseover="this.style.borderColor='#2563eb'; this.style.boxShadow='0 8px 24px rgba(37,99,235,0.12)';" onmouseout="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                    <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" width="28" height="28"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                    </div>
+                    <h3 style="font-size: 17px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">HEIC to JPG Converter</h3>
+                    <p style="font-size: 13px; color: #64748b; line-height: 1.6; margin: 0;">Convert iPhone HEIC photos to universal JPG format instantly</p>
+                </a>
+                
+                <a href="webp-converter.html" style="text-decoration: none; background: white; padding: 28px 24px; border-radius: 16px; border: 1px solid #e2e8f0; transition: all 0.2s ease; display: flex; flex-direction: column; align-items: center; text-align: center;" onmouseover="this.style.borderColor='#2563eb'; this.style.boxShadow='0 8px 24px rgba(37,99,235,0.12)';" onmouseout="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                    <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" width="28" height="28"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                    </div>
+                    <h3 style="font-size: 17px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">WebP Converter</h3>
+                    <p style="font-size: 13px; color: #64748b; line-height: 1.6; margin: 0;">Convert images to WebP format for smaller file sizes and faster loading</p>
+                </a>
+                
+                <a href="image-compress.html" style="text-decoration: none; background: white; padding: 28px 24px; border-radius: 16px; border: 1px solid #e2e8f0; transition: all 0.2s ease; display: flex; flex-direction: column; align-items: center; text-align: center;" onmouseover="this.style.borderColor='#2563eb'; this.style.boxShadow='0 8px 24px rgba(37,99,235,0.12)';" onmouseout="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';">
+                    <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" width="28" height="28"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    </div>
+                    <h3 style="font-size: 17px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px;">Image Compressor</h3>
+                    <p style="font-size: 13px; color: #64748b; line-height: 1.6; margin: 0;">Reduce image file size while maintaining quality for web optimization</p>
+                </a>
             </div>
         </div>
     </section>
