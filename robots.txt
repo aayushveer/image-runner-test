@@ -12,12 +12,11 @@ Crawl-delay: 1
 # Sitemap location
 Sitemap: https://www.imgrunner.com/sitemap.xml
 
-# Block admin pages
-Disallow: /admin-panel.html
+# Block admin pages (none exist currently)
+# Disallow: /admin/
 
-# Block any potential sensitive files
-Disallow: /*.json$
-Disallow: /js/bug-report.js
+# Allow all other files
+Allow: /
 
 # Googlebot specific
 User-agent: Googlebot
