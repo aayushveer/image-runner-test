@@ -225,12 +225,29 @@ class SignatureGeneratorPro {
         const container = document.querySelector('.canvas-container');
         if (container && this.drawCanvas) {
             const rect = container.getBoundingClientRect();
-            // Set canvas size to match container exactly
-            this.drawCanvas.width = rect.width;
-            this.drawCanvas.height = 250;
-            // Set CSS size to match
-            this.drawCanvas.style.width = rect.width + 'px';
-            this.drawCanvas.style.height = '250px';
+            const newWidth = rect.width;
+            const newHeight = 250;
+            
+            // Only resize if dimensions actually changed
+            if (this.drawCanvas.width !== newWidth || this.drawCanvas.height !== newHeight) {
+                // Save current drawing before resize
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = this.drawCanvas.width;
+                tempCanvas.height = this.drawCanvas.height;
+                tempCanvas.getContext('2d').drawImage(this.drawCanvas, 0, 0);
+                
+                // Resize canvas
+                this.drawCanvas.width = newWidth;
+                this.drawCanvas.height = newHeight;
+                this.drawCanvas.style.width = newWidth + 'px';
+                this.drawCanvas.style.height = '250px';
+                
+                // Restore drawing
+                if (this.hasDrawn) {
+                    this.drawCtx.drawImage(tempCanvas, 0, 0);
+                }
+            }
+            
             // Update context settings
             this.drawCtx.strokeStyle = this.signatureColor;
             this.drawCtx.lineWidth = this.strokeWidth;
@@ -355,13 +372,9 @@ class SignatureGeneratorPro {
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
 
-        this.currentStroke.push({ x, y });
-
-        // Smooth bezier curve drawing
+        // Continuous smooth line drawing
         this.drawCtx.lineTo(x, y);
         this.drawCtx.stroke();
-        this.drawCtx.beginPath();
-        this.drawCtx.moveTo(x, y);
 
         this.lastX = x;
         this.lastY = y;
