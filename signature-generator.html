@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signature Generator Pro - Create Professional Digital Signatures | Image Runner</title>
+    <meta name="description" content="Create beautiful handwritten digital signatures instantly. 12+ calligraphy styles, transparent PNG download, signature animation. Perfect for documents, contracts, emails.">
+    <meta name="keywords" content="signature generator, digital signature, handwritten signature, electronic signature, signature maker, calligraphy signature, professional signature">
+    <link rel="canonical" href="https://www.imgrunner.com/signature-generator.html">
+    <meta name="theme-color" content="#ffffff">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Signature Generator Pro - Create Professional Digital Signatures">
+    <meta property="og:description" content="Transform your typed name into beautiful handwritten signatures. 12+ styles, instant preview, transparent downloads.">
+    <meta property="og:url" content="https://www.imgrunner.com/signature-generator.html">
+    <meta property="og:type" content="website">
+    
+    <link rel="stylesheet" href="css/signature-generator.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Great+Vibes&family=Alex+Brush&family=Allura&family=Pacifico&family=Kaushan+Script&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="back-btn" title="Back to Home">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+            </a>
+            <div class="logo">
+                <span class="logo-icon">🖋️</span>
+                <span>Signature Generator Pro</span>
+            </div>
+            <div class="header-stats">
+                <span class="stat-badge">
+                    <span class="stat-number" id="totalSignatures">423,891</span>
+                    <span class="stat-label">signatures created</span>
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main App -->
+    <main class="container">
+        <!-- Input Section -->
+        <section class="input-section">
+            <div class="input-header">
+                <h1>Create Your Perfect Signature</h1>
+                <p>Transform your name into a beautiful handwritten signature. Choose from 12+ professional styles.</p>
+            </div>
+            
+            <div class="name-input-container">
+                <label for="nameInput" class="input-label">Enter your full name</label>
+                <input type="text" id="nameInput" class="name-input" placeholder="John Smith" maxlength="50">
+                <div class="input-hint">Your signature will appear instantly as you type</div>
+            </div>
+        </section>
+
+        <!-- Style Selection -->
+        <section class="styles-section">
+            <h2 class="section-title">Choose Your Style</h2>
+            <div class="styles-grid" id="stylesGrid">
+                <!-- Generated dynamically -->
+            </div>
+        </section>
+
+        <!-- Live Preview -->
+        <section class="preview-section" id="previewSection" style="display: none;">
+            <div class="preview-header">
+                <h2>Your Signature Preview</h2>
+                <div class="preview-controls">
+                    <div class="color-picker">
+                        <label>Color:</label>
+                        <div class="color-options">
+                            <button class="color-btn active" data-color="#000000" style="background: #000000" title="Black Ink"></button>
+                            <button class="color-btn" data-color="#1a365d" style="background: #1a365d" title="Navy Blue"></button>
+                            <button class="color-btn" data-color="#2563eb" style="background: #2563eb" title="Blue Ink"></button>
+                            <button class="color-btn" data-color="#dc2626" style="background: #dc2626" title="Red Ink"></button>
+                            <button class="color-btn" data-color="#7c3aed" style="background: #7c3aed" title="Purple Ink"></button>
+                            <button class="color-btn" data-color="#d97706" style="background: #d97706" title="Gold Ink"></button>
+                        </div>
+                    </div>
+                    
+                    <div class="size-picker">
+                        <label>Size:</label>
+                        <select id="sizeSelect">
+                            <option value="small">Small (150px)</option>
+                            <option value="medium" selected>Medium (250px)</option>
+                            <option value="large">Large (400px)</option>
+                            <option value="xlarge">Extra Large (600px)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="signature-preview" id="signaturePreview">
+                <div class="signature-canvas">
+                    <svg id="signatureSvg" viewBox="0 0 400 150" xmlns="http://www.w3.org/2000/svg">
+                        <text id="signatureText" x="200" y="100" text-anchor="middle"></text>
+                    </svg>
+                </div>
+                
+                <div class="signature-info">
+                    <div class="style-name" id="styleName">Elegant Script</div>
+                    <div class="signature-stats">
+                        <span id="signatureLength">12 characters</span>
+                        <span>•</span>
+                        <span id="signatureComplexity">Professional</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Signature Analysis -->
+            <div class="signature-analysis" id="signatureAnalysis">
+                <h3>🧠 Signature Personality Analysis</h3>
+                <div class="analysis-content" id="analysisContent">
+                    <!-- Generated based on signature style -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Download Section -->
+        <section class="download-section" id="downloadSection" style="display: none;">
+            <h2>Download Your Signature</h2>
+            <div class="download-grid">
+                <button class="download-btn primary" id="downloadPNG">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-15"/>
+                        <path d="M7 10l5 5 5-5"/>
+                        <path d="M12 15V3"/>
+                    </svg>
+                    Download PNG
+                    <span class="format-desc">Transparent background • Perfect for documents</span>
+                </button>
+                
+                <button class="download-btn" id="downloadSVG">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <path d="M14,2 L14,8 L20,8"/>
+                        <path d="M10 12l2 2 2-2"/>
+                    </svg>
+                    Download SVG
+                    <span class="format-desc">Vector format • Infinite scaling</span>
+                </button>
+                
+                <button class="download-btn" id="downloadJPG">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <path d="M14,2 L14,8 L20,8"/>
+                        <path d="M9 15h6"/>
+                    </svg>
+                    Download JPG
+                    <span class="format-desc">White background • Email & web ready</span>
+                </button>
+                
+                <button class="download-btn special" id="downloadAnimated">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M23 7l-7 5 7 5V7z"/>
+                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+                    </svg>
+                    Animated Preview
+                    <span class="format-desc">See how it's written • Share on social</span>
+                </button>
+            </div>
+            
+            <div class="usage-examples">
+                <h3>💼 Perfect For:</h3>
+                <div class="examples-grid">
+                    <div class="example-item">📄 Legal Documents</div>
+                    <div class="example-item">📧 Email Signatures</div>
+                    <div class="example-item">📋 Contracts</div>
+                    <div class="example-item">💳 Digital Forms</div>
+                    <div class="example-item">🏢 Business Cards</div>
+                    <div class="example-item">📝 Letters</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tips Section -->
+        <section class="tips-section">
+            <h2>✨ Pro Tips for Perfect Signatures</h2>
+            <div class="tips-grid">
+                <div class="tip-card">
+                    <div class="tip-icon">🎯</div>
+                    <h3>Keep It Simple</h3>
+                    <p>Professional signatures are readable and not overly complex. Avoid too many flourishes.</p>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-icon">📏</div>
+                    <h3>Right Size</h3>
+                    <p>Medium size works for most documents. Use large for important contracts, small for forms.</p>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-icon">🖋️</div>
+                    <h3>Color Choice</h3>
+                    <p>Black or navy blue are most professional. Gold adds elegance, avoid bright colors for legal docs.</p>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-icon">💾</div>
+                    <h3>Save Multiple Versions</h3>
+                    <p>Download PNG for documents, SVG for web use, and JPG for email signatures.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Made with ❤️ for professionals worldwide</p>
+        <p class="footer-tagline">Unlimited signatures. Forever free. No sign-up required.</p>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <span class="toast-icon">✓</span>
+        <span class="toast-message" id="toastMessage">Signature downloaded!</span>
+    </div>
+
+    <!-- Viral Notifications -->
+    <div class="viral-notifications" id="viralNotifications"></div>
+
+    <script src="js/signature-generator.js"></script>
+</body>
+</html>
