@@ -121,6 +121,10 @@ class SignatureGeneratorPro {
                 document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
                 e.target.classList.add('active');
                 this.signatureColor = e.target.dataset.color;
+                // Update draw canvas color
+                if (this.drawCtx) {
+                    this.drawCtx.strokeStyle = this.signatureColor;
+                }
                 this.updatePreview();
             });
         });
@@ -198,18 +202,41 @@ class SignatureGeneratorPro {
         const sectionId = mode === 'type' ? 'typeSection' : mode === 'draw' ? 'drawSection' : 'initialsSection';
         document.getElementById(sectionId).classList.add('active-section');
 
-        // Show/hide relevant sections
+        // Show/hide relevant sections based on mode
         if (mode === 'draw') {
+            // Show customize section for draw mode
             document.getElementById('customizeSection').style.display = 'block';
-            this.showSections();
+            // Resize canvas to fit container
+            this.resizeDrawCanvas();
+            // Show preview if already drew something
+            if (this.drawPoints.length > 0) {
+                document.getElementById('previewSection').style.display = 'block';
+                document.getElementById('downloadSection').style.display = 'block';
+            }
         } else if (mode === 'initials') {
+            document.getElementById('customizeSection').style.display = this.userInitials ? 'block' : 'none';
             if (this.userInitials) {
                 this.showSections();
             }
         } else {
+            document.getElementById('customizeSection').style.display = this.userName ? 'block' : 'none';
             if (this.userName) {
                 this.showSections();
             }
+        }
+    }
+
+    resizeDrawCanvas() {
+        const container = document.querySelector('.canvas-container');
+        if (container && this.drawCanvas) {
+            const rect = container.getBoundingClientRect();
+            this.drawCanvas.width = Math.min(700, rect.width - 4);
+            this.drawCanvas.height = 250;
+            // Update context settings
+            this.drawCtx.strokeStyle = this.signatureColor;
+            this.drawCtx.lineWidth = this.strokeWidth;
+            this.drawCtx.lineCap = 'round';
+            this.drawCtx.lineJoin = 'round';
         }
     }
 

@@ -281,20 +281,45 @@ section.active-section { display: block; }
 /* Draw Section */
 .draw-section { padding-bottom: 2rem; }
 
+.draw-section-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.draw-section-header h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.draw-section-header p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
 .canvas-container {
-    background: white;
-    border: 2px dashed var(--border);
+    background: linear-gradient(135deg, #fefefe 0%, #f8f9fc 100%);
+    border: 3px dashed var(--primary);
     border-radius: var(--radius);
     position: relative;
     overflow: hidden;
     touch-action: none;
+    min-height: 250px;
+    box-shadow: 0 4px 20px rgba(37, 99, 235, 0.1), inset 0 0 40px rgba(255,255,255,0.9);
+    transition: var(--transition);
+}
+
+.canvas-container:hover {
+    border-color: var(--secondary);
+    box-shadow: 0 8px 30px rgba(37, 99, 235, 0.15), inset 0 0 40px rgba(255,255,255,0.9);
 }
 
 .canvas-container canvas {
     display: block;
     width: 100%;
-    height: auto;
-    cursor: crosshair;
+    height: 250px;
+    cursor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%232563eb" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><circle cx="9" cy="9" r="0.5"/></svg>') 0 24, crosshair;
 }
 
 .canvas-placeholder {
@@ -306,19 +331,46 @@ section.active-section { display: block; }
     font-size: 1.25rem;
     pointer-events: none;
     transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
 }
 
-.canvas-placeholder.hidden { opacity: 0; }
+.canvas-placeholder .placeholder-icon {
+    font-size: 3rem;
+    animation: bounce 2s infinite;
+}
+
+.canvas-placeholder .placeholder-text {
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.canvas-placeholder .placeholder-hint {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+.canvas-placeholder.hidden { opacity: 0; pointer-events: none; }
 
 .draw-controls {
     display: flex;
     align-items: center;
-    gap: 2rem;
-    margin-top: 1rem;
-    padding: 1rem 1.5rem;
-    background: white;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-top: 1.25rem;
+    padding: 1.25rem 1.5rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #fff 100%);
     border-radius: var(--radius);
     border: 1px solid var(--border);
+    box-shadow: var(--shadow);
 }
 
 .control-group {
@@ -331,21 +383,24 @@ section.active-section { display: block; }
     font-size: 0.875rem;
     font-weight: 600;
     color: var(--text-secondary);
+    white-space: nowrap;
 }
 
 .control-group input[type="range"] {
     width: 100px;
+    height: 6px;
     accent-color: var(--primary);
+    cursor: pointer;
 }
 
 .btn-clear-canvas {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    background: #fef2f2;
-    border: 1px solid #fecaca;
-    border-radius: 8px;
+    padding: 0.625rem 1.25rem;
+    background: linear-gradient(135deg, #fef2f2 0%, #fff 100%);
+    border: 2px solid #fecaca;
+    border-radius: 10px;
     color: #dc2626;
     font-weight: 600;
     font-size: 0.875rem;

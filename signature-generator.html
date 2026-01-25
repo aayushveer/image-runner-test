@@ -95,10 +95,16 @@
 
         <!-- Draw Mode -->
         <section class="draw-section" id="drawSection">
+            <div class="draw-section-header">
+                <h3>✍️ Draw Your Signature</h3>
+                <p>Use your mouse or finger to draw your unique signature below</p>
+            </div>
             <div class="canvas-container">
                 <canvas id="drawCanvas" width="700" height="250"></canvas>
                 <div class="canvas-placeholder" id="canvasPlaceholder">
-                    ✍️ Draw your signature here
+                    <span class="placeholder-icon">🖊️</span>
+                    <span class="placeholder-text">Start Drawing Here</span>
+                    <span class="placeholder-hint">Click and drag to create your signature</span>
                 </div>
             </div>
             <div class="draw-controls">
@@ -114,7 +120,7 @@
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
                     </svg>
-                    Clear
+                    Clear Canvas
                 </button>
             </div>
         </section>
