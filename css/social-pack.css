@@ -762,8 +762,75 @@ img { display: block; max-width: 100%; }
 }
 
 /* =====================================================
-   TOAST
+   VIRAL NOTIFICATIONS
    ===================================================== */
+.viral-notification {
+    position: fixed;
+    top: 100px;
+    right: -400px;
+    z-index: 9999;
+    background: linear-gradient(135deg, var(--success), #059669);
+    color: white;
+    padding: 12px 20px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    transition: all 0.4s ease;
+    max-width: 350px;
+    cursor: pointer;
+}
+
+.viral-notification.show {
+    right: 20px;
+}
+
+.viral-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.viral-icon {
+    font-size: 18px;
+    animation: pulse 2s infinite;
+}
+
+.viral-text strong {
+    font-weight: 700;
+}
+
+.viral-close {
+    margin-left: auto;
+    font-size: 16px;
+    opacity: 0.7;
+    cursor: pointer;
+    padding: 0 4px;
+}
+
+.viral-close:hover {
+    opacity: 1;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* Speed Badge */
+.speed-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    padding: 6px 12px;
+    background: linear-gradient(135deg, var(--success), #059669);
+    color: white;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
 .toast {
     position: fixed;
     bottom: 24px;

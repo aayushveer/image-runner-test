@@ -45,7 +45,7 @@
         <!-- Upload Section -->
         <div class="upload-section" id="uploadSection">
             <h1 class="upload-title">Social Pack Pro</h1>
-            <p class="upload-subtitle">Upload once. Get 15 perfectly sized images for every social platform. Download all as ZIP.</p>
+            <p class="upload-subtitle">Upload once. Get 19 perfectly sized images for every social platform. Download all as ZIP.</p>
             
             <div class="platform-pills">
                 <span class="platform-pill instagram">Instagram</span>
@@ -54,6 +54,8 @@
                 <span class="platform-pill twitter">Twitter</span>
                 <span class="platform-pill linkedin">LinkedIn</span>
                 <span class="platform-pill whatsapp">WhatsApp</span>
+                <span class="platform-pill tiktok" style="background: #000;">TikTok</span>
+                <span class="platform-pill pinterest" style="background: #bd081c;">Pinterest</span>
             </div>
             
             <div class="upload-zone" id="uploadZone">
@@ -298,12 +300,66 @@
                             </label>
                         </div>
                     </div>
+
+                    <!-- TikTok -->
+                    <div class="platform-group" data-platform="tiktok">
+                        <div class="group-header">
+                            <span class="group-icon">🎤</span>
+                            <span class="group-name">TikTok</span>
+                            <span class="group-count">2 sizes</span>
+                        </div>
+                        <div class="group-sizes">
+                            <label class="size-option">
+                                <input type="checkbox" name="size" value="tt-cover" checked>
+                                <span class="size-info">
+                                    <span class="size-name">Cover Video</span>
+                                    <span class="size-dims">1080 × 1350</span>
+                                </span>
+                                <span class="size-preview portrait"></span>
+                            </label>
+                            <label class="size-option">
+                                <input type="checkbox" name="size" value="tt-profile" checked>
+                                <span class="size-info">
+                                    <span class="size-name">Profile Picture</span>
+                                    <span class="size-dims">200 × 200</span>
+                                </span>
+                                <span class="size-preview square small"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Pinterest -->
+                    <div class="platform-group" data-platform="pinterest">
+                        <div class="group-header">
+                            <span class="group-icon">📌</span>
+                            <span class="group-name">Pinterest</span>
+                            <span class="group-count">2 sizes</span>
+                        </div>
+                        <div class="group-sizes">
+                            <label class="size-option">
+                                <input type="checkbox" name="size" value="pin-standard" checked>
+                                <span class="size-info">
+                                    <span class="size-name">Standard Pin</span>
+                                    <span class="size-dims">1000 × 1500</span>
+                                </span>
+                                <span class="size-preview story"></span>
+                            </label>
+                            <label class="size-option">
+                                <input type="checkbox" name="size" value="pin-square" checked>
+                                <span class="size-info">
+                                    <span class="size-name">Square Pin</span>
+                                    <span class="size-dims">1000 × 1000</span>
+                                </span>
+                                <span class="size-preview square"></span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Generate Button -->
                 <div class="generate-section">
                     <div class="selected-count">
-                        <span id="selectedCount">15</span> sizes selected
+                        <span id="selectedCount">19</span> sizes selected
                     </div>
                     <button class="btn-generate" id="generateBtn">
                         <span class="btn-text">⚡ Generate All Sizes</span>
@@ -319,7 +375,7 @@
         <div class="results-section" id="resultsSection" style="display: none;">
             <div class="results-header">
                 <h2>🎉 Your Social Pack is Ready!</h2>
-                <p>All <span id="generatedCount">15</span> images generated successfully</p>
+                <p>All <span id="generatedCount">19</span> images generated successfully</p>
             </div>
 
             <!-- Download All Button -->

@@ -28,7 +28,13 @@ const PLATFORM_SIZES = {
     'li-post': { name: 'LinkedIn Post', platform: 'LinkedIn', width: 1200, height: 627 },
     'li-banner': { name: 'LinkedIn Banner', platform: 'LinkedIn', width: 1584, height: 396 },
     
-    'wa-dp': { name: 'WhatsApp DP', platform: 'WhatsApp', width: 500, height: 500 }
+    'wa-dp': { name: 'WhatsApp DP', platform: 'WhatsApp', width: 500, height: 500 },
+    
+    'tt-cover': { name: 'TikTok Cover', platform: 'TikTok', width: 1080, height: 1350 },
+    'tt-profile': { name: 'TikTok Profile', platform: 'TikTok', width: 200, height: 200 },
+    
+    'pin-standard': { name: 'Pinterest Pin', platform: 'Pinterest', width: 1000, height: 1500 },
+    'pin-square': { name: 'Pinterest Square', platform: 'Pinterest', width: 1000, height: 1000 }
 };
 
 // =====================================================
@@ -266,18 +272,24 @@ async function generateAllSizes() {
     btnText.style.display = 'none';
     btnLoading.style.display = 'inline-flex';
     
+    const startTime = performance.now();
+    
     try {
         state.generatedImages.clear();
         
-        // Generate all images in parallel batches
-        const batchSize = 5;
-        for (let i = 0; i < sizes.length; i += batchSize) {
-            const batch = sizes.slice(i, i + batchSize);
-            await Promise.all(batch.map(sizeKey => generateSize(sizeKey)));
-        }
+        // SPEED OPTIMIZATION: Process ALL images in parallel (not batches)
+        await Promise.all(sizes.map(sizeKey => generateSize(sizeKey)));
         
-        // Show results
-        displayResults();
+        const endTime = performance.now();
+        const duration = ((endTime - startTime) / 1000).toFixed(1);
+        
+        // Show results with speed badge
+        displayResults(duration);
+        
+        // Viral speed notification
+        setTimeout(() => {
+            showToast(`⚡ BLAZING FAST! Generated ${sizes.length} images in ${duration}s`, 'success');
+        }, 1000);
         
     } catch (error) {
         console.error('Generation error:', error);
@@ -352,7 +364,7 @@ function generateSize(sizeKey) {
 // =====================================================
 // RESULTS DISPLAY
 // =====================================================
-function displayResults() {
+function displayResults(duration) {
     const grid = elements.resultsGrid;
     grid.innerHTML = '';
     
@@ -378,9 +390,17 @@ function displayResults() {
         grid.appendChild(card);
     });
     
-    // Update counts
+    // Update counts with speed info
     elements.generatedCount.textContent = state.generatedImages.size;
     elements.zipSize.textContent = `~${(totalSize / (1024 * 1024)).toFixed(1)} MB`;
+    
+    // Add speed badge if duration provided
+    if (duration) {
+        const speedBadge = document.createElement('div');
+        speedBadge.className = 'speed-badge';
+        speedBadge.innerHTML = `⚡ Generated in ${duration}s`;
+        document.querySelector('.results-header').appendChild(speedBadge);
+    }
     
     // Setup individual downloads
     grid.querySelectorAll('.result-download').forEach(btn => {
@@ -493,7 +513,21 @@ elements.startOverBtn.addEventListener('click', () => {
 elements.copyLinkBtn.addEventListener('click', async () => {
     try {
         await navigator.clipboard.writeText('https://www.imgrunner.com/social-pack.html');
-        showToast('Link copied to clipboard!');
+        
+        // Viral reward system
+        let shareCount = parseInt(localStorage.getItem('socialPackShares') || 0) + 1;
+        localStorage.setItem('socialPackShares', shareCount);
+        
+        if (shareCount === 1) {
+            showToast('🎉 Link copied! You\'re helping creators discover this tool!', 'success');
+        } else if (shareCount === 5) {
+            showToast('🏆 LEGEND! You\'ve shared 5 times. You\'re spreading the magic!', 'success');
+        } else if (shareCount === 10) {
+            showToast('👑 VIRAL CHAMPION! 10 shares - You\'re unstoppable!', 'success');
+        } else {
+            showToast(`📋 Link copied! Share #${shareCount} - Keep spreading the love!`, 'success');
+        }
+        
     } catch (err) {
         // Fallback
         const textarea = document.createElement('textarea');
@@ -524,8 +558,53 @@ function showToast(message, type = 'success') {
 }
 
 // =====================================================
-// COUNTER ANIMATION (Viral element)
+// VIRAL SOCIAL PROOF SYSTEM
 // =====================================================
+const VIRAL_CITIES = [
+    'Mumbai', 'Delhi', 'Bangalore', 'Pune', 'Chennai', 'Kolkata', 'Hyderabad', 'Ahmedabad',
+    'New York', 'London', 'Singapore', 'Dubai', 'Toronto', 'Sydney', 'Tokyo', 'Paris',
+    'Los Angeles', 'Berlin', 'Amsterdam', 'Stockholm', 'Seoul', 'Bangkok', 'Manila', 'Jakarta'
+];
+
+const VIRAL_ACTIONS = [
+    'just created 15 images', 'downloaded social pack', 'generated Instagram posts',
+    'created YouTube thumbnails', 'made Facebook covers', 'built complete social kit',
+    'saved 2 hours of work', 'got viral-ready images'
+];
+
+function showViralNotification() {
+    const notification = document.createElement('div');
+    notification.className = 'viral-notification';
+    
+    const city = VIRAL_CITIES[Math.floor(Math.random() * VIRAL_CITIES.length)];
+    const action = VIRAL_ACTIONS[Math.floor(Math.random() * VIRAL_ACTIONS.length)];
+    
+    notification.innerHTML = `
+        <div class="viral-content">
+            <span class="viral-icon">🔥</span>
+            <span class="viral-text">Someone in <strong>${city}</strong> ${action}</span>
+            <span class="viral-close">×</span>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Show notification
+    setTimeout(() => notification.classList.add('show'), 100);
+    
+    // Auto hide after 4 seconds
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+    }, 4000);
+    
+    // Manual close
+    notification.querySelector('.viral-close').addEventListener('click', () => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+    });
+}
+
 function animateCounter() {
     const counter = document.getElementById('totalGenerated');
     const target = 847293;
@@ -536,10 +615,22 @@ function animateCounter() {
     
     // Slowly increment over time for viral effect
     setInterval(() => {
-        current += Math.floor(Math.random() * 3);
+        current += Math.floor(Math.random() * 3) + 1;
         counter.textContent = current.toLocaleString();
         localStorage.setItem('socialPackCounter', current);
-    }, 10000);
+    }, 8000);
+    
+    // Show viral notifications every 3-7 seconds
+    function scheduleNextNotification() {
+        const delay = (Math.random() * 4000) + 3000; // 3-7 seconds
+        setTimeout(() => {
+            showViralNotification();
+            scheduleNextNotification();
+        }, delay);
+    }
+    
+    // Start notifications after 2 seconds
+    setTimeout(scheduleNextNotification, 2000);
 }
 
 function incrementCounter() {
