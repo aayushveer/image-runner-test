@@ -5,6 +5,7 @@
 
 const CollageApp = {
     images: [],
+    utils: null,
     currentLayout: 0,
     bgColor: '#ffffff',
     gap: 10,
@@ -32,6 +33,20 @@ const CollageApp = {
     ],
     
     init() {
+        this.utils = window.ImageRunnerUtils || {
+            downloadBlob: (blob, fileName) => {
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = fileName;
+                link.click();
+                URL.revokeObjectURL(url);
+            },
+            setActivePage: (pageMap, pageKey) => {
+                Object.values(pageMap).forEach((pageEl) => pageEl?.classList.remove('active'));
+                pageMap[pageKey]?.classList.add('active');
+            }
+        };
         this.bindEvents();
         this.renderLayoutButtons();
     },
@@ -362,13 +377,12 @@ const CollageApp = {
         this.showPage('page-download');
     },
     
-    downloadCollage() {
+    async downloadCollage() {
         if (!this.resultDataUrl) return;
-        
-        const link = document.createElement('a');
-        link.download = `collage-${Date.now()}.png`;
-        link.href = this.resultDataUrl;
-        link.click();
+
+        const response = await fetch(this.resultDataUrl);
+        const blob = await response.blob();
+        this.utils.downloadBlob(blob, `collage-${Date.now()}.png`);
     },
     
     // Polyfill for rounded rect (Safari compatibility)
@@ -391,8 +405,14 @@ const CollageApp = {
     },
     
     showPage(pageId) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById(pageId).classList.add('active');
+        this.utils.setActivePage(
+            {
+                'page-upload': document.getElementById('page-upload'),
+                'page-editor': document.getElementById('page-editor'),
+                'page-download': document.getElementById('page-download')
+            },
+            pageId
+        );
     }
 };
 

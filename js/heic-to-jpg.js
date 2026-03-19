@@ -7,6 +7,23 @@
 (function() {
     'use strict';
 
+    const utils = window.ImageRunnerUtils || {
+        formatFileSize: (bytes) => `${bytes} B`,
+        escapeHtml: (text) => String(text ?? ''),
+        downloadBlob: (blob, fileName) => {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = fileName;
+            link.click();
+            URL.revokeObjectURL(url);
+        },
+        setActivePage: (pageMap, pageKey) => {
+            Object.values(pageMap).forEach((pageEl) => pageEl?.classList.remove('active'));
+            pageMap[pageKey]?.classList.add('active');
+        }
+    };
+
     // State
     let files = [];
     let convertedImages = [];
@@ -287,10 +304,7 @@
 
     // Download single image
     function downloadSingle(img) {
-        const link = document.createElement('a');
-        link.href = img.url;
-        link.download = img.name;
-        link.click();
+        utils.downloadBlob(img.blob, img.name);
     }
 
     // Download all as ZIP
@@ -309,12 +323,8 @@
             });
 
             const content = await zip.generateAsync({ type: 'blob' });
-            
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(content);
-            link.download = `heic-converted-${Date.now()}.zip`;
-            link.click();
-            URL.revokeObjectURL(link.href);
+
+            utils.downloadBlob(content, `heic-converted-${Date.now()}.zip`);
         } catch (error) {
             console.error('Error creating ZIP:', error);
             alert('Failed to create ZIP file');
@@ -333,13 +343,14 @@
 
     // Show/hide page
     function showPage(page) {
-        pageUpload.classList.remove('active');
-        pageConvert.classList.remove('active');
-        pageDownload.classList.remove('active');
-
-        if (page === 'upload') pageUpload.classList.add('active');
-        if (page === 'convert') pageConvert.classList.add('active');
-        if (page === 'download') pageDownload.classList.add('active');
+        utils.setActivePage(
+            {
+                upload: pageUpload,
+                convert: pageConvert,
+                download: pageDownload
+            },
+            page
+        );
     }
 
     // Show/hide processing
@@ -354,18 +365,12 @@
 
     // Utility: Format file size
     function formatFileSize(bytes) {
-        if (bytes === 0) return '0 B';
-        const k = 1024;
-        const sizes = ['B', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+        return utils.formatFileSize(bytes);
     }
 
     // Utility: Escape HTML
     function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
+        return utils.escapeHtml(text);
     }
 
     // Initialize on DOM ready

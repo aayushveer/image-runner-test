@@ -3,6 +3,7 @@
 
 class SignatureGeneratorPro {
     constructor() {
+        this.utils = null;
         // State
         this.mode = 'type';
         this.currentStyle = 0;
@@ -84,6 +85,16 @@ class SignatureGeneratorPro {
     }
 
     init() {
+        this.utils = window.ImageRunnerUtils || {
+            downloadBlob: (blob, fileName) => {
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = fileName;
+                link.click();
+                URL.revokeObjectURL(url);
+            }
+        };
         this.setupEventListeners();
         this.generateStyleCards();
         this.generateInitialStyles();
@@ -776,11 +787,7 @@ class SignatureGeneratorPro {
         svgContent += '</svg>';
 
         const blob = new Blob([svgContent], { type: 'image/svg+xml' });
-        const link = document.createElement('a');
-        link.download = `${filename}.svg`;
-        link.href = URL.createObjectURL(blob);
-        link.click();
-        URL.revokeObjectURL(link.href);
+        this.utils.downloadBlob(blob, `${filename}.svg`);
     }
 
     downloadPDF(canvas, filename) {
@@ -824,11 +831,7 @@ startxref
         `;
 
         const blob = new Blob([htmlContent], { type: 'text/html' });
-        const link = document.createElement('a');
-        link.download = `${filename}.html`;
-        link.href = URL.createObjectURL(blob);
-        link.click();
-        URL.revokeObjectURL(link.href);
+        this.utils.downloadBlob(blob, `${filename}.html`);
 
         this.showToast('Open the file and use Print → Save as PDF');
     }

@@ -8,6 +8,7 @@ const App = {
     images: [],
     pdfBlob: null,
     pdfUrl: null,
+    utils: null,
     originalPdfSize: null, // Store original size for compression comparison
     compressionQuality: 100, // Compression quality (100 = original, 80 = balanced, 50 = compact)
     settings: {
@@ -28,6 +29,21 @@ const App = {
     dragSrcEl: null,
     
     init() {
+        this.utils = window.ImageRunnerUtils || {
+            formatFileSize: (bytes) => `${bytes} B`,
+            downloadBlob: (blob, fileName) => {
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = fileName;
+                link.click();
+                URL.revokeObjectURL(url);
+            },
+            setActivePage: (pageMap, pageKey) => {
+                Object.values(pageMap).forEach((pageEl) => pageEl?.classList.remove('active'));
+                pageMap[pageKey]?.classList.add('active');
+            }
+        };
         this.cacheElements();
         this.bindEvents();
     },
@@ -155,7 +171,7 @@ const App = {
                 const savedPct = Math.round((saved / originalSize) * 100);
                 
                 if (savedPct > 0) {
-                    this.el.compressionNote.textContent = `Saved ${this.formatSize(saved)} (${savedPct}% smaller)`;
+                    this.el.compressionNote.textContent = `Saved ${this.utils.formatFileSize(saved)} (${savedPct}% smaller)`;
                 } else {
                     this.el.compressionNote.textContent = '';
                 }
@@ -168,11 +184,14 @@ const App = {
     },
     
     showPage(name) {
-        [this.el.pageUpload, this.el.pageEditor, this.el.pageDownload].forEach(p => {
-            if (p) p.classList.remove('active');
-        });
-        const page = document.getElementById('page-' + name);
-        if (page) page.classList.add('active');
+        this.utils.setActivePage(
+            {
+                upload: this.el.pageUpload,
+                editor: this.el.pageEditor,
+                download: this.el.pageDownload
+            },
+            name
+        );
     },
     
     async handleFiles(fileList) {
@@ -474,7 +493,7 @@ const App = {
         const date = new Date().toISOString().slice(0, 10);
         const fileName = `images-${date}.pdf`;
         this.el.pdfName.textContent = fileName;
-        this.el.pdfSize.textContent = this.formatSize(this.pdfBlob.size);
+        this.el.pdfSize.textContent = this.utils.formatFileSize(this.pdfBlob.size);
     },
     
     download() {
@@ -482,13 +501,7 @@ const App = {
         
         const date = new Date().toISOString().slice(0, 10);
         const fileName = `images-${date}.pdf`;
-        
-        const a = document.createElement('a');
-        a.href = this.pdfUrl;
-        a.download = fileName;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+        this.utils.downloadBlob(this.pdfBlob, fileName);
     },
     
     reset() {
@@ -522,12 +535,6 @@ const App = {
         const pct = Math.round((current / total) * 100);
         if (this.el.processingText) this.el.processingText.textContent = text;
         if (this.el.progressBar) this.el.progressBar.style.width = pct + '%';
-    },
-    
-    formatSize(bytes) {
-        if (bytes < 1024) return bytes + ' B';
-        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-        return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
     },
     
     delay(ms) { return new Promise(r => setTimeout(r, ms)); },

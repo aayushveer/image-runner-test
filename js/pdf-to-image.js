@@ -13,6 +13,7 @@ const App = {
     pages: [],
     results: [],
     selectedPages: new Set(),
+    utils: null,
     
     settings: {
         format: 'jpg',
@@ -24,6 +25,20 @@ const App = {
     el: {},
     
     init() {
+        this.utils = window.ImageRunnerUtils || {
+            downloadBlob: (blob, fileName) => {
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = fileName;
+                link.click();
+                URL.revokeObjectURL(url);
+            },
+            setActivePage: (pageMap, pageKey) => {
+                Object.values(pageMap).forEach((pageEl) => pageEl?.classList.remove('active'));
+                pageMap[pageKey]?.classList.add('active');
+            }
+        };
         this.cacheElements();
         this.bindEvents();
     },
@@ -334,13 +349,8 @@ const App = {
     downloadSingle(idx) {
         const result = this.results[idx];
         if (!result) return;
-        
-        const a = document.createElement('a');
-        a.href = result.url;
-        a.download = result.name;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+
+        this.utils.downloadBlob(result.blob, result.name);
     },
     
     async downloadAll() {
@@ -361,15 +371,8 @@ const App = {
             }
             
             const content = await zip.generateAsync({ type: 'blob' });
-            
-            const url = URL.createObjectURL(content);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'pdf_images.zip';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+
+            this.utils.downloadBlob(content, 'pdf_images.zip');
             
         } catch (error) {
             alert('Error creating ZIP');
@@ -395,13 +398,14 @@ const App = {
     },
     
     showPage(page) {
-        this.el.pageUpload.classList.remove('active');
-        this.el.pageEditor.classList.remove('active');
-        this.el.pageDownload.classList.remove('active');
-        
-        if (page === 'upload') this.el.pageUpload.classList.add('active');
-        else if (page === 'editor') this.el.pageEditor.classList.add('active');
-        else if (page === 'download') this.el.pageDownload.classList.add('active');
+        this.utils.setActivePage(
+            {
+                upload: this.el.pageUpload,
+                editor: this.el.pageEditor,
+                download: this.el.pageDownload
+            },
+            page
+        );
     },
     
     showProcessing(show, text) {

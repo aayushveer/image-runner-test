@@ -7,13 +7,31 @@
 const App = {
     images: [],
     results: [],
+    utils: null,
     quality: 75,
+    estimationToken: 0,
+    estimateDebounceTimer: null,
     qualityPresets: { low: 85, medium: 75, high: 60 },
     maxImages: 20,
     maxFileSize: 10 * 1024 * 1024,
     el: {},
     
     init() {
+        this.utils = window.ImageRunnerUtils || {
+            formatFileSize: (bytes) => `${bytes} B`,
+            downloadBlob: (blob, fileName) => {
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = fileName;
+                link.click();
+                URL.revokeObjectURL(url);
+            },
+            setActivePage: (pageMap, pageKey) => {
+                Object.values(pageMap).forEach((pageEl) => pageEl?.classList.remove('active'));
+                pageMap[pageKey]?.classList.add('active');
+            }
+        };
         this.cacheElements();
         this.bindEvents();
         this.updateSlider();
@@ -35,6 +53,7 @@ const App = {
             modes: document.querySelectorAll('.mode'),
             qualitySlider: document.getElementById('quality-slider'),
             qualityValue: document.getElementById('quality-value'),
+            qualityEstimate: document.getElementById('quality-estimate'),
             btnCompress: document.getElementById('btn-compress'),
             
             downloadInfo: document.getElementById('download-info'),
@@ -76,6 +95,7 @@ const App = {
             this.quality = parseInt(e.target.value);
             this.el.qualityValue.textContent = this.quality + '%';
             this.updateSlider();
+            this.scheduleEstimateUpdate();
         });
         
         // Compress
@@ -96,11 +116,14 @@ const App = {
     },
     
     showPage(name) {
-        [this.el.pageUpload, this.el.pageEditor, this.el.pageDownload].forEach(p => {
-            if (p) p.classList.remove('active');
-        });
-        const page = document.getElementById('page-' + name);
-        if (page) page.classList.add('active');
+        this.utils.setActivePage(
+            {
+                upload: this.el.pageUpload,
+                editor: this.el.pageEditor,
+                download: this.el.pageDownload
+            },
+            name
+        );
     },
     
     async handleFiles(fileList) {
@@ -133,6 +156,7 @@ const App = {
             this.showPage('editor');
             this.renderImages();
             this.el.btnCompress.disabled = false;
+            this.scheduleEstimateUpdate();
         }
     },
     
@@ -175,9 +199,114 @@ const App = {
         if (this.images.length === 0) {
             this.showPage('upload');
             this.el.btnCompress.disabled = true;
+            if (this.el.qualityEstimate) this.el.qualityEstimate.textContent = 'Estimated output size: —';
         } else {
             this.renderImages();
+            this.scheduleEstimateUpdate();
         }
+    },
+
+    scheduleEstimateUpdate() {
+        if (this.estimateDebounceTimer) {
+            clearTimeout(this.estimateDebounceTimer);
+        }
+
+        this.estimateDebounceTimer = setTimeout(() => {
+            this.updateEstimatedSize();
+        }, 120);
+    },
+
+    async updateEstimatedSize() {
+        if (!this.el.qualityEstimate) return;
+        if (!this.images.length) {
+            this.el.qualityEstimate.textContent = 'Estimated output size: —';
+            return;
+        }
+
+        const token = ++this.estimationToken;
+        const totalOriginal = this.images.reduce((sum, img) => sum + img.size, 0);
+
+        const sample = this.images[0];
+        let sampleRatio = this.getHeuristicRatio(sample, this.quality);
+
+        try {
+            const sampleBlob = await this.createCompressedBlob(sample, this.quality);
+            if (token !== this.estimationToken) return;
+            if (sampleBlob?.size && sample.size > 0) {
+                const measuredRatio = sampleBlob.size / sample.size;
+                const heuristicRatio = this.getHeuristicRatio(sample, this.quality);
+                sampleRatio = (measuredRatio * 0.75) + (heuristicRatio * 0.25);
+            }
+        } catch {
+            // fallback to heuristic only
+        }
+
+        if (token !== this.estimationToken) return;
+
+        const estimatedTotal = this.images.reduce((sum, img) => {
+            const heuristicRatio = this.getHeuristicRatio(img, this.quality);
+            const blendedRatio = (sampleRatio * 0.55) + (heuristicRatio * 0.45);
+            const estimated = Math.max(8 * 1024, Math.round(img.size * blendedRatio));
+            return sum + estimated;
+        }, 0);
+
+        const saved = Math.max(0, totalOriginal - estimatedTotal);
+        const savedPct = totalOriginal > 0 ? Math.round((saved / totalOriginal) * 100) : 0;
+        this.el.qualityEstimate.textContent = `Estimated output size: ${this.formatSize(estimatedTotal)} (save ~${savedPct}%)`;
+    },
+
+    getHeuristicRatio(img, quality) {
+        const q = Math.max(10, Math.min(100, quality)) / 100;
+        const name = (img.name || '').toLowerCase();
+        const type = (img.type || '').toLowerCase();
+
+        if (type.includes('png') || name.endsWith('.png') || type.includes('gif') || name.endsWith('.gif')) {
+            return Math.max(0.22, Math.min(0.9, 0.30 + (q * 0.55)));
+        }
+
+        if (type.includes('webp') || name.endsWith('.webp')) {
+            return Math.max(0.16, Math.min(0.82, 0.12 + Math.pow(q, 1.55) * 0.74));
+        }
+
+        return Math.max(0.14, Math.min(0.88, 0.12 + Math.pow(q, 1.65) * 0.78));
+    },
+
+    createCompressedBlob(img, qualityPercent) {
+        return new Promise((resolve, reject) => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = img.width;
+            canvas.height = img.height;
+
+            const image = new Image();
+            image.onload = () => {
+                ctx.drawImage(image, 0, 0);
+
+                let mimeType = img.type || 'image/jpeg';
+                if (mimeType === 'image/png' || img.name.toLowerCase().endsWith('.png')) mimeType = 'image/png';
+                else if (mimeType === 'image/webp' || img.name.toLowerCase().endsWith('.webp')) mimeType = 'image/webp';
+                else if (mimeType === 'image/gif' || img.name.toLowerCase().endsWith('.gif')) mimeType = 'image/png';
+                else mimeType = 'image/jpeg';
+
+                canvas.toBlob((blob) => {
+                    canvas.width = 0;
+                    canvas.height = 0;
+                    if (!blob) {
+                        reject(new Error('estimate encode failed'));
+                        return;
+                    }
+                    resolve(blob);
+                }, mimeType, qualityPercent / 100);
+            };
+
+            image.onerror = () => {
+                canvas.width = 0;
+                canvas.height = 0;
+                reject(new Error('estimate image load failed'));
+            };
+
+            image.src = img.url;
+        });
     },
     
     async compress() {
@@ -299,13 +428,13 @@ const App = {
         if (!this.results.length) return;
         
         if (this.results.length === 1) {
-            this.downloadBlob(this.results[0].blob, this.results[0].fileName);
+            this.utils.downloadBlob(this.results[0].blob, this.results[0].fileName);
             return;
         }
         
         if (typeof JSZip === 'undefined') {
             for (const r of this.results) {
-                this.downloadBlob(r.blob, r.fileName);
+                this.utils.downloadBlob(r.blob, r.fileName);
                 await this.delay(200);
             }
             return;
@@ -316,18 +445,7 @@ const App = {
         
         const zipBlob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } });
         const date = new Date().toISOString().slice(0, 10);
-        this.downloadBlob(zipBlob, `compressed-images-${date}.zip`);
-    },
-    
-    downloadBlob(blob, name) {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = name;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        this.utils.downloadBlob(zipBlob, `compressed-images-${date}.zip`);
     },
     
     reset() {
@@ -335,6 +453,12 @@ const App = {
         this.results = [];
         this.images.forEach(i => i.url && URL.revokeObjectURL(i.url));
         this.images = [];
+        if (this.estimateDebounceTimer) {
+            clearTimeout(this.estimateDebounceTimer);
+            this.estimateDebounceTimer = null;
+        }
+        this.estimationToken++;
+        if (this.el.qualityEstimate) this.el.qualityEstimate.textContent = 'Estimated output size: —';
         this.showPage('upload');
     },
     
@@ -351,9 +475,7 @@ const App = {
     },
     
     formatSize(bytes) {
-        if (bytes < 1024) return bytes + ' B';
-        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-        return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+        return this.utils.formatFileSize(bytes);
     },
     
     delay(ms) { return new Promise(r => setTimeout(r, ms)); },

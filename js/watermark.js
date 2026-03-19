@@ -7,6 +7,7 @@
 const App = {
     images: [],
     results: [],
+    utils: null,
     currentIdx: 0,
     logoImage: null,
     settings: {
@@ -26,6 +27,20 @@ const App = {
     el: {},
     
     init() {
+        this.utils = window.ImageRunnerUtils || {
+            downloadBlob: (blob, fileName) => {
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = fileName;
+                link.click();
+                URL.revokeObjectURL(url);
+            },
+            setActivePage: (pageMap, pageKey) => {
+                Object.values(pageMap).forEach((pageEl) => pageEl?.classList.remove('active'));
+                pageMap[pageKey]?.classList.add('active');
+            }
+        };
         this.cacheElements();
         this.bindEvents();
         this.updatePreview();
@@ -183,11 +198,14 @@ const App = {
     },
     
     showPage(name) {
-        [this.el.pageUpload, this.el.pageEditor, this.el.pageDownload].forEach(p => {
-            if (p) p.classList.remove('active');
-        });
-        const page = document.getElementById('page-' + name);
-        if (page) page.classList.add('active');
+        this.utils.setActivePage(
+            {
+                upload: this.el.pageUpload,
+                editor: this.el.pageEditor,
+                download: this.el.pageDownload
+            },
+            name
+        );
     },
     
     async handleFiles(fileList) {
@@ -523,13 +541,13 @@ const App = {
         if (!this.results.length) return;
         
         if (this.results.length === 1) {
-            this.downloadBlob(this.results[0].blob, this.results[0].fileName);
+            this.utils.downloadBlob(this.results[0].blob, this.results[0].fileName);
             return;
         }
         
         if (typeof JSZip === 'undefined') {
             for (const r of this.results) {
-                this.downloadBlob(r.blob, r.fileName);
+                this.utils.downloadBlob(r.blob, r.fileName);
                 await this.delay(200);
             }
             return;
@@ -540,18 +558,7 @@ const App = {
         
         const zipBlob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } });
         const date = new Date().toISOString().slice(0, 10);
-        this.downloadBlob(zipBlob, `watermarked-images-${date}.zip`);
-    },
-    
-    downloadBlob(blob, name) {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = name;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        this.utils.downloadBlob(zipBlob, `watermarked-images-${date}.zip`);
     },
     
     reset() {

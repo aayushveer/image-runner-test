@@ -7,6 +7,7 @@
 const App = {
     images: [],
     results: [],
+    utils: null,
     currentIdx: 0,
     
     // Settings
@@ -25,6 +26,20 @@ const App = {
     el: {},
     
     init() {
+        this.utils = window.ImageRunnerUtils || {
+            downloadBlob: (blob, fileName) => {
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = fileName;
+                link.click();
+                URL.revokeObjectURL(url);
+            },
+            setActivePage: (pageMap, pageKey) => {
+                Object.values(pageMap).forEach((pageEl) => pageEl?.classList.remove('active'));
+                pageMap[pageKey]?.classList.add('active');
+            }
+        };
         this.cacheElements();
         this.bindEvents();
     },
@@ -151,11 +166,14 @@ const App = {
     },
     
     showPage(name) {
-        [this.el.pageUpload, this.el.pageEditor, this.el.pageDownload].forEach(p => {
-            if (p) p.classList.remove('active');
-        });
-        const page = document.getElementById('page-' + name);
-        if (page) page.classList.add('active');
+        this.utils.setActivePage(
+            {
+                upload: this.el.pageUpload,
+                editor: this.el.pageEditor,
+                download: this.el.pageDownload
+            },
+            name
+        );
     },
     
     async handleFiles(fileList) {
@@ -446,14 +464,7 @@ const App = {
     },
     
     downloadBlob(blob, name) {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = name;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        this.utils.downloadBlob(blob, name);
     },
     
     reset() {

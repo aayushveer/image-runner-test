@@ -257,6 +257,7 @@ img, svg { display: block; max-width: 100%; }
 }
 
 .quality-labels { display: flex; justify-content: space-between; margin-top: 6px; font-size: 11px; color: var(--text-muted); }
+.quality-estimate { margin-top: 10px; font-size: 12px; color: var(--text-secondary); }
 
 /* Compress Button */
 .compress-btn {

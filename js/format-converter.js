@@ -7,6 +7,23 @@
 (function() {
     'use strict';
 
+    const utils = window.ImageRunnerUtils || {
+        formatFileSize: (bytes) => `${bytes} B`,
+        escapeHtml: (text) => String(text ?? ''),
+        downloadBlob: (blob, fileName) => {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = fileName;
+            link.click();
+            URL.revokeObjectURL(url);
+        },
+        setActivePage: (pageMap, pageKey) => {
+            Object.values(pageMap).forEach((pageEl) => pageEl?.classList.remove('active'));
+            pageMap[pageKey]?.classList.add('active');
+        }
+    };
+
     // State
     const state = {
         images: [],
@@ -367,13 +384,8 @@
     window.downloadSingle = function(index) {
         const item = state.converted.filter(c => !c.error)[index];
         if (!item || !item.blob) return;
-        
-        const url = URL.createObjectURL(item.blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = item.name;
-        a.click();
-        URL.revokeObjectURL(url);
+
+        utils.downloadBlob(item.blob, item.name);
     };
 
     // Download all as ZIP
@@ -413,13 +425,8 @@
         updateProgress(successful.length, successful.length, 'Generating ZIP file...');
         
         const zipBlob = await zip.generateAsync({ type: 'blob' });
-        
-        const url = URL.createObjectURL(zipBlob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `converted-images-${state.format}.zip`;
-        a.click();
-        URL.revokeObjectURL(url);
+
+        utils.downloadBlob(zipBlob, `converted-images-${state.format}.zip`);
         
         showProcessing(false);
     }
@@ -446,21 +453,14 @@
 
     // Page navigation
     function showPage(page) {
-        elements.pageUpload.classList.remove('active');
-        elements.pageConvert.classList.remove('active');
-        elements.pageDownload.classList.remove('active');
-        
-        switch(page) {
-            case 'upload':
-                elements.pageUpload.classList.add('active');
-                break;
-            case 'convert':
-                elements.pageConvert.classList.add('active');
-                break;
-            case 'download':
-                elements.pageDownload.classList.add('active');
-                break;
-        }
+        utils.setActivePage(
+            {
+                upload: elements.pageUpload,
+                convert: elements.pageConvert,
+                download: elements.pageDownload
+            },
+            page
+        );
     }
 
     // Processing overlay
@@ -490,9 +490,7 @@
     }
 
     function formatSize(bytes) {
-        if (bytes < 1024) return bytes + ' B';
-        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-        return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        return utils.formatFileSize(bytes);
     }
 
     function delay(ms) {

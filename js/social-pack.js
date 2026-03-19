@@ -37,6 +37,17 @@ const PLATFORM_SIZES = {
     'pin-square': { name: 'Pinterest Square', platform: 'Pinterest', width: 1000, height: 1000 }
 };
 
+const utils = window.ImageRunnerUtils || {
+    downloadBlob: (blob, fileName) => {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        link.click();
+        URL.revokeObjectURL(url);
+    }
+};
+
 // =====================================================
 // STATE
 // =====================================================
@@ -421,13 +432,9 @@ function displayResults(duration) {
 function downloadSingle(sizeKey) {
     const data = state.generatedImages.get(sizeKey);
     if (!data) return;
-    
-    const link = document.createElement('a');
-    link.href = data.dataUrl;
-    link.download = `${data.config.name.toLowerCase().replace(/\s+/g, '-')}.jpg`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+
+    const fileName = `${data.config.name.toLowerCase().replace(/\s+/g, '-')}.jpg`;
+    utils.downloadBlob(data.blob, fileName);
     
     showToast('Downloaded!');
 }
@@ -462,13 +469,7 @@ elements.downloadAllBtn.addEventListener('click', async () => {
         });
         
         // Download
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(content);
-        link.download = 'social-pack.zip';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(link.href);
+        utils.downloadBlob(content, 'social-pack.zip');
         
         showToast('ZIP downloaded successfully!');
         incrementCounter();

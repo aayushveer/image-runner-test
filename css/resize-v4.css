@@ -102,18 +102,13 @@ img, svg { display: block; max-width: 100%; }
 .upload-hint { margin-top: 16px; font-size: 14px; color: var(--text-muted); }
 
 /* Editor Page */
-#page-editor.active { display: flex !important; align-items: stretch; justify-content: stretch; }
+#page-editor.active { display: flex !important; align-items: stretch; justify-content: stretch; width: 100%; }
 
 .editor {
     display: flex;
     width: 100%;
-    max-width: 960px;
-    margin: 20px auto;
     background: var(--bg-white);
-    border-radius: var(--radius-lg);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    overflow: hidden;
-    max-height: calc(100vh - 100px);
+    min-height: calc(100vh - 71px);
 }
 
 /* Preview Area */
@@ -241,6 +236,7 @@ img, svg { display: block; max-width: 100%; }
     flex-direction: column;
     overflow-y: auto;
     background: var(--bg-white);
+    border-left: 1px solid var(--border);
 }
 
 .settings-title {
@@ -736,13 +732,15 @@ img, svg { display: block; max-width: 100%; }
 @media (max-width: 900px) {
     .editor {
         flex-direction: column;
-        margin: 20px;
-        max-height: none;
+        margin: 0;
+        min-height: auto;
     }
-    
+
     .editor__settings {
         width: 100%;
         max-height: none;
+        border-left: none;
+        border-top: 1px solid var(--border);
     }
     
     .nav { display: none; }

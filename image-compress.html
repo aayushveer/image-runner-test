@@ -16,7 +16,7 @@
     
     <!-- Open Graph -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://www.imgrunner.com/image-compress">
+    <meta property="og:url" content="https://www.imgrunner.com/image-compress.html">
     <meta property="og:title" content="Compress Images Online Free | Reduce Size 90% | Image Runner">
     <meta property="og:description" content="Reduce image file size by up to 90% without quality loss. Batch compress multiple photos. 100% private - never uploaded.">
     <meta property="og:image" content="https://www.imgrunner.com/og-compress.jpg">
@@ -179,6 +179,7 @@
                         <span>Smaller file</span>
                         <span>Better quality</span>
                     </div>
+                    <p class="quality-estimate" id="quality-estimate" aria-live="polite">Estimated output size: —</p>
                 </div>
                 
                 <button class="compress-btn" id="btn-compress" disabled>
@@ -355,6 +356,7 @@
             alert('Link copied!');
         }
     </script>
+    <script src="js/shared-utils.js"></script>
     <script src="js/compress-v2.js"></script>
     
     <script src="js/bug-report.js" defer></script>

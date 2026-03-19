@@ -7,6 +7,7 @@
 
 const App = {
     image: null,
+    utils: null,
     canvas: null,
     ctx: null,
     fullCtx: null,
@@ -27,6 +28,20 @@ const App = {
     el: {},
     
     init() {
+        this.utils = window.ImageRunnerUtils || {
+            downloadBlob: (blob, fileName) => {
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = fileName;
+                link.click();
+                URL.revokeObjectURL(url);
+            },
+            setActivePage: (pageMap, pageKey) => {
+                Object.values(pageMap).forEach((pageEl) => pageEl?.classList.remove('active'));
+                pageMap[pageKey]?.classList.add('active');
+            }
+        };
         this.cacheElements();
         this.createCanvas();
         this.bindEvents();
@@ -376,14 +391,7 @@ const App = {
         
         // Download
         const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'picked-colors.png';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        this.utils.downloadBlob(blob, 'picked-colors.png');
         
         this.showToast('Downloaded picked colors!');
     },
@@ -724,22 +732,17 @@ const App = {
         
         // Download
         const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'color-palette.png';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        this.utils.downloadBlob(blob, 'color-palette.png');
     },
     
     showPage(page) {
-        this.el.pageUpload.classList.remove('active');
-        this.el.pageResults.classList.remove('active');
-        
-        if (page === 'upload') this.el.pageUpload.classList.add('active');
-        else if (page === 'results') this.el.pageResults.classList.add('active');
+        this.utils.setActivePage(
+            {
+                upload: this.el.pageUpload,
+                results: this.el.pageResults
+            },
+            page
+        );
     },
     
     showProcessing(show) {

@@ -7,6 +7,21 @@
 (function() {
     'use strict';
 
+    const utils = window.ImageRunnerUtils || {
+        downloadBlob: (blob, fileName) => {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = fileName;
+            link.click();
+            URL.revokeObjectURL(url);
+        },
+        setActivePage: (pageMap, pageKey) => {
+            Object.values(pageMap).forEach((pageEl) => pageEl?.classList.remove('active'));
+            pageMap[pageKey]?.classList.add('active');
+        }
+    };
+
     // Document Specifications
     const SPECS = {
         // Indian Passport & Visa
@@ -1113,22 +1128,12 @@
     // Download
     function downloadPhoto() {
         if (!state.resultBlob) return;
-        const url = URL.createObjectURL(state.resultBlob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `passport-photo-${state.spec}.jpg`;
-        a.click();
-        URL.revokeObjectURL(url);
+        utils.downloadBlob(state.resultBlob, `passport-photo-${state.spec}.jpg`);
     }
 
     function downloadPrintLayout() {
         if (!state.printBlob) return;
-        const url = URL.createObjectURL(state.printBlob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `passport-photos-a4-${state.photoCount}pcs.jpg`;
-        a.click();
-        URL.revokeObjectURL(url);
+        utils.downloadBlob(state.printBlob, `passport-photos-a4-${state.photoCount}pcs.jpg`);
     }
 
     // Reset
@@ -1144,16 +1149,15 @@
     // Page navigation
     function showPage(page) {
         state.currentPage = page; // Track current page for back navigation
-        
-        el.pageUpload.classList.remove('active');
-        el.pageEdit.classList.remove('active');
-        el.pageDownload.classList.remove('active');
-        
-        switch(page) {
-            case 'upload': el.pageUpload.classList.add('active'); break;
-            case 'edit': el.pageEdit.classList.add('active'); break;
-            case 'download': el.pageDownload.classList.add('active'); break;
-        }
+
+        utils.setActivePage(
+            {
+                upload: el.pageUpload,
+                edit: el.pageEdit,
+                download: el.pageDownload
+            },
+            page
+        );
     }
     
     // Back button handler - navigate within tool flow

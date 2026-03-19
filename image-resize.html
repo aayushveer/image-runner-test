@@ -16,7 +16,7 @@
     
     <!-- Open Graph -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://www.imgrunner.com/image-resize">
+    <meta property="og:url" content="https://www.imgrunner.com/image-resize.html">
     <meta property="og:title" content="Resize Images Online Free | Batch Photo Resizer | Image Runner">
     <meta property="og:description" content="Change image dimensions instantly. Batch resize multiple photos. Supports all formats. 100% private - images never uploaded.">
     <meta property="og:image" content="https://www.imgrunner.com/og-resize.jpg">
@@ -424,7 +424,7 @@
                 
                 <details style="background: white; border-radius: 10px; padding: 15px 20px; margin-bottom: 10px; border: 1px solid #e5e5e5;">
                     <summary style="font-weight: 600; cursor: pointer; color: #333;">Image ko 50KB ya 100KB mein resize kaise karein?</summary>
-                    <p style="margin-top: 10px; color: #666; line-height: 1.6;">Specific KB size के लिए हमारा <a href="image-size-increaser.html" style="color: #4a90d9;">Image Size Increaser</a> या <a href="image-compress.html" style="color: #4a90d9;">Image Compressor</a> tool use करें। वहां exact KB size set कर सकते हैं।</p>
+                    <p style="margin-top: 10px; color: #666; line-height: 1.6;">Specific KB target के लिए पहले dimensions सही करें, फिर <a href="image-compress.html" style="color: #4a90d9;">Image Compressor</a> से quality adjust करके required range hit करें। Passport/document use-case के लिए <a href="passport-photo.html" style="color: #4a90d9;">Passport Photo Maker</a> best रहता है।</p>
                 </details>
                 
                 <details style="background: white; border-radius: 10px; padding: 15px 20px; margin-bottom: 10px; border: 1px solid #e5e5e5;">
@@ -446,17 +446,17 @@
                         <strong style="display: block; margin-bottom: 5px;">Image Compressor</strong>
                         <span style="font-size: 13px; color: #666;">Reduce file size without losing quality</span>
                     </a>
-                    <a href="image-size-increaser.html" style="display: block; padding: 20px; background: white; border-radius: 10px; border: 1px solid #e5e5e5; text-decoration: none; color: #333; transition: all 0.2s;">
-                        <strong style="display: block; margin-bottom: 5px;">Increase Image Size</strong>
-                        <span style="font-size: 13px; color: #666;">Increase image to specific KB</span>
+                    <a href="format-converter.html" style="display: block; padding: 20px; background: white; border-radius: 10px; border: 1px solid #e5e5e5; text-decoration: none; color: #333; transition: all 0.2s;">
+                        <strong style="display: block; margin-bottom: 5px;">Format Converter</strong>
+                        <span style="font-size: 13px; color: #666;">JPG, PNG, WebP format conversion</span>
                     </a>
                     <a href="passport-photo.html" style="display: block; padding: 20px; background: white; border-radius: 10px; border: 1px solid #e5e5e5; text-decoration: none; color: #333; transition: all 0.2s;">
                         <strong style="display: block; margin-bottom: 5px;">Passport Photo Maker</strong>
                         <span style="font-size: 13px; color: #666;">Create passport size photos</span>
                     </a>
-                    <a href="dp-resizer.html" style="display: block; padding: 20px; background: white; border-radius: 10px; border: 1px solid #e5e5e5; text-decoration: none; color: #333; transition: all 0.2s;">
-                        <strong style="display: block; margin-bottom: 5px;">DP Resizer</strong>
-                        <span style="font-size: 13px; color: #666;">Profile pictures for social media</span>
+                    <a href="photo-collage.html" style="display: block; padding: 20px; background: white; border-radius: 10px; border: 1px solid #e5e5e5; text-decoration: none; color: #333; transition: all 0.2s;">
+                        <strong style="display: block; margin-bottom: 5px;">Photo Collage</strong>
+                        <span style="font-size: 13px; color: #666;">Create social-ready photo grids</span>
                     </a>
                 </div>
             </article>
@@ -477,6 +477,7 @@
         function shareOnWhatsApp() { window.open('https://wa.me/?text=' + encodeURIComponent('Free image resizer: ' + window.location.href), '_blank'); }
         function copyLink() { navigator.clipboard.writeText(window.location.href); alert('Link copied!'); }
     </script>
+    <script src="js/shared-utils.js"></script>
     <script src="js/resize-v4.js"></script>
     
     <script src="js/bug-report.js" defer></script>
