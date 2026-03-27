@@ -146,6 +146,76 @@
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 14px;
         }
+        .tool-categories {
+            display: grid;
+            gap: 18px;
+            margin-bottom: 18px;
+        }
+        .tool-category {
+            background: #ffffff;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 18px;
+        }
+        .tool-category__head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .tool-category__title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+        .tool-category__meta {
+            font-size: 12px;
+            font-weight: 700;
+            color: #1d4ed8;
+            background: #dbeafe;
+            border-radius: 999px;
+            padding: 5px 10px;
+            white-space: nowrap;
+        }
+        .tool-category__desc {
+            color: var(--muted);
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        .hub-widget {
+            background: #f8fafc;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 10px;
+            margin-bottom: 12px;
+        }
+        .hub-widget__title {
+            font-size: 12px;
+            color: #334155;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: 0.2px;
+        }
+        .hub-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .hub-links a {
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 700;
+            color: #1d4ed8;
+            background: #eff6ff;
+            border: 1px solid #dbeafe;
+            border-radius: 999px;
+            padding: 6px 10px;
+        }
+        .hub-links a:hover {
+            background: #dbeafe;
+            color: #1e40af;
+        }
         .card {
             background: var(--card);
             border: 1px solid #cbd5e1;
@@ -279,10 +349,14 @@
             </a>
             <nav class="nav" aria-label="Top navigation">
                 <a href="image-compress.html">Compress</a>
+                <a href="compress-pdf.html">Compress PDF</a>
+                <a href="split-pdf.html">Split PDF</a>
+                <a href="rotate-pdf.html">Rotate PDF</a>
                 <a href="image-resize.html">Resize</a>
                 <a href="background-remover.html">BG Remove</a>
                 <a href="format-converter.html">Convert</a>
                 <a href="image-to-pdf.html">Image to PDF</a>
+                <a href="merge-pdf.html">Merge PDF</a>
                 <a href="passport-photo.html">Passport Photo</a>
             </nav>
         </div>
@@ -310,18 +384,67 @@
         <section id="tools" class="tools">
             <div class="container">
                 <h2 class="reveal">Core Tool Suite</h2>
-                <p class="reveal">Only high-value tools are kept for better quality, cleaner UX, and easier maintenance.</p>
-                <div class="grid">
-                    <a class="card reveal" href="image-compress.html"><div class="icon">🗜️</div><h3>Image Compress</h3><p>Reduce image size while preserving quality.</p></a>
-                    <a class="card reveal" href="background-remover.html"><div class="icon">✂️</div><h3>Background Remover</h3><p>AI cutout with hair-edge refine and transparent PNG export.</p></a>
-                    <a class="card reveal" href="image-resize.html"><div class="icon">📐</div><h3>Image Resize</h3><p>Set exact dimensions for web and social media.</p></a>
-                    <a class="card reveal" href="format-converter.html"><div class="icon">🔄</div><h3>Format Converter</h3><p>Convert JPG, PNG, and WebP formats quickly.</p></a>
-                    <a class="card reveal" href="add-watermark.html"><div class="icon">🛡️</div><h3>Watermark Tool</h3><p>Add text/logo watermarks in batch.</p></a>
-                    <a class="card reveal" href="image-to-pdf.html"><div class="icon">📄</div><h3>Image to PDF</h3><p>Merge multiple images into one PDF.</p></a>
-                    <a class="card reveal" href="pdf-to-image.html"><div class="icon">🧩</div><h3>PDF to Image</h3><p>Extract pages as JPG/PNG instantly.</p></a>
-                    <a class="card reveal" href="passport-photo.html"><div class="icon">🪪</div><h3>Passport Photo</h3><p>Create visa/passport-ready photos.</p></a>
-                    <a class="card reveal" href="photo-collage.html"><div class="icon">🖼️</div><h3>Photo Collage</h3><p>Build clean multi-photo layouts easily.</p></a>
-                    <a class="card reveal" href="color-palette.html"><div class="icon">🎨</div><h3>Color Picker</h3><p>Extract HEX/RGB/HSL palettes from images.</p></a>
+                <p class="reveal">14 production-ready tools organized by workflow so teams can pick the right utility faster.</p>
+
+                <div class="tool-categories">
+                    <section class="tool-category reveal" aria-label="PDF Tools">
+                        <div class="tool-category__head">
+                            <h3 class="tool-category__title">PDF Tools</h3>
+                            <span class="tool-category__meta">5 tools</span>
+                        </div>
+                        <p class="tool-category__desc">Document assembly, compression, page extraction, rotation, and PDF page exports.</p>
+                        <div class="hub-widget" aria-label="Top PDF use case hubs">
+                            <div class="hub-widget__title">Top Use-Case Hubs</div>
+                            <div class="hub-links">
+                                <a href="merge-pdf-use-cases.html">Merge PDF Hub</a>
+                                <a href="compress-pdf-use-cases.html">Compress PDF Hub</a>
+                            </div>
+                        </div>
+                        <div class="grid">
+                            <a class="card" href="merge-pdf.html"><div class="icon">📎</div><h3>Merge PDF</h3><p>Combine multiple PDF files into one document.</p></a>
+                            <a class="card" href="compress-pdf.html"><div class="icon">📉</div><h3>Compress PDF</h3><p>Reduce PDF size with quality presets and page selection.</p></a>
+                            <a class="card" href="split-pdf.html"><div class="icon">✂️</div><h3>Split PDF</h3><p>Extract selected pages, ranges, or each page separately.</p></a>
+                            <a class="card" href="rotate-pdf.html"><div class="icon">🧭</div><h3>Rotate PDF</h3><p>Rotate all pages or selected pages by 90° or 180°.</p></a>
+                            <a class="card" href="pdf-to-image.html"><div class="icon">🧩</div><h3>PDF to Image</h3><p>Extract pages as JPG or PNG instantly.</p></a>
+                        </div>
+                    </section>
+
+                    <section class="tool-category reveal" aria-label="Image Essentials">
+                        <div class="tool-category__head">
+                            <h3 class="tool-category__title">Image Essentials</h3>
+                            <span class="tool-category__meta">5 tools</span>
+                        </div>
+                        <p class="tool-category__desc">Core optimization and conversion tools for everyday image production workflows.</p>
+                        <div class="hub-widget" aria-label="Top image use case hubs">
+                            <div class="hub-widget__title">Top Use-Case Hubs</div>
+                            <div class="hub-links">
+                                <a href="image-compress-use-cases.html">Image Compress Hub</a>
+                                <a href="resize-image-use-cases.html">Resize Image Hub</a>
+                                <a href="convert-image-format-use-cases.html">Convert Format Hub</a>
+                            </div>
+                        </div>
+                        <div class="grid">
+                            <a class="card" href="image-compress.html"><div class="icon">🗜️</div><h3>Image Compress</h3><p>Reduce image size while preserving quality.</p></a>
+                            <a class="card" href="image-resize.html"><div class="icon">📐</div><h3>Image Resize</h3><p>Set exact dimensions for web and social media.</p></a>
+                            <a class="card" href="format-converter.html"><div class="icon">🔄</div><h3>Format Converter</h3><p>Convert JPG, PNG, and WebP formats quickly.</p></a>
+                            <a class="card" href="background-remover.html"><div class="icon">✂️</div><h3>Background Remover</h3><p>AI cutout with hair-edge refine and transparent PNG export.</p></a>
+                            <a class="card" href="image-to-pdf.html"><div class="icon">📄</div><h3>Image to PDF</h3><p>Merge multiple images into one PDF.</p></a>
+                        </div>
+                    </section>
+
+                    <section class="tool-category reveal" aria-label="Creative and Utility">
+                        <div class="tool-category__head">
+                            <h3 class="tool-category__title">Creative and Utility</h3>
+                            <span class="tool-category__meta">4 tools</span>
+                        </div>
+                        <p class="tool-category__desc">Branding, identity assets, visual planning, and collage composition.</p>
+                        <div class="grid">
+                            <a class="card" href="add-watermark.html"><div class="icon">🛡️</div><h3>Watermark Tool</h3><p>Add text or logo watermarks in batch.</p></a>
+                            <a class="card" href="passport-photo.html"><div class="icon">🪪</div><h3>Passport Photo</h3><p>Create visa and passport-ready photos.</p></a>
+                            <a class="card" href="photo-collage.html"><div class="icon">🖼️</div><h3>Photo Collage</h3><p>Build clean multi-photo layouts easily.</p></a>
+                            <a class="card" href="color-palette.html"><div class="icon">🎨</div><h3>Color Picker</h3><p>Extract HEX, RGB, and HSL palettes from images.</p></a>
+                        </div>
+                    </section>
                 </div>
 
                 <div class="why">

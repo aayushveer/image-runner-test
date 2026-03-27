@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>AI Background Remover Free Online | Hair Detail Cutout | Image Runner</title>
+    <meta name="description" content="Remove image background automatically in your browser with AI. Smart one-time model load, batch support, hair-friendly edge refine, transparent PNG output. 100% private processing.">
+    <meta name="keywords" content="background remover, remove background, ai background remover, hair cutout, transparent png, browser background remover, free remove bg">
+    <meta name="author" content="Image Runner">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.imgrunner.com/background-remover.html">
+    <meta property="og:title" content="AI Background Remover Free | Hair Detail Cutout">
+    <meta property="og:description" content="One-click background removal with browser-based AI. Batch mode, edge refine, transparent PNG.">
+    <meta property="og:site_name" content="Image Runner">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AI Background Remover Free | Image Runner">
+    <meta name="twitter:description" content="Remove image backgrounds instantly. Hair-friendly edges, batch support, private processing.">
+
+    <link rel="canonical" href="https://www.imgrunner.com/background-remover.html">
+    <meta name="theme-color" content="#ffffff">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "@id": "https://www.imgrunner.com/background-remover.html#app",
+          "name": "AI Background Remover - Image Runner",
+          "description": "Remove image background automatically in browser with AI. Transparent PNG output, hair-friendly edge refine, and batch support.",
+          "url": "https://www.imgrunner.com/background-remover.html",
+          "applicationCategory": "MultimediaApplication",
+          "operatingSystem": "Web Browser",
+          "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+          "featureList": [
+            "One-click background removal",
+            "Hair edge refine controls",
+            "Transparent PNG export",
+            "Batch processing",
+            "100% browser processing"
+          ]
+        }
+      ]
+    }
+    </script>
+
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='6' width='28' height='20' rx='3' fill='none' stroke='%234a90d9' stroke-width='2.5'/%3E%3Ccircle cx='11' cy='13' r='3' fill='%234a90d9'/%3E%3Cpath d='M7 22L13 16L17 20L25 12' stroke='%234a90d9' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"></noscript>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+
+    <link rel="stylesheet" href="../../css/background-remover.css">
+    <link rel="preload" href="../../css/animations.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="../../css/animations.css"></noscript>
+</head>
+<body>
+    <header class="header">
+        <div class="container header__inner">
+            <a href="../../index.html" class="back-btn" id="tool-back-btn" title="Go Back">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+            </a>
+            <a href="../../index.html" class="logo">
+                <svg class="logo__icon" viewBox="0 0 32 32" fill="none">
+                    <rect x="2" y="6" width="28" height="20" rx="3" stroke="currentColor" stroke-width="2.5"/>
+                    <circle cx="11" cy="13" r="3" fill="currentColor"/>
+                    <path d="M7 22L13 16L17 20L25 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="logo__text">Image Runner</span>
+            </a>
+
+            <nav class="nav">
+                <a href="../image-resizer/index.html" class="nav__link">Resize</a>
+                <a href="../image-compressor/index.html" class="nav__link">Compress</a>
+                <a href="index.html" class="nav__link nav__link--active">BG Remove</a>
+                <a href="../format-converter/index.html" class="nav__link">Convert</a>
+                <a href="../passport-photo-maker/index.html" class="nav__link">Passport</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="page active" id="page-upload">
+        <div class="container">
+            <div class="upload-box">
+                <h1 class="upload-title">AI Background Remover</h1>
+                <p class="upload-desc">Upload one image → AI auto cutout → customize background → download PNG/JPG. Fast and stable workflow.</p>
+
+                <div class="status-chip" id="model-status">Getting ready…</div>
+                <div class="status-track" id="status-track" aria-label="Tool status">
+                    <span class="status-dot status-dot--active" id="status-ready">Ready</span>
+                    <span class="status-dot" id="status-processing">Processing</span>
+                    <span class="status-dot" id="status-completed">Completed</span>
+                </div>
+
+                <div class="dropzone" id="dropzone">
+                    <div class="dropzone__icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M12 15V5m0 0l-3.5 3.5M12 5l3.5 3.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M5 15.5a3.5 3.5 0 1 0 .4 6.98h12.45A3.5 3.5 0 1 0 18 15.5" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <label class="upload-btn">
+                        <input type="file" id="file-input" accept="image/*" multiple hidden>
+                        Select image
+                    </label>
+                    <p class="upload-hint">or drag and drop one image</p>
+                    <p class="upload-subhint">Best results: clear subject, good contrast background</p>
+                    <div class="upload-progress" id="upload-progress" aria-hidden="true">
+                        <div class="upload-progress__label" id="upload-progress-label">Uploading image…</div>
+                        <div class="progress"><div class="progress__bar" id="upload-progress-bar"></div></div>
+                    </div>
+                </div>
+                <p class="upload-feedback" id="upload-feedback" role="status" aria-live="polite"></p>
+            </div>
+        </div>
+    </main>
+
+    <section class="page" id="page-editor">
+        <div class="editor container">
+            <div class="editor__images">
+                <div class="editor__header">
+                    <div class="preview-tools">
+                        <button class="preview-btn" id="zoom-out" type="button">−</button>
+                        <span class="preview-zoom" id="preview-zoom">100%</span>
+                        <button class="preview-btn" id="zoom-in" type="button">+</button>
+                        <button class="preview-btn preview-btn--ghost" id="zoom-reset" type="button">Reset</button>
+                    </div>
+                    <label class="add-btn">
+                        + Add more
+                        <input type="file" id="file-input-more" accept="image/*" multiple hidden>
+                    </label>
+                </div>
+
+                <div class="image-list" id="image-list"></div>
+            </div>
+
+            <aside class="editor__panel">
+                <h2 class="panel-title">Adjust & Process</h2>
+
+                <div class="group">
+                    <label class="label">Output background</label>
+                    <div class="bg-options" id="bg-options">
+                        <button class="bg-btn active" data-bg="transparent">Transparent</button>
+                        <button class="bg-btn" data-bg="#ffffff">White</button>
+                        <button class="bg-btn" data-bg="#000000">Black</button>
+                        <button class="bg-btn" data-bg="custom-color">Custom Color</button>
+                        <button class="bg-btn" data-bg="custom-image">Custom Image</button>
+                    </div>
+                </div>
+
+                <div class="group">
+                    <label class="label" for="bg-custom-color">Custom background color</label>
+                    <input type="color" id="bg-custom-color" value="#f4f4f5">
+                </div>
+
+                <div class="group">
+                    <label class="label">Custom background image</label>
+                    <label class="add-btn">
+                        Upload background
+                        <input type="file" id="bg-custom-image" accept="image/*" hidden>
+                    </label>
+                    <p class="panel-note" id="bg-image-name">No custom background selected.</p>
+                </div>
+
+                <div class="group">
+                    <label class="label" for="edge-softness">Hair Edge Softness <span id="edge-softness-value">2</span></label>
+                    <input type="range" id="edge-softness" min="0" max="6" value="2">
+                </div>
+
+                <div class="group">
+                    <label class="label" for="alpha-boost">Foreground Strength <span id="alpha-boost-value">12</span></label>
+                    <input type="range" id="alpha-boost" min="0" max="30" value="12">
+                </div>
+
+                <button class="btn-process" id="btn-process">Remove Background</button>
+                <button class="btn-download-inline" id="btn-download-inline" disabled>Download PNG</button>
+                <p class="panel-note" id="editor-status">Upload ke baad preview check karo, phir Remove Background dabao.</p>
+            </aside>
+        </div>
+    </section>
+
+    <section class="page" id="page-download">
+        <div class="container download-box">
+            <h2>Background Removed ✅</h2>
+            <p id="download-info">0 images processed</p>
+            <div class="results-list" id="results-list"></div>
+            <div class="actions">
+                <button class="btn-download" id="btn-download">Download PNG</button>
+                <button class="btn-more" id="btn-more">Process more</button>
+            </div>
+            <p class="download-feedback" id="download-feedback" role="status" aria-live="polite"></p>
+        </div>
+    </section>
+
+    <div class="processing" id="processing">
+        <div class="processing__box">
+            <div class="spinner"></div>
+            <div class="processing__text" id="processing-text">Removing background…</div>
+            <div class="progress"><div class="progress__bar" id="progress-bar"></div></div>
+        </div>
+    </div>
+
+    <div class="ui-alert" id="ui-alert" role="alert" aria-live="assertive"></div>
+
+    <script src="../../js/shared-utils.js"></script>
+    <script type="module" src="../../js/background-remover.js"></script>
+    <script src="../../js/bug-report.js" defer></script>
+</body>
+</html>

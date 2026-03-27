@@ -15,7 +15,9 @@ const App = {
         pageSize: 'a4',
         orientation: 'portrait',
         margin: 10,
-        fit: 'contain'
+        fit: 'contain',
+        signatureEnabled: false,
+        signatureText: ''
     },
     pageSizes: {
         a4: [210, 297],
@@ -64,6 +66,8 @@ const App = {
             orientBtns: document.querySelectorAll('.orient-btn'),
             marginBtns: document.querySelectorAll('.margin-btn'),
             fitBtns: document.querySelectorAll('.fit-btn'),
+            signatureEnabled: document.getElementById('signature-enabled'),
+            signatureText: document.getElementById('signature-text'),
             btnConvert: document.getElementById('btn-convert'),
             
             downloadInfo: document.getElementById('download-info'),
@@ -126,6 +130,25 @@ const App = {
                 this.settings.fit = btn.dataset.fit;
             });
         });
+
+        if (this.el.signatureEnabled) {
+            this.el.signatureEnabled.addEventListener('change', (e) => {
+                this.settings.signatureEnabled = e.target.checked;
+                if (this.el.signatureText) {
+                    this.el.signatureText.disabled = !e.target.checked;
+                    if (!e.target.checked) {
+                        this.el.signatureText.value = '';
+                        this.settings.signatureText = '';
+                    }
+                }
+            });
+        }
+
+        if (this.el.signatureText) {
+            this.el.signatureText.addEventListener('input', (e) => {
+                this.settings.signatureText = e.target.value;
+            });
+        }
         
         // Convert
         this.el.btnConvert?.addEventListener('click', () => this.convert());
@@ -408,6 +431,10 @@ const App = {
                 }
                 
                 pdf.addImage(imgData, 'JPEG', imgX, imgY, imgW, imgH);
+
+                if (this.settings.signatureEnabled && this.settings.signatureText.trim()) {
+                    this.drawSignature(pdf, pageWidth, margin);
+                }
                 
                 await this.delay(20);
             }
@@ -475,10 +502,25 @@ const App = {
             resolve(dataUrl);
         });
     },
+
+    drawSignature(pdf, pageWidth, margin) {
+        const text = this.settings.signatureText.trim();
+        if (!text) return;
+
+        const x = pageWidth - Math.max(6, margin);
+        const y = Math.max(8, margin * 0.8);
+        pdf.setTextColor(25, 25, 25);
+        pdf.setFont('helvetica', 'italic');
+        pdf.setFontSize(11);
+        pdf.text(text, x, y, { align: 'right' });
+    },
     
     showDownload() {
         const count = this.images.length;
-        this.el.downloadInfo.textContent = `${count} image${count > 1 ? 's' : ''} merged into 1 PDF`;
+        const signed = this.settings.signatureEnabled && this.settings.signatureText.trim();
+        this.el.downloadInfo.textContent = signed
+            ? `${count} image${count > 1 ? 's' : ''} merged with signature on every page`
+            : `${count} image${count > 1 ? 's' : ''} merged into 1 PDF`;
         
         // Store original size for comparison
         if (!this.originalPdfSize) {
@@ -517,6 +559,14 @@ const App = {
         });
         if (this.el.compressionNote) {
             this.el.compressionNote.textContent = '';
+        }
+
+        this.settings.signatureEnabled = false;
+        this.settings.signatureText = '';
+        if (this.el.signatureEnabled) this.el.signatureEnabled.checked = false;
+        if (this.el.signatureText) {
+            this.el.signatureText.value = '';
+            this.el.signatureText.disabled = true;
         }
         
         this.images.forEach(i => i.url && URL.revokeObjectURL(i.url));
