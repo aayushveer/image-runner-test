@@ -169,7 +169,7 @@ const makeResizeSection = (keyword, useCase, relatedBlock) => `
                 <li>Click Resize and download files.</li>
             </ol>
             <div style="display:flex; flex-wrap:wrap; gap:10px;">
-                <a href="image-resize-use-cases.html" style="background:#2563eb;color:#fff;padding:10px 14px;border-radius:8px;font-weight:600;text-decoration:none;">All Resize Use Cases</a>
+              <a href="resize-image-use-cases.html" style="background:#2563eb;color:#fff;padding:10px 14px;border-radius:8px;font-weight:600;text-decoration:none;">All Resize Use Cases</a>
                 <a href="image-compress.html" style="background:#eff6ff;color:#1d4ed8;padding:10px 14px;border-radius:8px;font-weight:600;text-decoration:none;">Image Compress</a>
                 <a href="format-converter.html" style="background:#eff6ff;color:#1d4ed8;padding:10px 14px;border-radius:8px;font-weight:600;text-decoration:none;">Format Converter</a>
             </div>

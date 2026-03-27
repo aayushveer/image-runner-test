@@ -1,0 +1,76 @@
+@import url('./compress-v2.css');
+
+/* Reuse the existing tool layout and only patch size-increaser-specific controls. */
+.increase-btn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 0;
+  border-radius: 12px;
+  padding: 14px 18px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, opacity 0.2s ease;
+}
+
+.increase-btn:hover:not(:disabled) {
+  background: var(--primary-hover);
+}
+
+.increase-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.increase-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.target-size-group {
+  margin-bottom: 14px;
+}
+
+.target-size-group > label {
+  display: block;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+}
+
+.target-input-row {
+  display: grid;
+  grid-template-columns: 1fr 100px;
+  gap: 10px;
+}
+
+.target-input-row input,
+.target-input-row select {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 14px;
+  background: #fff;
+}
+
+.current-size {
+  margin-top: 10px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.current-size strong {
+  color: var(--text-dark);
+}
+
+@media (max-width: 760px) {
+  .target-input-row {
+    grid-template-columns: 1fr 90px;
+  }
+}
