@@ -47,16 +47,45 @@
             border-bottom: 1px solid var(--line);
             z-index: 10;
         }
-        .header-inner { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; }
-        .logo { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 800; }
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+            min-height: 72px;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 22px;
+            font-weight: 800;
+            color: #0f172a;
+            text-decoration: none;
+            letter-spacing: -0.02em;
+            flex: 0 0 auto;
+        }
         .logo svg { width: 30px; height: 30px; color: var(--primary); }
-        .nav { display: flex; gap: 6px; flex-wrap: wrap; }
+        .nav {
+            display: flex;
+            gap: 4px;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            padding: 6px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: #ffffff;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .nav::-webkit-scrollbar { display: none; }
         .nav a {
             color: #334155;
             text-decoration: none;
-            padding: 8px 12px;
+            white-space: nowrap;
+            padding: 7px 10px;
             border-radius: 10px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
         }
         .nav a:hover { background: #eff6ff; color: var(--primary); }
@@ -74,8 +103,8 @@
             margin-bottom: 16px;
         }
         h1 { font-size: clamp(34px, 7vw, 56px); line-height: 1.08; margin-bottom: 14px; }
-        .sub { color: var(--muted); max-width: 720px; margin: 0 auto 28px; font-size: 18px; }
-        .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+        .sub { color: var(--muted); max-width: 720px; margin: 0 auto 12px; font-size: 18px; }
+        .hero-actions { display: none; }
         .btn {
             text-decoration: none;
             padding: 12px 18px;
@@ -375,11 +404,6 @@
                 <span class="badge">NEW FRONTEND • SPEED + QUALITY</span>
                 <h1>World-Class Image Tools.<br>Fast, Private, Reliable.</h1>
                 <p class="sub">Resize, compress, remove backgrounds, convert, watermark, create PDFs, build collages and generate passport photos — all directly in your browser.</p>
-                <div class="hero-actions">
-                    <a class="btn primary" href="#tools">Start Using Tools</a>
-                    <a class="btn" href="background-remover.html">Try AI Background Remover</a>
-                    <a class="btn" href="background-remover-use-cases.html">Explore BG Remover Use Cases</a>
-                </div>
             </div>
             <div class="trust-strip reveal" aria-label="Trust highlights">
                 <div class="trust-item"><strong>100% Browser Processing</strong><span>No server upload required</span></div>
