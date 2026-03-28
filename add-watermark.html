@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -100,7 +100,7 @@
               "name": "How to add text watermark?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Select the 'Text' tab, enter your watermark text (e.g., © Your Name), choose a font, adjust the size (12-200px), pick a color, set opacity, and select position. The preview updates in real-time so you can see exactly how it will look."
+                "text": "Select the 'Text' tab, enter your watermark text (e.g., Â© Your Name), choose a font, adjust the size (12-200px), pick a color, set opacity, and select position. The preview updates in real-time so you can see exactly how it will look."
               }
             },
             {
@@ -216,7 +216,10 @@
     </script>
     
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='6' width='28' height='20' rx='3' fill='none' stroke='%234a90d9' stroke-width='2.5'/%3E%3Ccircle cx='11' cy='13' r='3' fill='%234a90d9'/%3E%3Cpath d='M7 22L13 16L17 20L25 12' stroke='%234a90d9' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
+    <link rel="icon" href="/favicon-48.png" sizes="48x48" type="image/png">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.svg" sizes="any" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     
     <!-- Fonts - Async Loading for Performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -315,7 +318,7 @@
                 <div class="type-content active" id="type-text">
                     <div class="setting-group">
                         <label>Watermark Text</label>
-                        <input type="text" id="watermark-text" placeholder="© Your Name" value="© Image Runner">
+                        <input type="text" id="watermark-text" placeholder="Â© Your Name" value="Â© Image Runner">
                     </div>
                     
                     <div class="setting-group">
@@ -366,15 +369,15 @@
                 <div class="setting-group">
                     <label>Position</label>
                     <div class="position-grid">
-                        <button class="pos-btn" data-pos="top-left">↖</button>
-                        <button class="pos-btn" data-pos="top-center">↑</button>
-                        <button class="pos-btn" data-pos="top-right">↗</button>
-                        <button class="pos-btn" data-pos="middle-left">←</button>
-                        <button class="pos-btn active" data-pos="middle-center">⊙</button>
-                        <button class="pos-btn" data-pos="middle-right">→</button>
-                        <button class="pos-btn" data-pos="bottom-left">↙</button>
-                        <button class="pos-btn" data-pos="bottom-center">↓</button>
-                        <button class="pos-btn" data-pos="bottom-right">↘</button>
+                        <button class="pos-btn" data-pos="top-left">â†–</button>
+                        <button class="pos-btn" data-pos="top-center">â†‘</button>
+                        <button class="pos-btn" data-pos="top-right">â†—</button>
+                        <button class="pos-btn" data-pos="middle-left">â†</button>
+                        <button class="pos-btn active" data-pos="middle-center">âŠ™</button>
+                        <button class="pos-btn" data-pos="middle-right">â†’</button>
+                        <button class="pos-btn" data-pos="bottom-left">â†™</button>
+                        <button class="pos-btn" data-pos="bottom-center">â†“</button>
+                        <button class="pos-btn" data-pos="bottom-right">â†˜</button>
                     </div>
                 </div>
                 
@@ -384,7 +387,7 @@
                 </div>
                 
                 <div class="setting-group">
-                    <label>Rotation: <span id="rotation-value">0°</span></label>
+                    <label>Rotation: <span id="rotation-value">0Â°</span></label>
                     <input type="range" id="rotation" min="-45" max="45" value="0">
                 </div>
                 
@@ -492,22 +495,22 @@
         <div class="container" style="max-width: 1000px;">
             <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-bottom: 50px;">
                 <div style="display: flex; align-items: center; gap: 10px; background: white; padding: 14px 24px; border-radius: 50px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #e2e8f0;">
-                    <span style="font-size: 18px;">✉️</span>
+                    <span style="font-size: 18px;">âœ‰ï¸</span>
                     <span style="font-weight: 600; color: #1a1a1a; font-size: 14px;">Text & Logo Watermarks</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 10px; background: white; padding: 14px 24px; border-radius: 50px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #e2e8f0;">
-                    <span style="font-size: 18px;">📦</span>
+                    <span style="font-size: 18px;">ðŸ“¦</span>
                     <span style="font-weight: 600; color: #1a1a1a; font-size: 14px;">Batch 100+ Images</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 10px; background: white; padding: 14px 24px; border-radius: 50px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #e2e8f0;">
-                    <span style="color: #fbbf24; font-size: 16px;">★</span>
+                    <span style="color: #fbbf24; font-size: 16px;">â˜…</span>
                     <span style="font-weight: 600; color: #1a1a1a; font-size: 14px;">4.7/5 Rating</span>
                 </div>
             </div>
             <h2 style="text-align: center; font-size: 26px; font-weight: 700; color: #1a1a1a; margin-bottom: 32px;">What Users Say</h2>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
                 <div style="background: white; padding: 24px; border-radius: 14px; border: 1px solid #e2e8f0;">
-                    <div style="color: #fbbf24; margin-bottom: 12px;">★★★★★</div>
+                    <div style="color: #fbbf24; margin-bottom: 12px;">â˜…â˜…â˜…â˜…â˜…</div>
                     <p style="color: #475569; line-height: 1.7; margin-bottom: 16px; font-size: 14px;">"Perfect for protecting my photography! Batch watermarked 200 wedding photos in minutes."</p>
                     <div style="display: flex; align-items: center; gap: 10px;">
                         <div style="width: 38px; height: 38px; background: linear-gradient(135deg, #2563eb, #1d4ed8); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 13px;">SB</div>
@@ -515,7 +518,7 @@
                     </div>
                 </div>
                 <div style="background: white; padding: 24px; border-radius: 14px; border: 1px solid #e2e8f0;">
-                    <div style="color: #fbbf24; margin-bottom: 12px;">★★★★★</div>
+                    <div style="color: #fbbf24; margin-bottom: 12px;">â˜…â˜…â˜…â˜…â˜…</div>
                     <p style="color: #475569; line-height: 1.7; margin-bottom: 16px; font-size: 14px;">"Added my logo to all product images for my Etsy shop. Super easy and free!"</p>
                     <div style="display: flex; align-items: center; gap: 10px;">
                         <div style="width: 38px; height: 38px; background: linear-gradient(135deg, #2563eb, #1d4ed8); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 13px;">MG</div>
@@ -545,7 +548,7 @@
                 
                 <details style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
                     <summary style="padding: 20px 24px; cursor: pointer; font-weight: 600; color: #1a1a1a; font-size: 15px; list-style: none; display: flex; justify-content: space-between; align-items: center;">How to add text watermark?</summary>
-                    <div style="padding: 0 24px 20px; color: #475569; line-height: 1.7;">Select the 'Text' tab, enter your watermark text (e.g., © Your Name), choose a font, adjust the size (12-200px), pick a color, set opacity, and select position. The preview updates in real-time so you can see exactly how it will look.</div>
+                    <div style="padding: 0 24px 20px; color: #475569; line-height: 1.7;">Select the 'Text' tab, enter your watermark text (e.g., Â© Your Name), choose a font, adjust the size (12-200px), pick a color, set opacity, and select position. The preview updates in real-time so you can see exactly how it will look.</div>
                 </details>
                 
                 <details style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
@@ -626,5 +629,11 @@
     <script src="js/bug-report.js" defer></script>
 </body>
 </html>
+
+
+
+
+
+
 
 

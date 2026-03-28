@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -213,7 +213,10 @@
     </script>
     
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='6' width='28' height='20' rx='3' fill='none' stroke='%234a90d9' stroke-width='2.5'/%3E%3Ccircle cx='11' cy='13' r='3' fill='%234a90d9'/%3E%3Cpath d='M7 22L13 16L17 20L25 12' stroke='%234a90d9' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
+    <link rel="icon" href="/favicon-48.png" sizes="48x48" type="image/png">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.svg" sizes="any" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     
     <!-- Fonts - Async Loading for Performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -315,12 +318,12 @@
                 </div>
                 <!-- Zoom Controls -->
                 <div class="zoom-controls">
-                    <button class="zoom-btn" id="zoom-out" title="Zoom Out">−</button>
+                    <button class="zoom-btn" id="zoom-out" title="Zoom Out">âˆ’</button>
                     <span class="zoom-level" id="zoom-level">100%</span>
                     <button class="zoom-btn" id="zoom-in" title="Zoom In">+</button>
-                    <button class="zoom-btn" id="zoom-reset" title="Reset Zoom" style="font-size: 12px;">↺</button>
+                    <button class="zoom-btn" id="zoom-reset" title="Reset Zoom" style="font-size: 12px;">â†º</button>
                 </div>
-                <p class="picker-hint">👆 Click to pick color • Scroll to zoom • Drag to pan when zoomed</p>
+                <p class="picker-hint">ðŸ‘† Click to pick color â€¢ Scroll to zoom â€¢ Drag to pan when zoomed</p>
                 <div class="image-actions">
                     <label class="btn btn--secondary btn--sm">
                         <input type="file" id="file-input-new" accept="image/*" hidden>
@@ -339,7 +342,7 @@
                 <!-- Picked Colors Panel - At Top -->
                 <div class="picked-colors-panel" id="picked-colors-panel" style="display:none;">
                     <div class="picked-colors-header">
-                        <h3>🎯 Picked Colors <span class="picked-count">(<span id="picked-colors-count">0</span>)</span></h3>
+                        <h3>ðŸŽ¯ Picked Colors <span class="picked-count">(<span id="picked-colors-count">0</span>)</span></h3>
                         <button class="btn-clear" id="btn-clear-picked" title="Clear all">Clear</button>
                     </div>
                     <div class="picked-colors-list" id="picked-colors-list">
@@ -448,22 +451,22 @@
         <div class="container" style="max-width: 1000px;">
             <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-bottom: 50px;">
                 <div style="display: flex; align-items: center; gap: 10px; background: white; padding: 14px 24px; border-radius: 50px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #e2e8f0;">
-                    <span style="font-size: 18px;">🎨</span>
+                    <span style="font-size: 18px;">ðŸŽ¨</span>
                     <span style="font-weight: 600; color: #1a1a1a; font-size: 14px;">HEX, RGB, HSL</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 10px; background: white; padding: 14px 24px; border-radius: 50px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #e2e8f0;">
-                    <span style="font-size: 18px;">📋</span>
+                    <span style="font-size: 18px;">ðŸ“‹</span>
                     <span style="font-weight: 600; color: #1a1a1a; font-size: 14px;">Click to Copy</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 10px; background: white; padding: 14px 24px; border-radius: 50px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #e2e8f0;">
-                    <span style="color: #fbbf24; font-size: 16px;">★</span>
+                    <span style="color: #fbbf24; font-size: 16px;">â˜…</span>
                     <span style="font-weight: 600; color: #1a1a1a; font-size: 14px;">4.9/5 Rating</span>
                 </div>
             </div>
             <h2 style="text-align: center; font-size: 26px; font-weight: 700; color: #1a1a1a; margin-bottom: 32px;">What Designers Say</h2>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
                 <div style="background: white; padding: 24px; border-radius: 14px; border: 1px solid #e2e8f0;">
-                    <div style="color: #fbbf24; margin-bottom: 12px;">★★★★★</div>
+                    <div style="color: #fbbf24; margin-bottom: 12px;">â˜…â˜…â˜…â˜…â˜…</div>
                     <p style="color: #475569; line-height: 1.7; margin-bottom: 16px; font-size: 14px;">"Perfect for getting color inspiration from photos! The click-to-copy HEX codes save so much time."</p>
                     <div style="display: flex; align-items: center; gap: 10px;">
                         <div style="width: 38px; height: 38px; background: linear-gradient(135deg, #2563eb, #1d4ed8); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 13px;">AD</div>
@@ -471,7 +474,7 @@
                     </div>
                 </div>
                 <div style="background: white; padding: 24px; border-radius: 14px; border: 1px solid #e2e8f0;">
-                    <div style="color: #fbbf24; margin-bottom: 12px;">★★★★★</div>
+                    <div style="color: #fbbf24; margin-bottom: 12px;">â˜…â˜…â˜…â˜…â˜…</div>
                     <p style="color: #475569; line-height: 1.7; margin-bottom: 16px; font-size: 14px;">"Use this daily for brand color extraction. Better than Coolors for photo-based palettes!"</p>
                     <div style="display: flex; align-items: center; gap: 10px;">
                         <div style="width: 38px; height: 38px; background: linear-gradient(135deg, #2563eb, #1d4ed8); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 13px;">KP</div>
@@ -534,7 +537,7 @@
                 <details style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
                     <summary style="padding: 20px 24px; cursor: pointer; font-weight: 600; color: #1a1a1a; font-size: 16px; list-style: none; display: flex; justify-content: space-between; align-items: center;">Can I zoom into the image for precise color picking? <span style="color: #2563eb; font-size: 20px;">+</span></summary>
                     <div style="padding: 0 24px 20px; color: #475569; line-height: 1.7;">
-                        Yes! Use the zoom controls (+/-) or your mouse scroll wheel to zoom up to 10x (1000%) magnification. When zoomed in, you can drag/pan the image to navigate to different areas. The reset button (↺) returns to 100% zoom. This allows pixel-perfect color picking for precise design work, logo extraction, or sampling specific areas.
+                        Yes! Use the zoom controls (+/-) or your mouse scroll wheel to zoom up to 10x (1000%) magnification. When zoomed in, you can drag/pan the image to navigate to different areas. The reset button (â†º) returns to 100% zoom. This allows pixel-perfect color picking for precise design work, logo extraction, or sampling specific areas.
                     </div>
                 </details>
                 
@@ -596,7 +599,7 @@
                     <a href="image-resize.html">Resize</a>
                 </div>
             </div>
-            <p class="footer__copy">© 2026 Image Runner. All processing happens in your browser.</p>
+            <p class="footer__copy">Â© 2026 Image Runner. All processing happens in your browser.</p>
         </div>
     </footer>
 
@@ -606,5 +609,11 @@
     <script src="js/bug-report.js" defer></script>
 </body>
 </html>
+
+
+
+
+
+
 
 
