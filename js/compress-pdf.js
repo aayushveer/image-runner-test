@@ -11,6 +11,7 @@ const CompressPdfApp = {
     sourcePageCount: 0,
     sourceSize: 0,
     outputBlob: null,
+    outputUsedOriginal: false,
     selectedPages: new Set(),
     mode: 'balanced',
     pageRange: 'all',
@@ -21,6 +22,24 @@ const CompressPdfApp = {
         high: { renderScale: 2.0, jpegQuality: 0.85 },
         balanced: { renderScale: 1.5, jpegQuality: 0.72 },
         compact: { renderScale: 1.2, jpegQuality: 0.58 }
+    },
+
+    modeProfiles: {
+        high: [
+            { renderScale: 2.0, jpegQuality: 0.85 },
+            { renderScale: 1.7, jpegQuality: 0.78 },
+            { renderScale: 1.45, jpegQuality: 0.70 }
+        ],
+        balanced: [
+            { renderScale: 1.5, jpegQuality: 0.72 },
+            { renderScale: 1.3, jpegQuality: 0.64 },
+            { renderScale: 1.1, jpegQuality: 0.56 }
+        ],
+        compact: [
+            { renderScale: 1.2, jpegQuality: 0.58 },
+            { renderScale: 1.0, jpegQuality: 0.50 },
+            { renderScale: 0.9, jpegQuality: 0.42 }
+        ]
     },
 
     init() {
@@ -266,52 +285,45 @@ const CompressPdfApp = {
             return;
         }
 
-        const { renderScale, jpegQuality } = this.modeConfig[this.mode];
-
         this.showProcessing(true);
 
         try {
-            const { jsPDF } = jspdf;
-            let pdfDoc = null;
+            this.outputUsedOriginal = false;
 
-            for (let i = 0; i < pagesToCompress.length; i += 1) {
-                const pageNum = pagesToCompress[i];
-                this.updateProgress(Math.round((i / pagesToCompress.length) * 85), `Compressing page ${i + 1} of ${pagesToCompress.length}...`);
+            const modeProfiles = this.modeProfiles[this.mode] || [this.modeConfig[this.mode]];
+            let attempts = [...modeProfiles];
 
-                const page = await this.sourcePdf.getPage(pageNum);
-                const viewport = page.getViewport({ scale: renderScale });
-
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d', { alpha: false });
-                canvas.width = Math.max(1, Math.floor(viewport.width));
-                canvas.height = Math.max(1, Math.floor(viewport.height));
-
-                ctx.fillStyle = '#ffffff';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                await page.render({ canvasContext: ctx, viewport }).promise;
-
-                const imgData = canvas.toDataURL('image/jpeg', jpegQuality);
-
-                const mmWidth = canvas.width * 0.264583;
-                const mmHeight = canvas.height * 0.264583;
-                const orientation = mmWidth > mmHeight ? 'landscape' : 'portrait';
-
-                if (!pdfDoc) {
-                    pdfDoc = new jsPDF({
-                        orientation,
-                        unit: 'mm',
-                        format: [mmWidth, mmHeight],
-                        compress: true
-                    });
-                } else {
-                    pdfDoc.addPage([mmWidth, mmHeight], orientation);
-                }
-
-                pdfDoc.addImage(imgData, 'JPEG', 0, 0, mmWidth, mmHeight, undefined, 'FAST');
+            // If first pass isn't enough, auto-fallback to compact profile before giving up.
+            if (this.mode !== 'compact') {
+                attempts = attempts.concat(this.modeProfiles.compact);
             }
 
-            this.updateProgress(95, 'Finalizing compressed PDF...');
-            this.outputBlob = pdfDoc.output('blob');
+            let bestBlob = null;
+            let bestSize = Number.POSITIVE_INFINITY;
+
+            for (let pass = 0; pass < attempts.length; pass += 1) {
+                const settings = attempts[pass];
+                this.updateProgress(Math.round((pass / attempts.length) * 30), `Analyzing pass ${pass + 1} of ${attempts.length}...`);
+
+                const candidateBlob = await this.compressWithSettings(pagesToCompress, settings, pass, attempts.length);
+                if (candidateBlob.size < bestSize) {
+                    bestBlob = candidateBlob;
+                    bestSize = candidateBlob.size;
+                }
+
+                // Early stop as soon as we get at least ~2% reduction for all-pages compression.
+                if (this.pageRange === 'all' && candidateBlob.size <= this.sourceSize * 0.98) {
+                    break;
+                }
+            }
+
+            // Never return a larger file when compressing all pages; keep original for best UX.
+            if (this.pageRange === 'all' && bestBlob && bestBlob.size >= this.sourceSize) {
+                this.outputBlob = new Blob([this.sourceBytes], { type: 'application/pdf' });
+                this.outputUsedOriginal = true;
+            } else {
+                this.outputBlob = bestBlob;
+            }
 
             this.showDownload();
         } catch (err) {
@@ -336,10 +348,13 @@ const CompressPdfApp = {
         this.el.outName.textContent = outputName;
         this.el.outSize.textContent = this.utils.formatFileSize(compressed);
 
-        if (savedPct >= 0) {
+        if (this.outputUsedOriginal) {
+            this.el.statSaved.textContent = '0%';
+            this.el.downloadInfo.textContent = 'This PDF is already highly optimized. Returned original for best size.';
+        } else if (savedPct >= 0) {
             this.el.downloadInfo.textContent = `PDF size reduced by ${savedPct}%`;
         } else {
-            this.el.downloadInfo.textContent = 'Output is slightly larger. Try Compact mode for stronger reduction.';
+            this.el.downloadInfo.textContent = 'Output is slightly larger for selected page set. Try Compact mode or different pages.';
         }
 
         this.showPage('download');
@@ -362,6 +377,7 @@ const CompressPdfApp = {
         this.sourcePageCount = 0;
         this.sourceSize = 0;
         this.outputBlob = null;
+        this.outputUsedOriginal = false;
         this.selectedPages.clear();
         this.pageRange = 'all';
         this.mode = 'balanced';
@@ -386,6 +402,52 @@ const CompressPdfApp = {
     updateProgress(percent, text) {
         if (this.el.processingText) this.el.processingText.textContent = text;
         if (this.el.progressBar) this.el.progressBar.style.width = `${Math.max(0, Math.min(100, percent))}%`;
+    },
+
+    async compressWithSettings(pagesToCompress, settings, passIndex, passTotal) {
+        const { jsPDF } = jspdf;
+        let pdfDoc = null;
+
+        for (let i = 0; i < pagesToCompress.length; i += 1) {
+            const pageNum = pagesToCompress[i];
+            const pageProgress = ((i + 1) / pagesToCompress.length) * 60;
+            const passProgress = (passIndex / Math.max(1, passTotal)) * 30;
+            this.updateProgress(Math.round(30 + passProgress + pageProgress), `Compressing page ${i + 1} of ${pagesToCompress.length}...`);
+
+            const page = await this.sourcePdf.getPage(pageNum);
+            const viewport = page.getViewport({ scale: settings.renderScale });
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d', { alpha: false });
+            canvas.width = Math.max(1, Math.floor(viewport.width));
+            canvas.height = Math.max(1, Math.floor(viewport.height));
+
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            await page.render({ canvasContext: ctx, viewport }).promise;
+
+            const imgData = canvas.toDataURL('image/jpeg', settings.jpegQuality);
+
+            const mmWidth = canvas.width * 0.264583;
+            const mmHeight = canvas.height * 0.264583;
+            const orientation = mmWidth > mmHeight ? 'landscape' : 'portrait';
+
+            if (!pdfDoc) {
+                pdfDoc = new jsPDF({
+                    orientation,
+                    unit: 'mm',
+                    format: [mmWidth, mmHeight],
+                    compress: true
+                });
+            } else {
+                pdfDoc.addPage([mmWidth, mmHeight], orientation);
+            }
+
+            pdfDoc.addImage(imgData, 'JPEG', 0, 0, mmWidth, mmHeight, undefined, 'FAST');
+        }
+
+        this.updateProgress(95, 'Finalizing compressed PDF...');
+        return pdfDoc.output('blob');
     }
 };
 
