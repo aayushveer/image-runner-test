@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Telemetry Admin | Image Runner</title>
+  <meta name="robots" content="noindex, nofollow">
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --line: #d9e1ec;
+      --ink: #0f172a;
+      --muted: #475569;
+      --brand: #1d4ed8;
+      --danger: #b91c1c;
+      --ok: #166534;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: radial-gradient(circle at top right, #e8f0ff 0%, var(--bg) 45%, #eef3fa 100%);
+      color: var(--ink);
+    }
+
+    .wrap {
+      width: min(760px, calc(100% - 24px));
+      margin: 38px auto;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+      padding: 20px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 26px;
+    }
+
+    .sub {
+      margin: 0 0 18px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .row {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1e293b;
+    }
+
+    input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 11px 12px;
+      font-size: 14px;
+      outline: none;
+      background: #fff;
+    }
+
+    input:focus {
+      border-color: #7aa7ff;
+      box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.14);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 14px;
+      background: #fff;
+      color: #0f172a;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button.primary {
+      border-color: transparent;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: #fff;
+    }
+
+    button.danger {
+      border-color: #fecaca;
+      background: #fef2f2;
+      color: var(--danger);
+    }
+
+    .message {
+      margin-top: 12px;
+      min-height: 20px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .message.error { color: var(--danger); }
+    .message.ok { color: var(--ok); }
+
+    .meta {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #334155;
+      line-height: 1.5;
+      background: #f8fbff;
+      border: 1px solid #dbeafe;
+      border-radius: 10px;
+      padding: 10px;
+    }
+
+    .note {
+      margin-top: 14px;
+      font-size: 12px;
+      color: #64748b;
+      line-height: 1.6;
+      border-top: 1px dashed var(--line);
+      padding-top: 12px;
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="card" id="login-card">
+      <h1>Telemetry Admin Access</h1>
+      <p class="sub">AdSense and GA4 ids update karne ke liye password enter karo. Access lockout enabled hai.</p>
+
+      <div class="row">
+        <label for="admin-password">Admin Password</label>
+        <input id="admin-password" type="password" autocomplete="off" placeholder="Enter password">
+      </div>
+
+      <div class="actions">
+        <button class="primary" id="login-btn" type="button">Unlock</button>
+      </div>
+
+      <p id="login-message" class="message"></p>
+      <p class="note">Tip: is page ko public navigation se link na karo. URL sirf trusted admin ke paas rakho.</p>
+    </section>
+
+    <section class="card" id="panel-card" hidden>
+      <h1>Telemetry Admin Panel</h1>
+      <p class="sub">Yahan se custom ids save honge jo local override ke through telemetry loader use karega.</p>
+
+      <div class="row">
+        <label for="adsense-client">AdSense Client Id</label>
+        <input id="adsense-client" type="text" placeholder="ca-pub-xxxxxxxxxxxxxxxx">
+      </div>
+
+      <div class="row">
+        <label for="ga4-id">GA4 Measurement Id (optional)</label>
+        <input id="ga4-id" type="text" placeholder="G-XXXXXXXXXX">
+      </div>
+
+      <div class="actions">
+        <button class="primary" id="save-btn" type="button">Save Ids</button>
+        <button id="clear-btn" type="button">Use Default Config</button>
+        <button class="danger" id="logout-btn" type="button">Logout</button>
+      </div>
+
+      <p id="panel-message" class="message"></p>
+      <div id="saved-meta" class="meta">Loading current state...</div>
+
+      <p class="note">
+        Important: static website par "uncrackable" password possible nahi hota, lekin is page me plaintext password store nahi hai,
+        hash verification + lockout + timed session enabled hai.
+      </p>
+    </section>
+  </main>
+
+  <script src="js/admin-telemetry.js"></script>
+</body>
+</html>
