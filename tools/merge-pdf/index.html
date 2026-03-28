@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -25,6 +25,10 @@
     <link rel="stylesheet" href="../../css/merge-pdf.css">
     <link rel="preload" href="../../css/animations.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="../../css/animations.css"></noscript>
+
+    <!-- Global Telemetry -->
+    <script src='../../js/site-config.js'></script>
+    <script src='../../js/global-telemetry.js'></script>
 </head>
 <body>
     <header class="header">
@@ -82,7 +86,7 @@
             <div class="editor__files">
                 <div class="editor__header">
                     <p class="editor__stats">
-                        Files: <strong id="file-count">0</strong> • Total pages: <strong id="total-pages">0</strong>
+                        Files: <strong id="file-count">0</strong> â€¢ Total pages: <strong id="total-pages">0</strong>
                     </p>
                     <label class="add-btn">
                         <input type="file" id="file-input-more" accept=".pdf,application/pdf" multiple hidden>
@@ -196,3 +200,4 @@
     <script src="../../js/bug-report.js" defer></script>
 </body>
 </html>
+

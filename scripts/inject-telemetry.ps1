@@ -19,7 +19,7 @@ foreach ($f in $files) {
     $telemetryPath = $prefix + 'js/global-telemetry.js'
   }
 
-  $injection = "`r`n    $marker`r`n    <script src=\"$configPath\"></script>`r`n    <script src=\"$telemetryPath\"></script>`r`n"
+  $injection = "`r`n    {0}`r`n    <script src=\"\"{1}\"\"></script>`r`n    <script src=\"\"{2}\"\"></script>`r`n" -f $marker, $configPath, $telemetryPath
   $content = $content -replace '</head>', ($injection + '</head>')
   Set-Content -Path $f.FullName -Value $content -Encoding UTF8
   $updated++

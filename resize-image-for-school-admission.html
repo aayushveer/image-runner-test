@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -142,6 +142,10 @@
     <link rel="stylesheet" href="css/resize-v4.css">
     <link rel="preload" href="css/animations.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="css/animations.css"></noscript>
+
+    <!-- Global Telemetry -->
+    <script src='js/site-config.js'></script>
+    <script src='js/global-telemetry.js'></script>
 </head>
 <body>
     <!-- Header -->
@@ -400,13 +404,13 @@
             <article style="margin-bottom: 40px;">
                 <h2 style="font-size: 20px; font-weight: 600; color: #1a1a1a; margin-bottom: 15px;">Key Features</h2>
                 <ul style="color: #555; line-height: 2; padding-left: 20px;">
-                    <li>✓ <strong>Batch Resize</strong> - Resize up to 20 images at once</li>
-                    <li>✓ <strong>Multiple Units</strong> - Pixels, Percentage, CM, Inches</li>
-                    <li>✓ <strong>Aspect Ratio Lock</strong> - Maintain proportions automatically</li>
-                    <li>✓ <strong>Quality Control</strong> - Adjust output quality (10-100%)</li>
-                    <li>✓ <strong>DPI Settings</strong> - Perfect for print requirements</li>
-                    <li>✓ <strong>ZIP Download</strong> - All images in one file</li>
-                    <li>✓ <strong>No Watermark</strong> - Clean output every time</li>
+                    <li>âœ“ <strong>Batch Resize</strong> - Resize up to 20 images at once</li>
+                    <li>âœ“ <strong>Multiple Units</strong> - Pixels, Percentage, CM, Inches</li>
+                    <li>âœ“ <strong>Aspect Ratio Lock</strong> - Maintain proportions automatically</li>
+                    <li>âœ“ <strong>Quality Control</strong> - Adjust output quality (10-100%)</li>
+                    <li>âœ“ <strong>DPI Settings</strong> - Perfect for print requirements</li>
+                    <li>âœ“ <strong>ZIP Download</strong> - All images in one file</li>
+                    <li>âœ“ <strong>No Watermark</strong> - Clean output every time</li>
                 </ul>
             </article>
             
@@ -416,22 +420,22 @@
                 
                 <details style="background: white; border-radius: 10px; padding: 15px 20px; margin-bottom: 10px; border: 1px solid #e5e5e5;">
                     <summary style="font-weight: 600; cursor: pointer; color: #333;">Passport photo ke liye image size kya hona chahiye?</summary>
-                    <p style="margin-top: 10px; color: #666; line-height: 1.6;">Indian passport photo के लिए 35x45mm या 413x531 pixels set करें। US visa के लिए 51x51mm (600x600 pixels)। हमारा Passport Photo Maker tool सभी specifications ready-made देता है।</p>
+                    <p style="margin-top: 10px; color: #666; line-height: 1.6;">Indian passport photo à¤•à¥‡ à¤²à¤¿à¤ 35x45mm à¤¯à¤¾ 413x531 pixels set à¤•à¤°à¥‡à¤‚à¥¤ US visa à¤•à¥‡ à¤²à¤¿à¤ 51x51mm (600x600 pixels)à¥¤ à¤¹à¤®à¤¾à¤°à¤¾ Passport Photo Maker tool à¤¸à¤­à¥€ specifications ready-made à¤¦à¥‡à¤¤à¤¾ à¤¹à¥ˆà¥¤</p>
                 </details>
                 
                 <details style="background: white; border-radius: 10px; padding: 15px 20px; margin-bottom: 10px; border: 1px solid #e5e5e5;">
                     <summary style="font-weight: 600; cursor: pointer; color: #333;">Image ko 50KB ya 100KB mein resize kaise karein?</summary>
-                    <p style="margin-top: 10px; color: #666; line-height: 1.6;">Specific KB target के लिए पहले dimensions सही करें, फिर <a href="image-compress.html" style="color: #4a90d9;">Image Compressor</a> से quality adjust करके required range hit करें। Passport/document use-case के लिए <a href="passport-photo.html" style="color: #4a90d9;">Passport Photo Maker</a> best रहता है।</p>
+                    <p style="margin-top: 10px; color: #666; line-height: 1.6;">Specific KB target à¤•à¥‡ à¤²à¤¿à¤ à¤ªà¤¹à¤²à¥‡ dimensions à¤¸à¤¹à¥€ à¤•à¤°à¥‡à¤‚, à¤«à¤¿à¤° <a href="image-compress.html" style="color: #4a90d9;">Image Compressor</a> à¤¸à¥‡ quality adjust à¤•à¤°à¤•à¥‡ required range hit à¤•à¤°à¥‡à¤‚à¥¤ Passport/document use-case à¤•à¥‡ à¤²à¤¿à¤ <a href="passport-photo.html" style="color: #4a90d9;">Passport Photo Maker</a> best à¤°à¤¹à¤¤à¤¾ à¤¹à¥ˆà¥¤</p>
                 </details>
                 
                 <details style="background: white; border-radius: 10px; padding: 15px 20px; margin-bottom: 10px; border: 1px solid #e5e5e5;">
                     <summary style="font-weight: 600; cursor: pointer; color: #333;">Kya quality kam hoti hai resize karne se?</summary>
-                    <p style="margin-top: 10px; color: #666; line-height: 1.6;">हम high-quality algorithms use करते हैं। Quality slider से 90-100% रखें for best results। Enlarging images से थोड़ी quality loss हो सकती है।</p>
+                    <p style="margin-top: 10px; color: #666; line-height: 1.6;">à¤¹à¤® high-quality algorithms use à¤•à¤°à¤¤à¥‡ à¤¹à¥ˆà¤‚à¥¤ Quality slider à¤¸à¥‡ 90-100% à¤°à¤–à¥‡à¤‚ for best resultsà¥¤ Enlarging images à¤¸à¥‡ à¤¥à¥‹à¤¡à¤¼à¥€ quality loss à¤¹à¥‹ à¤¸à¤•à¤¤à¥€ à¤¹à¥ˆà¥¤</p>
                 </details>
                 
                 <details style="background: white; border-radius: 10px; padding: 15px 20px; margin-bottom: 10px; border: 1px solid #e5e5e5;">
                     <summary style="font-weight: 600; cursor: pointer; color: #333;">SSC, UPSC forms ke liye image size kya hona chahiye?</summary>
-                    <p style="margin-top: 10px; color: #666; line-height: 1.6;">Most government exams require 3.5cm x 4.5cm (35x45mm) photo with size between 10KB-200KB। हमारा <a href="passport-photo.html" style="color: #4a90d9;">Passport Photo Maker</a> में सभी exam presets available हैं।</p>
+                    <p style="margin-top: 10px; color: #666; line-height: 1.6;">Most government exams require 3.5cm x 4.5cm (35x45mm) photo with size between 10KB-200KBà¥¤ à¤¹à¤®à¤¾à¤°à¤¾ <a href="passport-photo.html" style="color: #4a90d9;">Passport Photo Maker</a> à¤®à¥‡à¤‚ à¤¸à¤­à¥€ exam presets available à¤¹à¥ˆà¤‚à¥¤</p>
                 </details>
             </article>
             
@@ -513,3 +517,4 @@
     <script src="js/bug-report.js" defer></script>
 </body>
 </html>
+
