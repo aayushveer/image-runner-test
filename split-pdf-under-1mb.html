@@ -1,0 +1,248 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Split PDF Under 1Mb - Free Split PDF Online, No Watermark | Image Runner</title>
+    <meta name="description" content="Split PDF Under 1Mb online with a fast, private workflow. Extract selected pages, split by range, or export each page in seconds on mobile or desktop.">
+    <meta name="keywords" content="split pdf under 1mb, split pdf online, extract pdf pages, split by range">
+    <meta name="author" content="Image Runner">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.imgrunner.com/split-pdf-under-1mb.html">
+    <meta property="og:title" content="Split PDF Under 1Mb - Free Split PDF Online">
+    <meta property="og:description" content="Split PDF Under 1Mb with secure browser-based PDF splitting. No signup and no watermark.">
+    <meta property="og:image" content="https://www.imgrunner.com/og-split-pdf.jpg">
+    <meta property="og:site_name" content="Image Runner">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Split PDF Under 1Mb - Free Split PDF Online | Image Runner">
+    <meta name="twitter:description" content="Split PDF Under 1Mb instantly in your browser. Fast, private, and beginner-friendly.">
+
+    <link rel="canonical" href="https://www.imgrunner.com/split-pdf-under-1mb.html">
+    <link rel="icon" href="/favicon-48.png" sizes="48x48" type="image/png">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.svg" sizes="any" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <meta name="theme-color" content="#ffffff">
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "WebApplication",
+                "name": "Split PDF Tool - Image Runner",
+                "url": "https://www.imgrunner.com/split-pdf.html",
+                "applicationCategory": "UtilitiesApplication",
+                "operatingSystem": "Web Browser",
+                "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+                "featureList": ["Extract selected pages", "Split by ranges", "Each page as separate PDF", "Private browser processing"]
+            },
+            {
+                "@type": "FAQPage",
+                "mainEntity": [
+                    {"@type": "Question", "name": "How do I split a PDF by page range?", "acceptedAnswer": {"@type": "Answer", "text": "Upload your PDF, choose Split by ranges, enter ranges like 1-3,5,8-10, and download the output."}},
+                    {"@type": "Question", "name": "Can I extract only selected pages?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Choose Extract selected pages mode and click page thumbnails to include or exclude pages."}},
+                    {"@type": "Question", "name": "Can I save each page as separate PDF?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Choose Each page separate mode and download all pages as a ZIP file."}},
+                    {"@type": "Question", "name": "Are my files private?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Processing happens in your browser and files are not uploaded to our server."}}
+                ]
+            }
+        ]
+    }
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
+    <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+
+    <link rel="stylesheet" href="css/split-pdf.css">
+    <link rel="preload" href="css/animations.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/animations.css"></noscript>
+
+    <!-- Global Telemetry -->
+    <script src='js/site-config.js'></script>
+    <script src='js/global-telemetry.js'></script>
+</head>
+<body>
+    <header class="header">
+        <div class="container header__inner">
+            <a href="index.html" onclick="if(history.length > 1) { history.back(); return false; }" class="back-btn" title="Go Back">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+            </a>
+            <a href="index.html" class="logo">
+                <svg class="logo__icon" viewBox="0 0 32 32" fill="none">
+                    <rect x="2" y="6" width="28" height="20" rx="3" stroke="currentColor" stroke-width="2.5"/>
+                    <circle cx="11" cy="13" r="3" fill="currentColor"/>
+                    <path d="M7 22L13 16L17 20L25 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="logo__text">Image Runner</span>
+            </a>
+
+            <nav class="nav" aria-label="Tool navigation">
+                <a href="merge-pdf.html" class="nav__link">Merge PDF</a>
+                <a href="compress-pdf.html" class="nav__link">Compress PDF</a>
+                <a href="pdf-to-image.html" class="nav__link">PDF to Image</a>
+                <a href="image-to-pdf.html" class="nav__link">Image to PDF</a>
+                <a href="format-converter.html" class="nav__link">Convert</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="page active" id="page-upload">
+        <div class="container">
+            <div class="upload-box">
+                <h1 class="upload-title">Split PDF Under 1Mb</h1>
+                <p class="upload-desc">Need to split pdf under 1mb quickly? Upload your PDF, choose the split mode, and download clean output files in seconds. Works on mobile and desktop with private in-browser processing.</p>
+
+                <div class="dropzone" id="dropzone">
+                    <label class="upload-btn">
+                        <input type="file" id="file-input" accept=".pdf,application/pdf" hidden>
+                        Select PDF file
+                    </label>
+                    <p class="upload-hint">or drag and drop a PDF here</p>
+                </div>
+
+                <p class="privacy-badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                    Private processing • No signup • Works on mobile
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <section class="page" id="page-editor">
+        <div class="editor">
+            <div class="editor__preview">
+                <div class="editor__header">
+                    <p class="editor__stats">
+                        <strong id="pdf-file-name">document.pdf</strong> • <span id="pdf-pages-count">0 pages</span> • <span id="pdf-original-size">0 KB</span>
+                    </p>
+                    <label class="add-btn">
+                        <input type="file" id="file-input-new" accept=".pdf,application/pdf" hidden>
+                        New PDF
+                    </label>
+                </div>
+
+                <div class="pages-grid" id="pages-grid"></div>
+            </div>
+
+            <div class="editor__panel">
+                <h2 class="panel-title">Split Settings</h2>
+
+                <div class="setting-group">
+                    <label class="setting-label">Split mode</label>
+                    <div class="mode-list">
+                        <label><input type="radio" name="split-mode" value="selected" checked> Extract selected pages</label>
+                        <label><input type="radio" name="split-mode" value="ranges"> Split by ranges</label>
+                        <label><input type="radio" name="split-mode" value="each"> Each page separate</label>
+                    </div>
+                </div>
+
+                <div class="setting-group" id="range-group" hidden>
+                    <label for="range-input" class="setting-label">Page ranges</label>
+                    <input id="range-input" class="range-input" type="text" placeholder="Example: 1-3,5,8-10">
+                    <p class="hint">Use commas to separate ranges or single pages.</p>
+                </div>
+
+                <p class="hint" id="selection-hint">Click thumbnails to include/exclude pages.</p>
+
+                <button class="split-btn" id="btn-split" disabled>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Split PDF
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section class="page" id="page-download">
+        <div class="container">
+            <div class="download-box">
+                <div class="success-icon">
+                    <svg viewBox="0 0 64 64" fill="none">
+                        <circle cx="32" cy="32" r="30" stroke="currentColor" stroke-width="3"/>
+                        <path d="M20 32l8 8 16-16" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+
+                <h2 class="download-title">Split Complete!</h2>
+                <p class="download-info" id="download-info">Your split output is ready.</p>
+
+                <div class="pdf-preview">
+                    <svg class="pdf-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <path d="M9 15v-2h2a1 1 0 110 2H9zM13 15v2M13 13h1.5a1.5 1.5 0 010 3H13"/>
+                    </svg>
+                    <span class="pdf-name" id="output-name">split-output.pdf</span>
+                    <span class="pdf-size" id="output-size">0 KB</span>
+                </div>
+
+                <button class="download-btn" id="btn-download">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Download Output
+                </button>
+
+                <div class="more-actions">
+                    <button class="link-btn" id="btn-more">Split another PDF</button>
+                    <span class="divider">or</span>
+                    <a href="merge-pdf.html" class="link-btn">Merge PDF</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="processing" id="processing">
+        <div class="processing__modal">
+            <div class="spinner"></div>
+            <p id="processing-text">Splitting PDF...</p>
+            <div class="progress"><div class="progress__bar" id="progress-bar"></div></div>
+        </div>
+    </div>
+
+    <section style="padding: 56px 0; background: #fff;">
+        <div class="container" style="max-width: 860px; color: #334155; line-height: 1.7;">
+            <h2 style="font-size: 26px; color: #0f172a; margin-bottom: 12px;">Split PDF Use Cases</h2>
+            <p style="margin-bottom: 14px;">Find dedicated long-tail pages for portal uploads, mobile workflows, and document-specific split tasks.</p>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px;">
+                <a href="split-pdf-for-job-application.html" style="background:#f8fafc;color:#1d4ed8;padding:8px 14px;border-radius:8px;border:1px solid #dbeafe;font-weight:600;">Split PDF for Job Application</a>
+                <a href="split-pdf-for-scanned-documents.html" style="background:#f8fafc;color:#1d4ed8;padding:8px 14px;border-radius:8px;border:1px solid #dbeafe;font-weight:600;">Split PDF for Scanned Documents</a>
+                <a href="split-pdf-by-page-range.html" style="background:#f8fafc;color:#1d4ed8;padding:8px 14px;border-radius:8px;border:1px solid #dbeafe;font-weight:600;">Split PDF by Page Range</a>
+                <a href="split-pdf-on-mobile.html" style="background:#f8fafc;color:#1d4ed8;padding:8px 14px;border-radius:8px;border:1px solid #dbeafe;font-weight:600;">Split PDF on Mobile</a>
+                <a href="split-pdf-under-1mb.html" style="background:#f8fafc;color:#1d4ed8;padding:8px 14px;border-radius:8px;border:1px solid #dbeafe;font-weight:600;">Split PDF under 1MB</a>
+                <a href="split-pdf-without-losing-quality.html" style="background:#f8fafc;color:#1d4ed8;padding:8px 14px;border-radius:8px;border:1px solid #dbeafe;font-weight:600;">Split PDF without Losing Quality</a>
+            </div>
+            <p style="margin-bottom: 0;"><a href="split-pdf-use-cases.html" style="font-weight:700;color:#1d4ed8;">View all 50 Split PDF use case pages</a></p>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; Image Runner 2026 - Your Image Editor</p>
+        </div>
+    </footer>
+
+    <script src="js/shared-utils.js"></script>
+    <script src="js/split-pdf.js"></script>
+    <script src="js/bug-report.js" defer></script>
+</body>
+</html>
+
+
+
+
+
