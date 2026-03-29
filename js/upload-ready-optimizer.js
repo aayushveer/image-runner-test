@@ -6,13 +6,27 @@ const UploadReadyOptimizer = {
   outputBlob: null,
   outputMime: 'image/jpeg',
   outputName: 'optimized-image.jpg',
+  lastStrategy: '--',
   presets: {
     custom: null,
     passport_india: { width: 413, height: 531, kb: 300 },
     profile_square_100: { width: 300, height: 300, kb: 100 },
     signature_20: { width: 300, height: 100, kb: 20 },
     exam_photo_50: { width: 200, height: 230, kb: 50 },
-    job_photo_200: { width: 300, height: 300, kb: 200 }
+    job_photo_200: { width: 300, height: 300, kb: 200 },
+    upsc_photo: { width: 300, height: 300, kb: 200 },
+    upsc_signature: { width: 350, height: 100, kb: 50 },
+    neet_photo: { width: 300, height: 400, kb: 200 },
+    jee_photo: { width: 300, height: 400, kb: 200 },
+    scholarship_photo: { width: 200, height: 230, kb: 50 },
+    linkedin_dp: { width: 400, height: 400, kb: 200 },
+    usa_visa_photo: { width: 600, height: 600, kb: 240 }
+  },
+
+  qualityProfiles: {
+    balanced: [1.0, 0.9, 0.8, 0.7, 0.6],
+    readability: [1.0, 0.92, 0.85, 0.78, 0.7],
+    maximum: [1.0, 0.85, 0.7, 0.55, 0.45, 0.35]
   },
 
   init() {
@@ -26,6 +40,8 @@ const UploadReadyOptimizer = {
       format: document.getElementById('format'),
       fitContain: document.getElementById('fit-contain'),
       enhance: document.getElementById('enhance'),
+      hardGuarantee: document.getElementById('hard-guarantee'),
+      qualityMode: document.getElementById('quality-mode'),
       btnOptimize: document.getElementById('btn-optimize'),
       btnDownload: document.getElementById('btn-download'),
       uploadMeta: document.getElementById('upload-meta'),
@@ -37,6 +53,11 @@ const UploadReadyOptimizer = {
       statOutput: document.getElementById('stat-output'),
       statDim: document.getElementById('stat-dim'),
       statPass: document.getElementById('stat-pass'),
+      statScore: document.getElementById('stat-score'),
+      statStrategy: document.getElementById('stat-strategy'),
+      progressWrap: document.getElementById('progress-wrap'),
+      progressBar: document.getElementById('progress-bar'),
+      progressText: document.getElementById('progress-text'),
       workCanvas: document.getElementById('work-canvas')
     };
 
@@ -118,7 +139,9 @@ const UploadReadyOptimizer = {
       targetBytes: targetKB * 1024,
       format: this.el.format.value,
       fitContain: this.el.fitContain.checked,
-      enhance: this.el.enhance.checked
+      enhance: this.el.enhance.checked,
+      hardGuarantee: this.el.hardGuarantee.checked,
+      qualityMode: this.el.qualityMode.value
     };
   },
 
@@ -126,6 +149,72 @@ const UploadReadyOptimizer = {
     if (!this.image || !this.file) return;
 
     const rules = this.getRules();
+    this.setProgressVisible(true);
+    this.updateProgress(3);
+
+    try {
+      const candidates = this.buildMimeCandidates(rules.format);
+      const detailLevels = [...(this.qualityProfiles[rules.qualityMode] || this.qualityProfiles.balanced)];
+
+      if (rules.hardGuarantee && detailLevels[detailLevels.length - 1] > 0.28) {
+        detailLevels.push(0.28, 0.22);
+      }
+
+      let bestPass = null;
+      let smallestFail = null;
+      const totalPasses = detailLevels.length * candidates.length;
+      let passIndex = 0;
+
+      for (const detailScale of detailLevels) {
+        const workCanvas = this.prepareCanvas(rules, detailScale);
+
+        for (const mime of candidates) {
+          passIndex += 1;
+          const base = Math.round((passIndex / totalPasses) * 90);
+          this.updateProgress(Math.max(6, base));
+
+          const result = await this.findBestForMime(workCanvas, mime, rules.targetBytes);
+          result.mime = mime;
+          result.detailScale = detailScale;
+          result.strategy = `detail ${Math.round(detailScale * 100)}% / ${mime.replace('image/', '').toUpperCase()}`;
+
+          if (result.blob.size <= rules.targetBytes) {
+            if (!bestPass || result.blob.size > bestPass.blob.size || (result.blob.size === bestPass.blob.size && result.detailScale > bestPass.detailScale)) {
+              bestPass = result;
+            }
+          } else if (!smallestFail || result.blob.size < smallestFail.blob.size) {
+            smallestFail = result;
+          }
+        }
+      }
+
+      const chosen = bestPass || smallestFail;
+      if (!chosen) {
+        throw new Error('Optimization failed');
+      }
+
+      this.outputBlob = chosen.blob;
+      this.outputMime = chosen.mime;
+      this.lastStrategy = chosen.strategy;
+      this.outputName = this.buildOutputName(this.file.name, this.outputMime);
+
+      const url = URL.createObjectURL(this.outputBlob);
+      this.el.preview.src = url;
+      this.el.preview.hidden = false;
+      this.el.previewEmpty.hidden = true;
+      this.el.btnDownload.disabled = false;
+
+      this.renderStats(rules, chosen.blob.size, !!bestPass);
+      this.updateProgress(100);
+    } catch (error) {
+      console.error(error);
+      this.setResultNote('Optimization failed. Please try a different preset or format.', 'error');
+    } finally {
+      window.setTimeout(() => this.setProgressVisible(false), 300);
+    }
+  },
+
+  prepareCanvas(rules, detailScale) {
     const canvas = this.el.workCanvas;
     canvas.width = rules.width;
     canvas.height = rules.height;
@@ -134,37 +223,28 @@ const UploadReadyOptimizer = {
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    this.drawFitted(ctx, this.image, rules.width, rules.height, rules.fitContain);
+    if (detailScale < 0.99) {
+      const temp = document.createElement('canvas');
+      temp.width = Math.max(24, Math.round(rules.width * detailScale));
+      temp.height = Math.max(24, Math.round(rules.height * detailScale));
+      const tctx = temp.getContext('2d', { alpha: false });
+
+      tctx.fillStyle = '#ffffff';
+      tctx.fillRect(0, 0, temp.width, temp.height);
+      this.drawFitted(tctx, this.image, temp.width, temp.height, rules.fitContain);
+
+      ctx.drawImage(temp, 0, 0, temp.width, temp.height, 0, 0, canvas.width, canvas.height);
+    } else {
+      this.drawFitted(ctx, this.image, rules.width, rules.height, rules.fitContain);
+    }
 
     if (rules.enhance) {
-      // Mild enhancement to preserve readability in low-size outputs.
-      ctx.filter = 'contrast(1.06) saturate(1.02)';
+      ctx.filter = detailScale >= 0.8 ? 'contrast(1.06) saturate(1.02)' : 'contrast(1.08) saturate(0.98)';
       ctx.drawImage(canvas, 0, 0);
       ctx.filter = 'none';
     }
 
-    const candidates = this.buildMimeCandidates(rules.format);
-
-    let best = null;
-    for (const mime of candidates) {
-      const result = await this.findBestForMime(canvas, mime, rules.targetBytes);
-      if (!best || result.blob.size < best.blob.size) {
-        best = result;
-      }
-      if (result.blob.size <= rules.targetBytes) break;
-    }
-
-    this.outputBlob = best.blob;
-    this.outputMime = best.mime;
-    this.outputName = this.buildOutputName(this.file.name, this.outputMime);
-
-    const url = URL.createObjectURL(this.outputBlob);
-    this.el.preview.src = url;
-    this.el.preview.hidden = false;
-    this.el.previewEmpty.hidden = true;
-    this.el.btnDownload.disabled = false;
-
-    this.renderStats(rules, best.blob.size);
+    return canvas;
   },
 
   buildMimeCandidates(selected) {
@@ -173,31 +253,34 @@ const UploadReadyOptimizer = {
   },
 
   async findBestForMime(canvas, mime, targetBytes) {
-    let low = 0.1;
+    let low = 0.02;
     let high = 0.98;
-    let bestBlob = await this.canvasToBlob(canvas, mime, 0.8);
+    let bestPass = null;
+    let smallestAny = null;
 
-    for (let i = 0; i < 16; i += 1) {
+    for (let i = 0; i < 20; i += 1) {
       const mid = (low + high) / 2;
       const blob = await this.canvasToBlob(canvas, mime, mid);
+      if (!blob) continue;
+
+      if (!smallestAny || blob.size < smallestAny.size) {
+        smallestAny = blob;
+      }
 
       if (blob.size <= targetBytes) {
-        bestBlob = blob;
+        bestPass = blob;
         low = mid;
       } else {
-        if (!bestBlob || blob.size < bestBlob.size) bestBlob = blob;
         high = mid;
       }
     }
 
-    return { mime, blob: bestBlob };
+    return { blob: bestPass || smallestAny };
   },
 
   canvasToBlob(canvas, mime, quality) {
     return new Promise((resolve) => {
-      canvas.toBlob((blob) => {
-        resolve(blob);
-      }, mime, quality);
+      canvas.toBlob((blob) => resolve(blob), mime, quality);
     });
   },
 
@@ -216,21 +299,36 @@ const UploadReadyOptimizer = {
     ctx.drawImage(img, dx, dy, drawW, drawH);
   },
 
-  renderStats(rules, outputBytes) {
+  renderStats(rules, outputBytes, passed) {
     const original = this.file.size;
-    const pass = outputBytes <= rules.targetBytes;
+    const targetBytes = rules.targetBytes;
+    const savedPct = original > 0 ? Math.round(((original - outputBytes) / original) * 100) : 0;
 
     this.el.stats.hidden = false;
     this.el.statOriginal.textContent = this.formatBytes(original);
     this.el.statOutput.textContent = this.formatBytes(outputBytes);
     this.el.statDim.textContent = `${rules.width}x${rules.height}`;
-    this.el.statPass.textContent = pass ? 'PASS' : 'NEAR LIMIT';
+    this.el.statPass.textContent = passed ? 'PASS' : 'NEAR LIMIT';
+    this.el.statStrategy.textContent = this.lastStrategy;
 
-    if (pass) {
-      this.setResultNote(`Ready to upload. Target ${Math.round(rules.targetBytes / 1024)} KB passed.`, 'ok');
+    const score = this.computeComplianceScore(outputBytes, targetBytes, rules.width, rules.height);
+    this.el.statScore.textContent = `${score}/100`;
+
+    if (passed) {
+      this.setResultNote(`Upload-ready. Saved ${savedPct}% while matching ${Math.round(targetBytes / 1024)} KB max.`, 'ok');
     } else {
-      this.setResultNote('Could not fully reach target without heavy quality loss. Try WebP or larger target KB.', 'warn');
+      this.setResultNote('Very close to target. Increase target KB slightly or choose Maximum Reduction.', 'warn');
     }
+  },
+
+  computeComplianceScore(outputBytes, targetBytes, width, height) {
+    const sizeScore = outputBytes <= targetBytes
+      ? 100
+      : Math.max(0, 100 - Math.round(((outputBytes - targetBytes) / targetBytes) * 140));
+
+    const dimensionScore = width > 0 && height > 0 ? 100 : 0;
+    const weighted = Math.round((sizeScore * 0.75) + (dimensionScore * 0.25));
+    return Math.max(0, Math.min(100, weighted));
   },
 
   buildOutputName(originalName, mime) {
@@ -243,16 +341,16 @@ const UploadReadyOptimizer = {
     if (!this.outputBlob) return;
 
     const utils = window.ImageRunnerUtils;
-    if (utils?.downloadBlob) {
+    if (utils && typeof utils.downloadBlob === 'function') {
       utils.downloadBlob(this.outputBlob, this.outputName);
       return;
     }
 
     const url = URL.createObjectURL(this.outputBlob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = this.outputName;
-    a.click();
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = this.outputName;
+    anchor.click();
     URL.revokeObjectURL(url);
   },
 
@@ -266,9 +364,23 @@ const UploadReadyOptimizer = {
     this.el.resultNote.className = `meta ${type || ''}`.trim();
   },
 
+  setProgressVisible(visible) {
+    this.el.progressWrap.hidden = !visible;
+    if (!visible) {
+      this.el.progressBar.style.width = '0%';
+      this.el.progressText.textContent = '0%';
+    }
+  },
+
+  updateProgress(percent) {
+    const clamped = Math.max(0, Math.min(100, percent));
+    this.el.progressBar.style.width = `${clamped}%`;
+    this.el.progressText.textContent = `${clamped}%`;
+  },
+
   formatBytes(bytes) {
     const utils = window.ImageRunnerUtils;
-    if (utils?.formatFileSize) return utils.formatFileSize(bytes);
+    if (utils && typeof utils.formatFileSize === 'function') return utils.formatFileSize(bytes);
     if (bytes < 1024) return `${bytes} B`;
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
     return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;

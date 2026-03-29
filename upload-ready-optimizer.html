@@ -79,6 +79,13 @@
                         <option value="signature_20">Signature (300x100, <= 20 KB)</option>
                         <option value="exam_photo_50">Exam Photo (200x230, <= 50 KB)</option>
                         <option value="job_photo_200">Job Form Photo (300x300, <= 200 KB)</option>
+                        <option value="upsc_photo">UPSC Photo (300x300, <= 200 KB)</option>
+                        <option value="upsc_signature">UPSC Signature (350x100, <= 50 KB)</option>
+                        <option value="neet_photo">NEET Photo (300x400, <= 200 KB)</option>
+                        <option value="jee_photo">JEE Main Photo (300x400, <= 200 KB)</option>
+                        <option value="scholarship_photo">Scholarship Photo (200x230, <= 50 KB)</option>
+                        <option value="linkedin_dp">LinkedIn DP (400x400, <= 200 KB)</option>
+                        <option value="usa_visa_photo">US Visa Photo (600x600, <= 240 KB)</option>
                     </select>
                 </div>
 
@@ -111,10 +118,24 @@
                 <div class="row row--checks">
                     <label><input id="fit-contain" type="checkbox" checked> Keep full image (letterbox if needed)</label>
                     <label><input id="enhance" type="checkbox" checked> Auto readability enhance</label>
+                    <label><input id="hard-guarantee" type="checkbox" checked> Hard size guarantee (aggressive optimization allowed)</label>
+                </div>
+
+                <div class="field">
+                    <label for="quality-mode">Quality strategy</label>
+                    <select id="quality-mode">
+                        <option value="balanced" selected>Balanced</option>
+                        <option value="readability">Text Readability First</option>
+                        <option value="maximum">Maximum Reduction</option>
+                    </select>
                 </div>
 
                 <button id="btn-optimize" class="btn btn--primary" type="button" disabled>Optimize Now</button>
                 <p class="meta">Pro tip: Auto format gives the smallest valid file in most cases.</p>
+                <div class="progress-wrap" hidden id="progress-wrap" aria-live="polite">
+                    <div class="progress-meta"><span>Optimization</span><strong id="progress-text">0%</strong></div>
+                    <div class="progress"><div class="progress__bar" id="progress-bar"></div></div>
+                </div>
             </article>
 
             <article class="panel">
@@ -129,6 +150,8 @@
                     <div><span>Output</span><strong id="stat-output">0 KB</strong></div>
                     <div><span>Dimensions</span><strong id="stat-dim">0x0</strong></div>
                     <div><span>Result</span><strong id="stat-pass">--</strong></div>
+                    <div><span>Compliance Score</span><strong id="stat-score">0/100</strong></div>
+                    <div><span>Used Strategy</span><strong id="stat-strategy">--</strong></div>
                 </div>
 
                 <p id="result-note" class="meta">Waiting for optimization.</p>
