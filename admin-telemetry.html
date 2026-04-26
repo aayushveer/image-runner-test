@@ -4,7 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Telemetry Admin | Image Runner</title>
+  <meta name="description" content="Local telemetry override panel for Image Runner. Use this page to test AdSense and GA4 ids in your own browser session.">
   <meta name="robots" content="noindex, nofollow">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.imgrunner.com/admin-telemetry.html">
+  <meta property="og:title" content="Telemetry Admin | Image Runner">
+  <meta property="og:description" content="Local telemetry override panel for testing AdSense and GA4 ids in your browser.">
+  <link rel="canonical" href="https://www.imgrunner.com/admin-telemetry.html">
   <style>
     :root {
       --bg: #f4f7fb;
@@ -157,11 +163,12 @@
 
       <p id="login-message" class="message"></p>
       <p class="note">Tip: is page ko public navigation se link na karo. URL sirf trusted admin ke paas rakho.</p>
+      <p class="note">Important: yahan save ki gayi ids sirf iss browser ke localStorage me apply hoti hain. Live site ke sab visitors ke liye tracking enable karne ke liye <code>js/site-config.js</code> update karke deploy karna padega.</p>
     </section>
 
     <section class="card" id="panel-card" hidden>
       <h1>Telemetry Admin Panel</h1>
-      <p class="sub">Yahan se custom ids save honge jo local override ke through telemetry loader use karega.</p>
+      <p class="sub">Yahan se custom ids sirf local browser override ke roop me save honge, jise telemetry loader test mode me use karega.</p>
 
       <div class="row">
         <label for="adsense-client">AdSense Client Id</label>
