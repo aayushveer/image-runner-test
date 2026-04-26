@@ -21,6 +21,16 @@ function Normalize-UrlForCompare {
     return $normalized.ToLowerInvariant()
 }
 
+function Normalize-UrlForExactPathCompare {
+    param([string]$Url)
+
+    if (-not $Url) { return '' }
+
+    $normalized = $Url.Trim()
+    $normalized = $normalized -replace '/+$', ''
+    return $normalized
+}
+
 foreach ($file in $htmlFiles) {
     $content = Get-Content $file.FullName -Raw
 
@@ -39,6 +49,8 @@ foreach ($file in $htmlFiles) {
 
     $canonicalMatch = [regex]::Match($content, '<link\s+rel="canonical"\s+href="([^"]+)"')
     $ogUrlMatch = [regex]::Match($content, '<meta\s+property="og:url"\s+content="([^"]+)"')
+    $robotsMatch = [regex]::Match($content, '<meta\s+name="robots"\s+content="([^"]+)"')
+    $robotsContent = if ($robotsMatch.Success) { $robotsMatch.Groups[1].Value.ToLowerInvariant() } else { '' }
 
     if ($canonicalMatch.Success) {
         $canonical = $canonicalMatch.Groups[1].Value.Trim()
@@ -53,6 +65,16 @@ foreach ($file in $htmlFiles) {
 
         if ($canonicalNorm -ne $ogNorm) {
             $issues.Add("CANONICAL/OG MISMATCH: $($file.Name) => canonical=$($canonicalMatch.Groups[1].Value), og:url=$($ogUrlMatch.Groups[1].Value)")
+        }
+    }
+
+    if ($canonicalMatch.Success -and $robotsContent -notmatch 'noindex') {
+        $expectedCanonical = if ($file.Name -eq 'index.html') { 'https://www.imgrunner.com/' } else { "https://www.imgrunner.com/$($file.Name)" }
+        $canonicalExact = Normalize-UrlForExactPathCompare $canonicalMatch.Groups[1].Value
+        $expectedExact = Normalize-UrlForExactPathCompare $expectedCanonical
+
+        if ($canonicalExact -ne $expectedExact) {
+            $issues.Add("NON-SELF CANONICAL ON INDEXABLE PAGE: $($file.Name) => canonical=$($canonicalMatch.Groups[1].Value), expected=$expectedCanonical")
         }
     }
 
