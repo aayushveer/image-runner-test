@@ -1,563 +1,631 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Runner | Free Image Tools</title>
-    <meta name="description" content="Fast, private image tools for resize, compress, convert, PDF, collage, watermark and passport photo generation. 100% browser-based.">
+    <title>Image Runner | Free Image & PDF Tools — Fast, Private, Browser-Based</title>
+    <meta name="description" content="Free browser-based image tools: resize, compress, convert, remove backgrounds, watermark, create PDFs, collages and passport photos. 100% private — no uploads.">
     <meta name="robots" content="index, follow, max-image-preview:large">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.imgrunner.com/">
-    <meta property="og:title" content="Image Runner | Free Image Tools">
-    <meta property="og:description" content="Resize, compress, convert and edit images instantly in your browser.">
+    <meta property="og:title" content="Image Runner | Free Image & PDF Tools">
+    <meta property="og:description" content="Resize, compress, remove backgrounds, convert, watermark, create PDFs and collages — all 100% in your browser.">
     <meta property="og:site_name" content="Image Runner">
+    <meta name="theme-color" content="#2563EB">
     <link rel="canonical" href="https://www.imgrunner.com/">
-    <meta name="theme-color" content="#2563eb">
-    <link rel="icon" href="/favicon-48.png" sizes="48x48" type="image/png">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <link rel="icon" href="/favicon.svg" sizes="any" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <style>
-        :root {
-            --bg: #f8fafc;
-            --card: #ffffff;
-            --text: #0f172a;
-            --muted: #64748b;
-            --line: #e2e8f0;
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --radius: 16px;
-            --container: 1160px;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: Inter, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-            color: var(--text);
-            background: radial-gradient(1200px 600px at 20% -10%, #dbeafe 0%, transparent 45%),
-                        radial-gradient(1200px 600px at 100% 10%, #e9d5ff 0%, transparent 45%),
-                        var(--bg);
-            line-height: 1.6;
-        }
-        .container { width: min(100% - 32px, var(--container)); margin-inline: auto; }
-        .header {
-            position: sticky;
-            top: 0;
-            backdrop-filter: blur(10px);
-            background: rgba(248, 250, 252, 0.9);
-            border-bottom: 1px solid var(--line);
-            z-index: 10;
-        }
-        .header-inner {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 14px;
-            min-height: 72px;
-        }
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 22px;
-            font-weight: 800;
-            color: #0f172a;
-            text-decoration: none;
-            letter-spacing: -0.02em;
-            flex: 0 0 auto;
-        }
-        .logo svg { width: 30px; height: 30px; color: var(--primary); }
-        .nav {
-            display: flex;
-            gap: 4px;
-            flex-wrap: nowrap;
-            overflow-x: auto;
-            padding: 6px;
-            border: 1px solid var(--line);
-            border-radius: 12px;
-            background: #ffffff;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-        }
-        .nav::-webkit-scrollbar { display: none; }
-        .nav a {
-            color: #334155;
-            text-decoration: none;
-            white-space: nowrap;
-            padding: 7px 10px;
-            border-radius: 10px;
-            font-size: 13px;
-            font-weight: 600;
-        }
-        .nav a:hover { background: #eff6ff; color: var(--primary); }
 
-        .hero { padding: 64px 0 24px; text-align: center; }
-        .badge {
-            display: inline-block;
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: .4px;
-            color: var(--primary-dark);
-            background: #dbeafe;
-            padding: 7px 12px;
-            border-radius: 999px;
-            margin-bottom: 16px;
-        }
-        h1 { font-size: clamp(34px, 7vw, 56px); line-height: 1.08; margin-bottom: 14px; }
-        .sub { color: var(--muted); max-width: 720px; margin: 0 auto 12px; font-size: 18px; }
-        .hero-actions { display: none; }
-        .btn {
-            text-decoration: none;
-            padding: 12px 18px;
-            border-radius: 12px;
-            font-weight: 700;
-            border: 1px solid var(--line);
-            color: #0f172a;
-            background: #fff;
-        }
-        .btn.primary {
-            color: #fff;
-            border-color: var(--primary);
-            background: linear-gradient(135deg, var(--primary), #4f46e5);
-        }
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-        .reveal { opacity: 1; transform: none; }
-
-        @supports (animation-timeline: view()) {
-            .reveal {
-                opacity: 1;
-                transform: none;
-            }
-
-            .grid .card:nth-child(2n),
-            .flow-grid .flow:nth-child(2n) {
-                animation-duration: 0.8s;
-            }
-
-            .grid .card:nth-child(3n),
-            .flow-grid .flow:nth-child(3n) {
-                animation-duration: 0.9s;
-            }
-        }
-
-        @keyframes revealUp {
-            from {
-                opacity: 0;
-                transform: translateY(18px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .trust-strip {
-            margin: 24px auto 6px;
-            width: min(100% - 32px, 980px);
-            background: #fff;
-            border: 1px solid var(--line);
-            border-radius: 14px;
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 0;
-            overflow: hidden;
-        }
-        .trust-item {
-            padding: 12px 14px;
-            text-align: center;
-            border-right: 1px solid var(--line);
-        }
-        .trust-item:last-child { border-right: 0; }
-        .trust-item strong { display: block; font-size: 14px; }
-        .trust-item span { font-size: 12px; color: var(--muted); }
-
-        .tools { padding: 26px 0 52px; }
-        .tools h2 { font-size: 28px; margin-bottom: 8px; }
-        .tools p { color: var(--muted); margin-bottom: 22px; }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 14px;
-        }
-        .tool-categories {
-            display: grid;
-            gap: 18px;
-            margin-bottom: 18px;
-        }
-        .tool-category {
-            background: #ffffff;
-            border: 1px solid var(--line);
-            border-radius: 18px;
-            padding: 18px;
-        }
-        .tool-category__head {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            margin-bottom: 12px;
-        }
-        .tool-category__title {
-            font-size: 18px;
-            font-weight: 800;
-            color: #0f172a;
-        }
-        .tool-category__meta {
-            font-size: 12px;
-            font-weight: 700;
-            color: #1d4ed8;
-            background: #dbeafe;
-            border-radius: 999px;
-            padding: 5px 10px;
-            white-space: nowrap;
-        }
-        .tool-category__desc {
-            color: var(--muted);
-            font-size: 14px;
-            margin-bottom: 12px;
-        }
-        .hub-widget {
-            background: #f8fafc;
-            border: 1px solid var(--line);
-            border-radius: 12px;
-            padding: 10px;
-            margin-bottom: 12px;
-        }
-        .hub-widget__title {
-            font-size: 12px;
-            color: #334155;
-            font-weight: 700;
-            margin-bottom: 8px;
-            letter-spacing: 0.2px;
-        }
-        .hub-links {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .hub-links a {
-            text-decoration: none;
-            font-size: 12px;
-            font-weight: 700;
-            color: #1d4ed8;
-            background: #eff6ff;
-            border: 1px solid #dbeafe;
-            border-radius: 999px;
-            padding: 6px 10px;
-        }
-        .hub-links a:hover {
-            background: #dbeafe;
-            color: #1e40af;
-        }
-        .card {
-            background: var(--card);
-            border: 1px solid #cbd5e1;
-            border-radius: var(--radius);
-            padding: 16px;
-            text-decoration: none;
-            color: inherit;
-            transition: .18s ease;
-            display: block;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
-        }
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #2563eb, #4f46e5);
-            opacity: 0.35;
-        }
-        .card:hover { border-color: #60a5fa; transform: translateY(-3px); box-shadow: 0 14px 34px rgba(37, 99, 235, 0.16); }
-        .icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
-            display: grid;
-            place-items: center;
-            margin-bottom: 12px;
-            background: #eff6ff;
-            color: var(--primary);
-            font-size: 20px;
-        }
-        .card h3 { font-size: 17px; margin-bottom: 5px; }
-        .card p { font-size: 13px; color: var(--muted); margin: 0; }
-
-        .why {
-            margin: 8px 0 52px;
-            background: #fff;
-            border: 1px solid var(--line);
-            border-radius: 18px;
-            padding: 18px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 12px;
-        }
-        .pill { background: #f8fafc; border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
-        .pill h4 { font-size: 14px; margin-bottom: 4px; }
-        .pill p { font-size: 12px; color: var(--muted); }
-
-        .workflows { padding: 0 0 48px; }
-        .workflows h2 { font-size: 28px; margin-bottom: 8px; }
-        .workflows p { color: var(--muted); margin-bottom: 18px; }
-        .flow-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 14px;
-        }
-        .flow {
-            background: #fff;
-            border: 1px solid var(--line);
-            border-radius: 14px;
-            padding: 15px;
-        }
-        .flow h3 { font-size: 16px; margin-bottom: 8px; }
-        .steps { list-style: none; display: grid; gap: 8px; }
-        .steps li {
-            font-size: 13px;
-            color: #334155;
-            background: #f8fafc;
-            border: 1px solid var(--line);
-            border-radius: 10px;
-            padding: 8px 10px;
-        }
-
-        .final-cta {
-            margin: 0 0 56px;
-            background: linear-gradient(135deg, #eff6ff, #eef2ff);
-            border: 1px solid var(--line);
-            border-radius: 18px;
-            padding: 28px 20px;
-            text-align: center;
-        }
-        .final-cta h2 { font-size: clamp(26px, 5vw, 36px); margin-bottom: 10px; line-height: 1.15; }
-        .final-cta p { color: var(--muted); margin-bottom: 16px; }
-        .cta-actions { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
-
-        .footer {
-            border-top: 1px solid var(--line);
-            padding: 22px 0 30px;
-            color: var(--muted);
-            font-size: 14px;
-            text-align: center;
-        }
-
-        @media (max-width: 900px) {
-            .nav { display: none; }
-            .hero { padding-top: 46px; }
-            .sub { font-size: 16px; }
-            .trust-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-            .trust-item:nth-child(2) { border-right: 0; }
-            .trust-item:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation: none !important;
-                transition: none !important;
-                scroll-behavior: auto !important;
-            }
-
-            .reveal {
-                opacity: 1 !important;
-                transform: none !important;
-            }
-        }
-    </style>
-
-    <!-- Global Telemetry -->
-    <script src='js/site-config.js'></script>
-    <script src='js/global-telemetry.js'></script>
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="css/home.css">
 </head>
 <body>
+
+    <!-- ============================================
+         HEADER
+         ============================================ -->
     <header class="header">
-        <div class="container header-inner">
-            <a class="logo" href="index.html" aria-label="Image Runner home">
-                <svg viewBox="0 0 32 32" fill="none">
-                    <rect x="2" y="6" width="28" height="20" rx="3" stroke="currentColor" stroke-width="2.5"></rect>
-                    <circle cx="11" cy="13" r="3" fill="currentColor"></circle>
-                    <path d="M7 22L13 16L17 20L25 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                </svg>
-                <span>Image Runner</span>
+        <div class="header-inner">
+            <a href="index.html" class="logo" aria-label="Image Runner home">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="5" width="18" height="14" rx="2"/>
+                        <circle cx="9" cy="10" r="2"/>
+                        <path d="M7 16l4-5 3 4 5-6"/>
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <span>Image Runner</span>
+                    <span>Free Tools</span>
+                </div>
             </a>
-            <nav class="nav" aria-label="Top navigation">
-                <a href="image-compress.html">Compress</a>
-                <a href="compress-pdf.html">Compress PDF</a>
-                <a href="split-pdf.html">Split PDF</a>
-                <a href="rotate-pdf.html">Rotate PDF</a>
-                <a href="image-resize.html">Resize</a>
-                <a href="background-remover.html">BG Remove</a>
-                <a href="format-converter.html">Convert</a>
-                <a href="upload-ready-optimizer.html">Upload Ready</a>
-                <a href="image-to-pdf.html">Image to PDF</a>
-                <a href="merge-pdf.html">Merge PDF</a>
-                <a href="passport-photo.html">Passport Photo</a>
+
+            <nav class="nav" aria-label="Primary navigation">
+                <a href="image-compress.html" class="nav-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    Compress
+                </a>
+                <a href="image-resize.html" class="nav-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+                    Resize
+                </a>
+                <a href="compress-pdf.html" class="nav-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+                    Compress PDF
+                </a>
+                <a href="background-remover.html" class="nav-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/></svg>
+                    BG Remove
+                </a>
+                <a href="format-converter.html" class="nav-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+                    Convert
+                </a>
+                <a href="merge-pdf.html" class="nav-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 16l4-4-4-4"/><path d="M20 12H8"/><path d="M12 20l-4 4 4 4"/></svg>
+                    Merge PDF
+                </a>
+                <a href="passport-photo.html" class="nav-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="12" cy="11" r="4"/><line x1="8" y1="2" x2="8" y2="4"/><line x1="16" y1="2" x2="16" y2="4"/></svg>
+                    Passport Photo
+                </a>
+                <a href="image-to-pdf.html" class="nav-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    Image to PDF
+                </a>
             </nav>
+
+            <button class="menu-btn" aria-label="Open menu">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
         </div>
     </header>
 
     <main>
+
+        <!-- ============================================
+             HERO SECTION
+             ============================================ -->
         <section class="hero">
-            <div class="container">
-                <span class="badge">NEW FRONTEND • SPEED + QUALITY</span>
-                <h1>World-Class Image Tools.<br>Fast, Private, Reliable.</h1>
-                <p class="sub">Resize, compress, remove backgrounds, convert, watermark, create PDFs, build collages and generate passport photos — all directly in your browser.</p>
-            </div>
-            <div class="trust-strip reveal" aria-label="Trust highlights">
-                <div class="trust-item"><strong>100% Browser Processing</strong><span>No server upload required</span></div>
-                <div class="trust-item"><strong>Fast Output</strong><span>Optimized for large files</span></div>
-                <div class="trust-item"><strong>Core Suite Only</strong><span>Focused, clean, high-value tools</span></div>
-                <div class="trust-item"><strong>Cross Platform</strong><span>Mobile + desktop compatible</span></div>
+            <div class="hero-content">
+
+                <!-- Badge -->
+                <div class="badge">
+                    <span class="badge-dot"></span>
+                    100% Browser-Based — No Upload Required
+                </div>
+
+                <!-- Heading -->
+                <h1>
+                    World-Class Image &amp; PDF Tools.<br>
+                    <span class="highlight">Fast, Private &amp; Reliable.</span>
+                </h1>
+
+                <!-- Subheading -->
+                <p class="hero-desc">
+                    Resize, compress, remove backgrounds, convert formats, watermark, build PDFs, create collages and generate passport-ready photos — all directly in your browser. No signup, no uploads, fully private.
+                </p>
+
+                <!-- Quick Action Pills -->
+                <div class="quick-actions">
+                    <a href="image-resize.html" class="quick-action">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+                        Resize Images
+                        <span class="arrow">→</span>
+                    </a>
+                    <a href="compress-pdf.html" class="quick-action">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/></svg>
+                        Compress PDF
+                        <span class="arrow">→</span>
+                    </a>
+                    <a href="background-remover.html" class="quick-action">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/></svg>
+                        Remove Background
+                        <span class="arrow">→</span>
+                    </a>
+                    <a href="passport-photo.html" class="quick-action">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="12" cy="11" r="4"/></svg>
+                        Passport Photo
+                        <span class="arrow">→</span>
+                    </a>
+                </div>
+
             </div>
         </section>
 
-        <section id="tools" class="tools">
+        <!-- ============================================
+             TRUST STRIP
+             ============================================ -->
+        <div class="container">
+            <div class="trust-strip" aria-label="Key benefits">
+                <div class="trust-item">
+                    <div class="trust-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                    </div>
+                    <strong>100% Private</strong>
+                    <span>Files never leave your device</span>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                    </div>
+                    <strong>Lightning Fast</strong>
+                    <span>Optimized for large files</span>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    </div>
+                    <strong>No Signup</strong>
+                    <span>Open tool, use, done</span>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                    </div>
+                    <strong>Any Device</strong>
+                    <span>Mobile, tablet &amp; desktop</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================
+             TOOLS SECTION
+             ============================================ -->
+        <section class="tools-section">
             <div class="container">
-                <h2 class="reveal">Core Tool Suite</h2>
-                <p class="reveal">14 production-ready tools organized by workflow so teams can pick the right utility faster.</p>
 
-                <div class="tool-categories">
-                    <section class="tool-category reveal" aria-label="PDF Tools">
-                        <div class="tool-category__head">
-                            <h3 class="tool-category__title">PDF Tools</h3>
-                            <span class="tool-category__meta">5 tools</span>
-                        </div>
-                        <p class="tool-category__desc">Document assembly, compression, page extraction, rotation, and PDF page exports.</p>
-                        <div class="hub-widget" aria-label="Top PDF use case hubs">
-                            <div class="hub-widget__title">Top Use-Case Hubs</div>
-                            <div class="hub-links">
-                                <a href="merge-pdf-use-cases.html">Merge PDF Hub</a>
-                                <a href="compress-pdf-use-cases.html">Compress PDF Hub</a>
-                                <a href="split-pdf-use-cases.html">Split PDF Hub</a>
-                                <a href="rotate-pdf-use-cases.html">Rotate PDF Hub</a>
-                                <a href="pdf-to-image-use-cases.html">PDF to Image Hub</a>
-                                <a href="image-to-pdf-use-cases.html">Image to PDF Hub</a>
+                <!-- Section: PDF Tools -->
+                <div class="tool-category-card pdf">
+                    <div class="category-header">
+                        <div class="category-info">
+                            <div class="category-icon pdf">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                    <line x1="16" y1="13" x2="8" y2="13"/>
+                                    <line x1="16" y1="17" x2="8" y2="17"/>
+                                    <polyline points="10 9 9 9 8 9"/>
+                                </svg>
+                            </div>
+                            <div class="category-meta">
+                                <h3>PDF Tools</h3>
+                                <span>5 tools • Document assembly &amp; optimization</span>
                             </div>
                         </div>
-                        <div class="grid">
-                            <a class="card" href="merge-pdf.html"><div class="icon">📎</div><h3>Merge PDF</h3><p>Combine multiple PDF files into one document.</p></a>
-                            <a class="card" href="compress-pdf.html"><div class="icon">📉</div><h3>Compress PDF</h3><p>Reduce PDF size with quality presets and page selection.</p></a>
-                            <a class="card" href="split-pdf.html"><div class="icon">✂️</div><h3>Split PDF</h3><p>Extract selected pages, ranges, or each page separately.</p></a>
-                            <a class="card" href="rotate-pdf.html"><div class="icon">🧭</div><h3>Rotate PDF</h3><p>Rotate all pages or selected pages by 90° or 180°.</p></a>
-                            <a class="card" href="pdf-to-image.html"><div class="icon">🧩</div><h3>PDF to Image</h3><p>Extract pages as JPG or PNG instantly.</p></a>
-                        </div>
-                    </section>
+                    </div>
 
-                    <section class="tool-category reveal" aria-label="Image Essentials">
-                        <div class="tool-category__head">
-                            <h3 class="tool-category__title">Image Essentials</h3>
-                            <span class="tool-category__meta">6 tools</span>
-                        </div>
-                        <p class="tool-category__desc">Core optimization and conversion tools for everyday image production workflows.</p>
-                        <div class="hub-widget" aria-label="Top image use case hubs">
-                            <div class="hub-widget__title">Top Use-Case Hubs</div>
-                            <div class="hub-links">
-                                <a href="background-remover-use-cases.html">Background Remover Hub</a>
-                                <a href="image-compress-use-cases.html">Image Compress Hub</a>
-                                <a href="resize-image-use-cases.html">Resize Image Hub</a>
-                                <a href="convert-image-format-use-cases.html">Convert Format Hub</a>
-                            </div>
-                        </div>
-                        <div class="grid">
-                            <a class="card" href="image-compress.html"><div class="icon">🗜️</div><h3>Image Compress</h3><p>Reduce image size while preserving quality.</p></a>
-                            <a class="card" href="image-resize.html"><div class="icon">📐</div><h3>Image Resize</h3><p>Set exact dimensions for web and social media.</p></a>
-                            <a class="card" href="upload-ready-optimizer.html"><div class="icon">✅</div><h3>Upload Ready Optimizer</h3><p>Match exact KB and exact dimensions for form uploads and portal checks.</p></a>
-                            <a class="card" href="format-converter.html"><div class="icon">🔄</div><h3>Format Converter</h3><p>Convert JPG, PNG, and WebP formats quickly.</p></a>
-                            <a class="card" href="background-remover.html"><div class="icon">✂️</div><h3>Background Remover Pro</h3><p>Stable AI cutout with live before/after compare and refined export workflow.</p></a>
-                            <a class="card" href="image-to-pdf.html"><div class="icon">📄</div><h3>Image to PDF</h3><p>Merge multiple images into one PDF.</p></a>
-                        </div>
-                    </section>
+                    <p class="category-desc">Compress, merge, split, rotate, and export PDF pages as images. Complete document workflow without leaving your browser.</p>
 
-                    <section class="tool-category reveal" aria-label="Creative and Utility">
-                        <div class="tool-category__head">
-                            <h3 class="tool-category__title">Creative and Utility</h3>
-                            <span class="tool-category__meta">4 tools</span>
+                    <div class="hub-widget">
+                        <span class="hub-widget-label">Quick hubs</span>
+                        <div class="hub-links">
+                            <a href="merge-pdf-use-cases.html" class="hub-link">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+                                Merge Hub
+                            </a>
+                            <a href="compress-pdf-use-cases.html" class="hub-link">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                Compress Hub
+                            </a>
+                            <a href="split-pdf-use-cases.html" class="hub-link">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>
+                                Split Hub
+                            </a>
+                            <a href="rotate-pdf-use-cases.html" class="hub-link">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0115-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 01-15 6.7L3 16"/></svg>
+                                Rotate Hub
+                            </a>
+                            <a href="pdf-to-image-use-cases.html" class="hub-link">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                PDF to Image Hub
+                            </a>
                         </div>
-                        <p class="tool-category__desc">Branding, identity assets, visual planning, and collage composition.</p>
-                        <div class="hub-widget" aria-label="Top creative use case hubs">
-                            <div class="hub-widget__title">Top Use-Case Hubs</div>
-                            <div class="hub-links">
-                                <a href="background-remover-use-cases.html">Background Remover Hub</a>
-                                <a href="image-compress-use-cases.html">Image Compress Hub</a>
+                    </div>
+
+                    <div class="tool-grid">
+                        <a href="merge-pdf.html" class="tool-card pdf">
+                            <div class="tool-card-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 16l4-4-4-4"/><path d="M20 12H8"/><path d="M12 20l-4 4 4 4"/></svg>
                             </div>
-                        </div>
-                        <div class="grid">
-                            <a class="card" href="add-watermark.html"><div class="icon">🛡️</div><h3>Watermark Tool</h3><p>Add text or logo watermarks in batch.</p></a>
-                            <a class="card" href="passport-photo.html"><div class="icon">🪪</div><h3>Passport Photo</h3><p>Create visa and passport-ready photos.</p></a>
-                            <a class="card" href="photo-collage.html"><div class="icon">🖼️</div><h3>Photo Collage</h3><p>Build clean multi-photo layouts easily.</p></a>
-                            <a class="card" href="color-palette.html"><div class="icon">🎨</div><h3>Color Picker</h3><p>Extract HEX, RGB, and HSL palettes from images.</p></a>
-                        </div>
-                    </section>
+                            <h4>Merge PDF</h4>
+                            <p>Combine multiple PDF files into one document instantly.</p>
+                            <div class="tool-card-arrow">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </div>
+                        </a>
+                        <a href="compress-pdf.html" class="tool-card pdf">
+                            <div class="tool-card-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/></svg>
+                            </div>
+                            <h4>Compress PDF</h4>
+                            <p>Reduce PDF file size with smart quality presets.</p>
+                            <div class="tool-card-arrow">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </div>
+                        </a>
+                        <a href="split-pdf.html" class="tool-card pdf">
+                            <div class="tool-card-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>
+                            </div>
+                            <h4>Split PDF</h4>
+                            <p>Extract pages, ranges, or split into individual files.</p>
+                            <div class="tool-card-arrow">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </div>
+                        </a>
+                        <a href="rotate-pdf.html" class="tool-card pdf">
+                            <div class="tool-card-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0115-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 01-15 6.7L3 16"/></svg>
+                            </div>
+                            <h4>Rotate PDF</h4>
+                            <p>Rotate all or selected pages by 90°, 180°, or 270°.</p>
+                            <div class="tool-card-arrow">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </div>
+                        </a>
+                        <a href="pdf-to-image.html" class="tool-card pdf">
+                            <div class="tool-card-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                            </div>
+                            <h4>PDF to Image</h4>
+                            <p>Convert PDF pages to JPG or PNG images instantly.</p>
+                            <div class="tool-card-arrow">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </div>
+                        </a>
+                    </div>
                 </div>
 
-                <div class="why">
-                    <div class="pill reveal"><h4>100% Private</h4><p>Client-side processing. Files stay on your device.</p></div>
-                    <div class="pill reveal"><h4>No Signup</h4><p>Open tool, upload file, download result.</p></div>
-                    <div class="pill reveal"><h4>Cross Device</h4><p>Works on mobile, tablet and desktop browsers.</p></div>
-                    <div class="pill reveal"><h4>Production Ready</h4><p>Optimized for real-world workflows and quality.</p></div>
+                <!-- Section: Image Essentials -->
+                <div class="tool-category-card image">
+                    <div class="category-header">
+                        <div class="category-info">
+                            <div class="category-icon image">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                                    <polyline points="21 15 16 10 5 21"/>
+                                </svg>
+                            </div>
+                            <div class="category-meta">
+                                <h3>Image Essentials</h3>
+                                <span>6 tools • Optimization, conversion &amp; composition</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="category-desc">The core toolkit for everyday image production — resize, compress, convert formats, remove backgrounds, create PDFs and optimize for upload requirements.</p>
+
+                    <div class="hub-widget">
+                        <span class="hub-widget-label">Quick hubs</span>
+                        <div class="hub-links">
+                            <a href="background-remover-use-cases.html" class="hub-link">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/></svg>
+                                BG Remove Hub
+                            </a>
+                            <a href="image-compress-use-cases.html" class="hub-link">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                Compress Hub
+                            </a>
+                            <a href="resize-image-use-cases.html" class="hub-link">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/></svg>
+                                Resize Hub
+                            </a>
+                            <a href="convert-image-format-use-cases.html" class="hub-link">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+                                Convert Hub
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="tool-grid">
+                        <a href="image-compress.html" class="tool-card image">
+                            <div class="tool-card-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                            </div>
+                            <h4>Image Compress</h4>
+                            <p>Reduce image file size while preserving visual quality.</p>
+                            <div class="tool-card-arrow">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </div>
+                        </a>
+                        <a href="image-resize.html" class="tool-card image">
+                            <div class="tool-card-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+                            </div>
+                            <h4>Image Resize</h4>
+                            <p>Set exact pixel dimensions for web, social &amp; portals.</p>
+                            <div class="tool-card-arrow">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </div>
+                        </a>
+                        <a href="upload-ready-optimizer.html" class="tool-card image">
+                            <div class="tool-card-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            </div>
+                            <h4>Upload Ready</h4>
+                            <p>Match exact KB size and exact dimensions for form uploads.</p>
+                            <div class="tool-card-arrow">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </div>
+                        </a>
+                        <a href="format-converter.html" class="tool-card image">
+                            <div class="tool-card-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+                            </div>
+                            <h4>Format Converter</h4>
+                            <p>Convert between JPG, PNG, WebP and HEIC formats.</p>
+                            <div class="tool-card-arrow">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </div>
+                        </a>
+                        <a href="background-remover.html" class="tool-card image">
+                            <div class="tool-card-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/></svg>
+                            </div>
+                            <h4>BG Remove Pro</h4>
+                            <p>AI-powered background removal with live before/after.</p>
+                            <div class="tool-card-arrow">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </div>
+                        </a>
+                        <a href="image-to-pdf.html" class="tool-card image">
+                            <div class="tool-card-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                            </div>
+                            <h4>Image to PDF</h4>
+                            <p>Merge multiple images into a single PDF document.</p>
+                            <div class="tool-card-arrow">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Section: Creative & Utility -->
+                <div class="tool-category-card creative">
+                    <div class="category-header">
+                        <div class="category-info">
+                            <div class="category-icon creative">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 19l7-7 3 3-7 7-3-3z"/>
+                                    <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
+                                    <path d="M2 2l7.586 7.586"/>
+                                    <circle cx="11" cy="11" r="2"/>
+                                </svg>
+                            </div>
+                            <div class="category-meta">
+                                <h3>Creative &amp; Utility</h3>
+                                <span>4 tools • Branding, identity &amp; composition</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="category-desc">Build brand assets, create professional identity photos, compose visual layouts and extract color palettes — all without any design software.</p>
+
+                    <div class="tool-grid">
+                        <a href="add-watermark.html" class="tool-card creative">
+                            <div class="tool-card-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            </div>
+                            <h4>Watermark Tool</h4>
+                            <p>Add text or logo watermarks to images in batch.</p>
+                            <div class="tool-card-arrow">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </div>
+                        </a>
+                        <a href="passport-photo.html" class="tool-card creative">
+                            <div class="tool-card-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="12" cy="11" r="4"/><line x1="8" y1="2" x2="8" y2="4"/><line x1="16" y1="2" x2="16" y2="4"/></svg>
+                            </div>
+                            <h4>Passport Photo</h4>
+                            <p>Create visa and passport-ready photos with auto-crop.</p>
+                            <div class="tool-card-arrow">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </div>
+                        </a>
+                        <a href="photo-collage.html" class="tool-card creative">
+                            <div class="tool-card-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                            </div>
+                            <h4>Photo Collage</h4>
+                            <p>Build clean multi-photo layouts for social and web.</p>
+                            <div class="tool-card-arrow">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </div>
+                        </a>
+                        <a href="color-palette.html" class="tool-card creative">
+                            <div class="tool-card-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="19" cy="13" r="2.5"/><circle cx="16" cy="18.5" r="2.5"/><circle cx="8" cy="18" r="2.5"/><circle cx="5" cy="12" r="2.5"/></svg>
+                            </div>
+                            <h4>Color Picker</h4>
+                            <p>Extract HEX, RGB and HSL color palettes from images.</p>
+                            <div class="tool-card-arrow">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ============================================
+             WHY SECTION
+             ============================================ -->
+        <section class="why-section">
+            <div class="container">
+                <div class="section-header">
+                    <div class="section-header-text">
+                        <h2>Why Image Runner?</h2>
+                        <p>Built for creators, marketers, and professionals who need reliable tools without the friction.</p>
+                    </div>
+                </div>
+
+                <div class="why-grid">
+                    <div class="why-card">
+                        <div class="why-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                        </div>
+                        <h4>100% Client-Side</h4>
+                        <p>All processing happens in your browser. Files never leave your device — no server, no upload, no risk.</p>
+                    </div>
+                    <div class="why-card">
+                        <div class="why-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        </div>
+                        <h4>Zero Wait Time</h4>
+                        <p>Open any tool, drop your file, get results. No signup forms, no waiting in queues, no premium tiers.</p>
+                    </div>
+                    <div class="why-card">
+                        <div class="why-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+                        </div>
+                        <h4>Cross Platform</h4>
+                        <p>Works seamlessly on Windows, macOS, Linux, Android and iOS. Any browser, any device, any screen size.</p>
+                    </div>
+                    <div class="why-card">
+                        <div class="why-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        </div>
+                        <h4>Production Quality</h4>
+                        <p>Tools are refined for real-world workflows — batch processing, precise controls, and consistent output every time.</p>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <section class="workflows">
+        <!-- ============================================
+             WORKFLOWS SECTION
+             ============================================ -->
+        <section class="workflows-section">
             <div class="container">
-                <h2 class="reveal">Top Workflows</h2>
-                <p class="reveal">Use these proven flows to get output faster with better consistency.</p>
-                <div class="flow-grid">
-                    <article class="flow reveal">
+                <div class="workflows-header section-header">
+                    <div class="section-header-text">
+                        <h2>Top Workflows</h2>
+                        <p>Proven flows to get output faster with better consistency.</p>
+                    </div>
+                </div>
+
+                <div class="workflow-grid">
+                    <div class="workflow-card">
+                        <div class="workflow-number">1</div>
                         <h3>Job / Form Submission</h3>
-                        <ul class="steps">
-                            <li>1) Create photo with Passport Photo Maker</li>
-                            <li>2) Resize as per portal dimensions</li>
-                            <li>3) Compress to upload-friendly size</li>
-                        </ul>
-                    </article>
-                    <article class="flow reveal">
+                        <div class="workflow-steps">
+                            <div class="workflow-step">
+                                <span class="workflow-step-num">1</span>
+                                Create photo with Passport Photo Maker
+                            </div>
+                            <div class="workflow-step">
+                                <span class="workflow-step-num">2</span>
+                                Resize as per portal dimensions
+                            </div>
+                            <div class="workflow-step">
+                                <span class="workflow-step-num">3</span>
+                                Compress to upload-friendly size
+                            </div>
+                        </div>
+                    </div>
+                    <div class="workflow-card">
+                        <div class="workflow-number">2</div>
                         <h3>Social Post Bundle</h3>
-                        <ul class="steps">
-                            <li>1) Resize base creatives</li>
-                            <li>2) Add watermark/logo branding</li>
-                            <li>3) Export lightweight versions</li>
-                        </ul>
-                    </article>
-                    <article class="flow reveal">
+                        <div class="workflow-steps">
+                            <div class="workflow-step">
+                                <span class="workflow-step-num">1</span>
+                                Resize base creatives for each platform
+                            </div>
+                            <div class="workflow-step">
+                                <span class="workflow-step-num">2</span>
+                                Add watermark / logo branding
+                            </div>
+                            <div class="workflow-step">
+                                <span class="workflow-step-num">3</span>
+                                Export lightweight optimized versions
+                            </div>
+                        </div>
+                    </div>
+                    <div class="workflow-card">
+                        <div class="workflow-number">3</div>
                         <h3>Document Pack</h3>
-                        <ul class="steps">
-                            <li>1) Convert photos to clean PDFs</li>
-                            <li>2) Extract pages as images when needed</li>
-                            <li>3) Re-optimize final deliverables</li>
-                        </ul>
-                    </article>
+                        <div class="workflow-steps">
+                            <div class="workflow-step">
+                                <span class="workflow-step-num">1</span>
+                                Convert photos to clean PDFs
+                            </div>
+                            <div class="workflow-step">
+                                <span class="workflow-step-num">2</span>
+                                Merge or compress final documents
+                            </div>
+                            <div class="workflow-step">
+                                <span class="workflow-step-num">3</span>
+                                Share or archive output
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <section class="container final-cta reveal">
-            <h2>Build Better Assets in Minutes</h2>
-            <p>Everything stays private, output stays high quality, and workflow stays simple.</p>
-            <div class="cta-actions">
-                <a class="btn primary" href="image-resize.html">Start with Resize</a>
-                <a class="btn" href="image-to-pdf.html">Go to Image to PDF</a>
-                <a class="btn" href="add-watermark.html">Open Watermark Tool</a>
+        <!-- ============================================
+             CTA SECTION
+             ============================================ -->
+        <section class="container">
+            <div class="cta-card">
+                <h2>Build Better Assets in Minutes</h2>
+                <p>Everything stays private, output stays high quality, and workflow stays simple. Start with any tool — no signup needed.</p>
+                <div class="cta-actions">
+                    <a href="image-resize.html" class="btn btn-primary">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+                        Start with Resize
+                    </a>
+                    <a href="compress-pdf.html" class="btn btn-secondary">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                        Compress PDF
+                    </a>
+                    <a href="add-watermark.html" class="btn btn-secondary">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        Add Watermark
+                    </a>
+                </div>
             </div>
         </section>
+
     </main>
 
+    <!-- ============================================
+         FOOTER
+         ============================================ -->
     <footer class="footer">
-        <div class="container">© 2026 Image Runner • Built for creators and professionals</div>
+        <div class="container footer-inner">
+            <div class="footer-brand">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="5" width="18" height="14" rx="2"/>
+                    <circle cx="9" cy="10" r="2"/>
+                    <path d="M7 16l4-5 3 4 5-6"/>
+                </svg>
+                Image Runner
+            </div>
+            <div class="footer-text">Free, private, browser-based image &amp; PDF tools. No uploads, no signup.</div>
+            <div class="footer-links">
+                <a href="compress-pdf.html">PDF Tools</a>
+                <a href="image-compress.html">Image Tools</a>
+                <a href="background-remover.html">BG Remove</a>
+                <a href="passport-photo.html">Passport Photo</a>
+            </div>
+        </div>
     </footer>
 
+    <!-- Telemetry (AdSense + GA4) -->
+    <script src="js/site-config.js"></script>
+    <script src="js/global-telemetry.js"></script>
+    <!-- Bug Report -->
     <script src="js/bug-report.js" defer></script>
+
 </body>
 </html>
-
-
-
-
-
-
-
-
