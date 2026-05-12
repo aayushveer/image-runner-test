@@ -1,29 +1,8 @@
 # Image Runner Robots.txt
 # https://www.imgrunner.com
-# Last Updated: 2026-01-21
+# Last Updated: 2026-05-12
 
-# Allow all crawlers
 User-agent: *
 Allow: /
 
-# Crawl-delay for politeness
-Crawl-delay: 1
-
-# Sitemap location
 Sitemap: https://www.imgrunner.com/sitemap.xml
-
-# Block admin pages (none exist currently)
-# Disallow: /admin/
-
-# Allow all other files
-Allow: /
-
-# Googlebot specific
-User-agent: Googlebot
-Allow: /
-Crawl-delay: 0
-
-# Bingbot specific  
-User-agent: Bingbot
-Allow: /
-Crawl-delay: 1

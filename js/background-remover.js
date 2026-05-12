@@ -6,17 +6,12 @@ let preloadFn = null;
 const MODEL_VERSION = '1.6.0';
 const MODEL_CONFIGS = [
   {
-    publicPath: `https://cdn.jsdelivr.net/npm/@imgly/background-removal-data@${MODEL_VERSION}/dist/`,
-    model: 'isnet_quint8',
-    device: 'cpu'
-  },
-  {
-    publicPath: `https://unpkg.com/@imgly/background-removal-data@${MODEL_VERSION}/dist/`,
-    model: 'isnet_quint8',
-    device: 'cpu'
-  },
-  {
     publicPath: `https://staticimgly.com/@imgly/background-removal-data/${MODEL_VERSION}/dist/`,
+    model: 'isnet_quint8',
+    device: 'cpu'
+  },
+  {
+    publicPath: `https://staticimgly.com/@imgly/background-removal/${MODEL_VERSION}/dist/`,
     model: 'isnet_fp16',
     device: 'cpu'
   }
