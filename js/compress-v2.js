@@ -54,6 +54,7 @@ const App = {
             qualitySlider: document.getElementById('quality-slider'),
             qualityValue: document.getElementById('quality-value'),
             qualityEstimate: document.getElementById('quality-estimate'),
+            targetKb: document.getElementById('target-kb'),
             btnCompress: document.getElementById('btn-compress'),
             
             downloadInfo: document.getElementById('download-info'),
@@ -87,6 +88,7 @@ const App = {
                 this.el.qualitySlider.value = this.quality;
                 this.el.qualityValue.textContent = this.quality + '%';
                 this.updateSlider();
+                this.scheduleEstimateUpdate();
             });
         });
         
@@ -97,6 +99,8 @@ const App = {
             this.updateSlider();
             this.scheduleEstimateUpdate();
         });
+
+        this.el.targetKb?.addEventListener('input', () => this.scheduleEstimateUpdate());
         
         // Compress
         this.el.btnCompress?.addEventListener('click', () => this.compress());
@@ -246,13 +250,19 @@ const App = {
         const estimatedTotal = this.images.reduce((sum, img) => {
             const heuristicRatio = this.getHeuristicRatio(img, this.quality);
             const blendedRatio = (sampleRatio * 0.55) + (heuristicRatio * 0.45);
-            const estimated = Math.max(8 * 1024, Math.round(img.size * blendedRatio));
+            let estimated = Math.max(8 * 1024, Math.round(img.size * blendedRatio));
+            const targetBytes = this.getTargetBytes();
+            if (targetBytes && this.canUseTargetSize(img)) {
+                estimated = Math.min(estimated, targetBytes);
+            }
             return sum + estimated;
         }, 0);
 
         const saved = Math.max(0, totalOriginal - estimatedTotal);
         const savedPct = totalOriginal > 0 ? Math.round((saved / totalOriginal) * 100) : 0;
-        this.el.qualityEstimate.textContent = `Estimated output size: ${this.formatSize(estimatedTotal)} (save ~${savedPct}%)`;
+        const targetBytes = this.getTargetBytes();
+        const targetText = targetBytes ? `, target ${this.formatSize(targetBytes)} each` : '';
+        this.el.qualityEstimate.textContent = `Estimated output size: ${this.formatSize(estimatedTotal)} (save ~${savedPct}%${targetText})`;
     },
 
     getHeuristicRatio(img, quality) {
@@ -340,64 +350,132 @@ const App = {
         }
     },
     
-    processImage(img) {
-        return new Promise((resolve, reject) => {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = img.width;
-            canvas.height = img.height;
-            
-            const image = new Image();
-            image.onload = () => {
-                ctx.drawImage(image, 0, 0);
-                
-                // FIXED: Preserve original format instead of forcing JPEG
-                let mimeType = img.type || 'image/jpeg';
-                let extension = 'jpg';
-                
-                // Determine correct mime type and extension
-                if (mimeType === 'image/png' || img.name.toLowerCase().endsWith('.png')) {
-                    mimeType = 'image/png';
-                    extension = 'png';
-                } else if (mimeType === 'image/webp' || img.name.toLowerCase().endsWith('.webp')) {
-                    mimeType = 'image/webp';
-                    extension = 'webp';
-                } else if (mimeType === 'image/gif' || img.name.toLowerCase().endsWith('.gif')) {
-                    // GIF loses animation, convert to PNG for quality
-                    mimeType = 'image/png';
-                    extension = 'png';
-                } else {
-                    mimeType = 'image/jpeg';
-                    extension = 'jpg';
-                }
-                
-                const quality = this.quality / 100;
-                
-                canvas.toBlob((blob) => {
-                    if (!blob) { reject(); return; }
-                    
-                    const baseName = img.name.replace(/\.[^/.]+$/, '');
-                    const fileName = `${baseName}_compressed.${extension}`;
-                    const saved = img.size - blob.size;
-                    const savedPct = Math.round((saved / img.size) * 100);
-                    
-                    resolve({
-                        fileName,
-                        blob,
-                        url: URL.createObjectURL(blob),
-                        originalSize: img.size,
-                        compressedSize: blob.size,
-                        savedPct,
-                        originalName: img.name,
-                    });
-                    
-                    canvas.width = 0;
-                    canvas.height = 0;
-                }, mimeType, quality);
+    async processImage(img) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        try {
+            const image = await this.loadImageElement(img.url);
+            ctx.drawImage(image, 0, 0);
+
+            const output = this.getOutputSpec(img);
+            const targetBytes = this.canUseTargetSize(img) ? this.getTargetBytes() : 0;
+            const encoded = await this.encodeCanvasForTarget(canvas, output.mimeType, this.quality, targetBytes);
+
+            const baseName = img.name.replace(/\.[^/.]+$/, '');
+            const fileName = `${baseName}_compressed.${output.extension}`;
+            const saved = img.size - encoded.blob.size;
+            const savedPct = Math.round((saved / img.size) * 100);
+
+            return {
+                fileName,
+                blob: encoded.blob,
+                url: URL.createObjectURL(encoded.blob),
+                originalSize: img.size,
+                compressedSize: encoded.blob.size,
+                savedPct,
+                originalName: img.name,
+                qualityUsed: encoded.qualityUsed,
+                targetBytes,
+                targetHit: targetBytes ? encoded.blob.size <= targetBytes : null
             };
-            image.onerror = () => reject();
-            image.src = img.url;
+        } finally {
+            canvas.width = 0;
+            canvas.height = 0;
+        }
+    },
+
+    loadImageElement(src) {
+        return new Promise((resolve, reject) => {
+            const image = new Image();
+            image.onload = () => resolve(image);
+            image.onerror = () => reject(new Error('image load failed'));
+            image.src = src;
         });
+    },
+
+    getOutputSpec(img) {
+        let mimeType = img.type || 'image/jpeg';
+        let extension = 'jpg';
+        const name = img.name.toLowerCase();
+
+        if (mimeType === 'image/png' || name.endsWith('.png')) {
+            mimeType = 'image/png';
+            extension = 'png';
+        } else if (mimeType === 'image/webp' || name.endsWith('.webp')) {
+            mimeType = 'image/webp';
+            extension = 'webp';
+        } else if (mimeType === 'image/gif' || name.endsWith('.gif')) {
+            mimeType = 'image/png';
+            extension = 'png';
+        } else {
+            mimeType = 'image/jpeg';
+            extension = 'jpg';
+        }
+
+        return { mimeType, extension };
+    },
+
+    encodeCanvas(canvas, mimeType, qualityPercent) {
+        return new Promise((resolve, reject) => {
+            canvas.toBlob((blob) => {
+                if (!blob) {
+                    reject(new Error('image encode failed'));
+                    return;
+                }
+                resolve(blob);
+            }, mimeType, qualityPercent / 100);
+        });
+    },
+
+    async encodeCanvasForTarget(canvas, mimeType, preferredQuality, targetBytes) {
+        const startingQuality = Math.max(10, Math.min(100, preferredQuality));
+        const firstBlob = await this.encodeCanvas(canvas, mimeType, startingQuality);
+
+        if (!targetBytes || firstBlob.size <= targetBytes || !this.canAdjustQuality(mimeType)) {
+            return { blob: firstBlob, qualityUsed: startingQuality };
+        }
+
+        let low = 10;
+        let high = startingQuality;
+        let bestBlob = firstBlob;
+        let bestQuality = startingQuality;
+
+        for (let step = 0; step < 7 && low <= high; step++) {
+            const mid = Math.floor((low + high) / 2);
+            const blob = await this.encodeCanvas(canvas, mimeType, mid);
+
+            if (blob.size <= targetBytes) {
+                bestBlob = blob;
+                bestQuality = mid;
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+                if (blob.size < bestBlob.size) {
+                    bestBlob = blob;
+                    bestQuality = mid;
+                }
+            }
+        }
+
+        return { blob: bestBlob, qualityUsed: bestQuality };
+    },
+
+    canAdjustQuality(mimeType) {
+        return mimeType === 'image/jpeg' || mimeType === 'image/webp';
+    },
+
+    canUseTargetSize(img) {
+        const spec = this.getOutputSpec(img);
+        return this.canAdjustQuality(spec.mimeType);
+    },
+
+    getTargetBytes() {
+        const raw = Number(this.el.targetKb?.value || 0);
+        if (!Number.isFinite(raw) || raw < 5) return 0;
+        return Math.min(10240, Math.round(raw)) * 1024;
     },
     
     showDownload(totalOrig, totalComp) {
@@ -410,11 +488,15 @@ const App = {
         this.results.forEach(r => {
             const item = document.createElement('div');
             item.className = 'result-item';
+            const targetText = r.targetBytes
+                ? (r.targetHit ? `Target met at ${r.qualityUsed}% quality` : `Closest result at ${r.qualityUsed}% quality`)
+                : `Quality ${r.qualityUsed}%`;
             item.innerHTML = `
                 <img class="result-thumb" src="${r.url}" alt="">
                 <div class="result-info">
                     <div class="result-name">${r.originalName}</div>
                     <div class="result-sizes">${this.formatSize(r.originalSize)} → <span>${this.formatSize(r.compressedSize)}</span></div>
+                    <div class="result-meta">${targetText}</div>
                 </div>
                 <div class="result-saved">-${r.savedPct}%</div>
             `;
@@ -482,5 +564,3 @@ const App = {
 };
 
 document.addEventListener('DOMContentLoaded', () => App.init());
-
-

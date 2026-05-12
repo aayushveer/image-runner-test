@@ -83,16 +83,10 @@
 
             <article class="panel panel--preview">
                 <h2>2. Before/After Preview</h2>
-                <div id="compare" class="compare" aria-label="Before after preview">
-                    <div id="before-wrap" class="compare__before-wrap">
-                        <img id="before-img" alt="Original preview" class="compare__before">
-                    </div>
-                    <div id="after-wrap" class="compare__after-wrap">
-                        <img id="after-img" alt="Processed preview" class="compare__after">
-                    </div>
-                    <div id="divider" class="compare__divider"></div>
-                    <button id="compare-handle" class="compare__handle" type="button" aria-label="Drag compare handle">↔</button>
-                    <input id="compare-slider" type="range" min="0" max="100" value="50" class="compare__slider" aria-label="Compare slider">
+                <div id="compare" class="compare compare--click" aria-label="Before after preview">
+                    <img id="after-img" alt="Processed preview" class="compare__image">
+                    <img id="before-img" alt="Original preview" class="compare__image" style="display: none;">
+                    <button id="btn-toggle-compare" class="compare__toggle-btn" type="button">Show Before</button>
                 </div>
                 <p id="preview-note" class="note">Upload image to start preview.</p>
             </article>

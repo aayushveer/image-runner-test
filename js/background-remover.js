@@ -38,7 +38,6 @@ const App = {
   init() {
     this.cache();
     this.bind();
-    this.syncCompare(50);
     this.updateModeVisibility();
     this.warmupModel();
   },
@@ -55,13 +54,9 @@ const App = {
       processNote: document.getElementById('process-note'),
 
       beforeImg: document.getElementById('before-img'),
-      beforeWrap: document.getElementById('before-wrap'),
       compare: document.getElementById('compare'),
       afterImg: document.getElementById('after-img'),
-      afterWrap: document.getElementById('after-wrap'),
-      divider: document.getElementById('divider'),
-      compareHandle: document.getElementById('compare-handle'),
-      compareSlider: document.getElementById('compare-slider'),
+      btnToggleCompare: document.getElementById('btn-toggle-compare'),
 
       edgeSoftness: document.getElementById('edge-softness'),
       edgeSoftnessValue: document.getElementById('edge-softness-value'),
@@ -104,22 +99,8 @@ const App = {
       this.handleFile(e.dataTransfer?.files?.[0]);
     });
 
-    this.el.compareSlider?.addEventListener('input', (e) => {
-      this.syncCompare(Number(e.target.value || 50));
-    });
-
-    this.el.compare?.addEventListener?.('pointerdown', (e) => {
-      this.compareDragging = true;
-      this.syncCompareFromPointer(e);
-    });
-
-    window.addEventListener('pointermove', (e) => {
-      if (!this.compareDragging) return;
-      this.syncCompareFromPointer(e);
-    });
-
-    window.addEventListener('pointerup', () => {
-      this.compareDragging = false;
+    this.el.btnToggleCompare?.addEventListener('click', () => {
+      this.toggleCompare();
     });
 
     this.el.edgeSoftness?.addEventListener('input', (e) => {
@@ -257,7 +238,7 @@ const App = {
     this.sourceUrl = URL.createObjectURL(file);
     this.el.beforeImg.src = this.sourceUrl;
     this.el.afterImg.src = this.sourceUrl;
-    this.syncCompare(Number(this.el.compareSlider.value || 50));
+    this.showAfter();
 
     this.setNote(this.el.uploadNote, 'Image loaded successfully. Click Remove Background to continue.', 'ok');
     this.setNote(this.el.previewNote, `${file.name} (${this.formatFileSize(file.size)})`, 'ok');
@@ -275,21 +256,25 @@ const App = {
     this.el.btnRemove.disabled = !this.sourceFile || !this.modelReady || this.isProcessing;
   },
 
-  syncCompare(value) {
-    const bounded = Math.max(0, Math.min(100, value));
-    this.el.afterWrap.style.width = `${bounded}%`;
-    this.el.beforeWrap.style.width = `${100 - bounded}%`;
-    this.el.divider.style.left = `${bounded}%`;
-    if (this.el.compareHandle) this.el.compareHandle.style.left = `${bounded}%`;
+  toggleCompare() {
+    const isShowingBefore = this.el.beforeImg.style.display !== 'none';
+    if (isShowingBefore) {
+      this.showAfter();
+    } else {
+      this.showBefore();
+    }
   },
 
-  syncCompareFromPointer(event) {
-    const box = this.el.compare.getBoundingClientRect();
-    if (!box.width) return;
-    const x = Math.max(0, Math.min(box.width, event.clientX - box.left));
-    const pct = Math.round((x / box.width) * 100);
-    this.el.compareSlider.value = String(pct);
-    this.syncCompare(pct);
+  showBefore() {
+    this.el.afterImg.style.display = 'none';
+    this.el.beforeImg.style.display = 'block';
+    if (this.el.btnToggleCompare) this.el.btnToggleCompare.textContent = 'Show After';
+  },
+
+  showAfter() {
+    this.el.beforeImg.style.display = 'none';
+    this.el.afterImg.style.display = 'block';
+    if (this.el.btnToggleCompare) this.el.btnToggleCompare.textContent = 'Show Before';
   },
 
   updateModeVisibility() {
@@ -378,34 +363,9 @@ const App = {
   },
 
   async prepareProcessingInput(file) {
-    this.cleanupProcessingInput();
-
-    const maxDimension = 2000;
-    const sourceImage = await this.fileToImage(file);
-    const sw = sourceImage.naturalWidth || sourceImage.width;
-    const sh = sourceImage.naturalHeight || sourceImage.height;
-    const scale = Math.min(1, maxDimension / Math.max(sw, sh));
-
-    if (scale === 1) {
-      return file;
-    }
-
-    const canvas = document.createElement('canvas');
-    canvas.width = Math.max(1, Math.round(sw * scale));
-    canvas.height = Math.max(1, Math.round(sh * scale));
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(sourceImage, 0, 0, canvas.width, canvas.height);
-
-    const optimized = await new Promise((resolve, reject) => {
-      canvas.toBlob((blob) => {
-        if (blob) resolve(blob);
-        else reject(new Error('Input optimization failed'));
-      }, 'image/jpeg', 0.95);
-    });
-
-    this.processingInputBlob = optimized;
-    this.processingInputUrl = URL.createObjectURL(optimized);
-    return optimized;
+    // Return file directly to let @imgly handle internal scaling 
+    // and correctly restore the alpha mask up to the original size!
+    return file;
   },
 
   async refineAlpha(blob, softness, boost) {
@@ -507,7 +467,7 @@ const App = {
       canvas.toBlob((out) => {
         if (out) resolve(out);
         else reject(new Error('Background compose failed'));
-      }, 'image/jpeg', 0.95);
+      }, 'image/png');
     });
   },
 
@@ -526,7 +486,7 @@ const App = {
     if (!this.outputBlob) return;
 
     const mode = this.el.bgMode.value;
-    const ext = mode === 'transparent' ? 'png' : 'jpg';
+    const ext = 'png'; // Always output high quality PNG
     const base = this.sourceFile?.name?.replace(/\.[^/.]+$/, '') || 'image';
     const fileName = `${base}-bg-removed.${ext}`;
 
@@ -555,8 +515,7 @@ const App = {
     this.el.fileInput.value = '';
     this.el.beforeImg.removeAttribute('src');
     this.el.afterImg.removeAttribute('src');
-    this.el.compareSlider.value = '50';
-    this.syncCompare(50);
+    this.showAfter();
 
     this.el.bgMode.value = 'transparent';
     this.el.bgColor.value = '#f8fafc';
