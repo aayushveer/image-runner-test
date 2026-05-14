@@ -157,6 +157,35 @@ const App = {
         this.setupShareButtons();
     },
     
+    // Add missing methods:
+    showPage(pageId) {
+        this.el.pageUpload.style.display = 'none';
+        this.el.pageEditor.style.display = 'none';
+        this.el.pageDownload.style.display = 'none';
+        
+        if (pageId === 'upload') this.el.pageUpload.style.display = 'block';
+        if (pageId === 'editor') this.el.pageEditor.style.display = 'block';
+        if (pageId === 'download') this.el.pageDownload.style.display = 'block';
+    },
+
+    showProcessing(show, text = '') {
+        if (show) {
+            this.el.processingText.textContent = text;
+            this.el.processing.classList.add('active');
+        } else {
+            this.el.processing.classList.remove('active');
+        }
+    },
+
+    updateProgress(current, total, text = '') {
+        const percent = (current / total) * 100;
+        this.el.progressFill.style.width = percent + '%';
+        this.el.progressText.textContent = Math.round(percent) + '%';
+        if (text) this.el.processingText.textContent = text;
+    },
+
+    setupShareButtons() {}, // stub
+
     async loadPDF(file) {
         this.showProcessing(true, 'Loading PDF...');
         
@@ -391,6 +420,7 @@ const App = {
         this.selectedPages.clear();
         
         this.el.fileInput.value = '';
+        if (this.el.fileInputNew) this.el.fileInputNew.value = '';
         this.el.pagesGrid.innerHTML = '';
         this.el.resultsGrid.innerHTML = '';
         
