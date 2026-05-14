@@ -1,87 +1,129 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://www.imgrunner.com/</loc>\n    <lastmod>2026-05-14</lastmod>
-    <lastmod>2026-05-11</lastmod>
+    <loc>https://www.imgrunner.com/</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://www.imgrunner.com/add-watermark.html</loc>\n    <lastmod>2026-05-14</lastmod>
-    <lastmod>2026-03-28</lastmod>
+    <loc>https://www.imgrunner.com/add-watermark.html</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.imgrunner.com/background-remover.html</loc>\n    <lastmod>2026-05-14</lastmod>
-    <lastmod>2026-03-28</lastmod>
+    <loc>https://www.imgrunner.com/background-remover.html</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.imgrunner.com/color-palette.html</loc>\n    <lastmod>2026-05-14</lastmod>
-    <lastmod>2026-03-28</lastmod>
+    <loc>https://www.imgrunner.com/color-palette.html</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.imgrunner.com/compress-pdf.html</loc>\n    <lastmod>2026-05-14</lastmod>
-    <lastmod>2026-03-28</lastmod>
+    <loc>https://www.imgrunner.com/compress-pdf.html</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.imgrunner.com/format-converter.html</loc>\n    <lastmod>2026-05-14</lastmod>
-    <lastmod>2026-03-28</lastmod>
+    <loc>https://www.imgrunner.com/format-converter.html</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.imgrunner.com/heic-to-jpg.html</loc>\n    <lastmod>2026-05-14</lastmod>
-    <lastmod>2026-03-28</lastmod>
+    <loc>https://www.imgrunner.com/heic-to-jpg.html</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.imgrunner.com/image-compress.html</loc>\n    <lastmod>2026-05-14</lastmod>
-    <lastmod>2026-03-28</lastmod>
+    <loc>https://www.imgrunner.com/image-compress.html</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.imgrunner.com/image-resize.html</loc>\n    <lastmod>2026-05-14</lastmod>
-    <lastmod>2026-03-28</lastmod>
+    <loc>https://www.imgrunner.com/image-resize.html</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.imgrunner.com/image-size-increaser.html</loc>\n    <lastmod>2026-05-14</lastmod>
-    <lastmod>2026-03-28</lastmod>
+    <loc>https://www.imgrunner.com/image-size-increaser.html</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.imgrunner.com/image-to-pdf.html</loc>\n    <lastmod>2026-05-14</lastmod>
-    <lastmod>2026-03-29</lastmod>
+    <loc>https://www.imgrunner.com/image-to-pdf.html</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.imgrunner.com/merge-pdf.html</loc>\n    <lastmod>2026-05-14</lastmod>
-    <lastmod>2026-03-29</lastmod>
+    <loc>https://www.imgrunner.com/merge-pdf.html</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.imgrunner.com/passport-photo.html</loc>\n    <lastmod>2026-05-14</lastmod>
-    <lastmod>2026-03-28</lastmod>
+    <loc>https://www.imgrunner.com/passport-photo.html</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.imgrunner.com/pdf-to-image.html</loc>\n    <lastmod>2026-05-14</lastmod>
-    <lastmod>2026-03-29</lastmod>
+    <loc>https://www.imgrunner.com/pdf-to-image.html</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.imgrunner.com/photo-collage.html</loc>\n    <lastmod>2026-05-14</lastmod>
-    <lastmod>2026-03-28</lastmod>
+    <loc>https://www.imgrunner.com/photo-collage.html</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.imgrunner.com/rotate-pdf.html</loc>\n    <lastmod>2026-05-14</lastmod>
-    <lastmod>2026-03-29</lastmod>
+    <loc>https://www.imgrunner.com/rotate-pdf.html</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.imgrunner.com/signature-generator.html</loc>\n    <lastmod>2026-05-14</lastmod>
-    <lastmod>2026-03-28</lastmod>
+    <loc>https://www.imgrunner.com/signature-generator.html</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.imgrunner.com/social-pack.html</loc>\n    <lastmod>2026-05-14</lastmod>
-    <lastmod>2026-03-28</lastmod>
+    <loc>https://www.imgrunner.com/social-pack.html</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.imgrunner.com/split-pdf.html</loc>\n    <lastmod>2026-05-14</lastmod>
-    <lastmod>2026-03-29</lastmod>
+    <loc>https://www.imgrunner.com/split-pdf.html</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.imgrunner.com/upload-ready-optimizer.html</loc>\n    <lastmod>2026-05-14</lastmod>
-    <lastmod>2026-03-28</lastmod>
+    <loc>https://www.imgrunner.com/upload-ready-optimizer.html</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.imgrunner.com/webp-converter.html</loc>\n    <lastmod>2026-05-14</lastmod>
-    <lastmod>2026-03-28</lastmod>
+    <loc>https://www.imgrunner.com/webp-converter.html</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
 </urlset>
