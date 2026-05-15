@@ -35,7 +35,7 @@
         "@context": "https://schema.org",
         "@graph": [
             {
-                "@type": "SoftwareApplication",
+                "@type": "WebApplication",
                 "name": "Image Compressor - Image Runner",
                 "applicationCategory": "MultimediaApplication",
                 "operatingSystem": "Web Browser",
@@ -46,10 +46,10 @@
             {
                 "@type": "FAQPage",
                 "mainEntity": [
-                    {"@type": "Question", "name": "Image compress karne se quality kam hoti hai?",  "acceptedAnswer": {"@type": "Answer", "text": "Smart compression se quality almost same rehti hai. Aap quality slider se control kar sakte ho - 85-95% pe best balance milta hai."}},
-                    {"@type": "Question", "name": "Kitni images ek saath compress kar sakte hain?", "acceptedAnswer": {"@type": "Answer", "text": "Aap 20 images tak ek saath compress kar sakte ho. Sab ZIP file mein download ho jaati hain."}},
-                    {"@type": "Question", "name": "WhatsApp ke liye image compress kaise karein?", "acceptedAnswer": {"@type": "Answer", "text": "WhatsApp ke liye quality 70-80% rakhein. File size automatically reduce ho jayegi aur photo clear rahega."}},
-                    {"@type": "Question", "name": "Government form ke liye kitna KB compress karein?", "acceptedAnswer": {"@type": "Answer", "text": "Most government forms 50KB-200KB maangte hain. Hamara Image Reducer tool specific KB size set karne deta hai."}}
+                    {"@type": "Question", "name": "Will compressing images reduce quality?", "acceptedAnswer": {"@type": "Answer", "text": "Smart compression keeps visual quality high. Use the quality slider and aim for 85-95% for the best balance."}},
+                    {"@type": "Question", "name": "How many images can I compress at once?", "acceptedAnswer": {"@type": "Answer", "text": "You can batch compress multiple images at once and download them together as a ZIP file."}},
+                    {"@type": "Question", "name": "How do I compress images for WhatsApp?", "acceptedAnswer": {"@type": "Answer", "text": "Set quality around 70-80% to reduce size while keeping photos clear for messaging apps."}},
+                    {"@type": "Question", "name": "What size should I target for government forms?", "acceptedAnswer": {"@type": "Answer", "text": "Many forms require 50KB-200KB. Use the upload-ready tool when a specific KB limit is required."}}
                 ]
             }
         ]
@@ -79,7 +79,8 @@
     <!-- Global Telemetry -->
     <script src='js/site-config.js'></script>
     <script src='js/global-telemetry.js'></script>
-    <link rel="stylesheet" href="css/seo-content.css">\n</head>
+    <link rel="stylesheet" href="css/seo-content.css">
+</head>
 <body>
     <!-- Skip link for accessibility -->
     <a href="#page-upload" class="skip-link">Skip to main content</a>
@@ -132,7 +133,7 @@
                 </div>
             </div>
         </div>
-    </main>\n
+    </main>
     <!-- SEO Content Section -->
     <section class="seo-content">
         <div class="seo-container">
@@ -417,7 +418,14 @@
         <div class="container">
             <p>&copy; Image Runner 2026 - Your Image Editor</p>
         </div>
-    </footer>
+    <div class="footer-links" style="margin-top:12px; display:flex; flex-wrap:wrap; gap:12px; justify-content:center; font-size:13px;">
+  <a href="about.html" style="color: inherit; text-decoration: none;">About</a>
+  <a href="privacy.html" style="color: inherit; text-decoration: none;">Privacy</a>
+  <a href="terms.html" style="color: inherit; text-decoration: none;">Terms</a>
+  <a href="contact.html" style="color: inherit; text-decoration: none;">Contact</a>
+  <a href="blog.html" style="color: inherit; text-decoration: none;">Blog</a>
+</div>
+</footer>
 
     <script>
         // Share functions

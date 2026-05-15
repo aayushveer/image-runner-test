@@ -35,7 +35,7 @@
         "@context": "https://schema.org",
         "@graph": [
             {
-                "@type": "SoftwareApplication",
+                "@type": "WebApplication",
                 "name": "Image to PDF Converter - Image Runner",
                 "applicationCategory": "MultimediaApplication",
                 "operatingSystem": "Web Browser",
@@ -46,10 +46,10 @@
             {
                 "@type": "FAQPage",
                 "mainEntity": [
-                    {"@type": "Question", "name": "Multiple images ko ek PDF mein kaise convert karein?", "acceptedAnswer": {"@type": "Answer", "text": "Simply saari images upload karein, order drag-drop se set karein, aur Convert button dabayein. Ek PDF ban jayegi with all images."}},
-                    {"@type": "Question", "name": "PDF ka size choose kar sakte hain?", "acceptedAnswer": {"@type": "Answer", "text": "Haan, A4, Letter, Legal, ya Fit to Image size choose kar sakte ho. Portrait ya Landscape bhi select kar sakte ho."}},
-                    {"@type": "Question", "name": "Kya ye JPG aur PNG dono support karta hai?", "acceptedAnswer": {"@type": "Answer", "text": "Haan, JPG, PNG, WebP, GIF sab support hain. Mix bhi kar sakte ho."}},
-                    {"@type": "Question", "name": "Document scan PDF banana hai kaise?", "acceptedAnswer": {"@type": "Answer", "text": "Phone se document ki photo lo, yahan upload karo, margin zero rakhein aur Fit to Image select karein. Professional document PDF ban jayegi."}}
+                    {"@type": "Question", "name": "How do I convert multiple images into one PDF?", "acceptedAnswer": {"@type": "Answer", "text": "Upload your images, reorder them with drag and drop, click Convert, and download the combined PDF."}},
+                    {"@type": "Question", "name": "Can I choose the PDF page size?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Choose A4, Letter, Legal, or Fit to Image. You can also select portrait or landscape."}},
+                    {"@type": "Question", "name": "Does it support JPG and PNG?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. It supports JPG, PNG, WebP, and GIF, and you can mix formats in one PDF."}},
+                    {"@type": "Question", "name": "How do I create a document scan PDF?", "acceptedAnswer": {"@type": "Answer", "text": "Take a clear photo of the document, upload it, set margins to zero, and choose Fit to Image for a clean scan-style PDF."}}
                 ]
             }
         ]
@@ -79,7 +79,8 @@
     <!-- Global Telemetry -->
     <script src='js/site-config.js'></script>
     <script src='js/global-telemetry.js'></script>
-    <link rel="stylesheet" href="css/seo-content.css">\n</head>
+    <link rel="stylesheet" href="css/seo-content.css">
+</head>
 <body>
     <!-- Header -->
     <header class="header">
@@ -129,7 +130,7 @@
                 </div>
             </div>
         </div>
-    </main>\n
+    </main>
     <!-- SEO Content Section -->
     <section class="seo-content">
         <div class="seo-container">
@@ -464,7 +465,14 @@
         <div class="container">
             <p>&copy; Image Runner 2026 - Your Image Editor</p>
         </div>
-    </footer>
+    <div class="footer-links" style="margin-top:12px; display:flex; flex-wrap:wrap; gap:12px; justify-content:center; font-size:13px;">
+  <a href="about.html" style="color: inherit; text-decoration: none;">About</a>
+  <a href="privacy.html" style="color: inherit; text-decoration: none;">Privacy</a>
+  <a href="terms.html" style="color: inherit; text-decoration: none;">Terms</a>
+  <a href="contact.html" style="color: inherit; text-decoration: none;">Contact</a>
+  <a href="blog.html" style="color: inherit; text-decoration: none;">Blog</a>
+</div>
+</footer>
 
     <script>
         function shareOnFacebook() { window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(window.location.href), '_blank'); }

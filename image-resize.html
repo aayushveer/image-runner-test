@@ -35,7 +35,7 @@
         "@context": "https://schema.org",
         "@graph": [
             {
-                "@type": "SoftwareApplication",
+                "@type": "WebApplication",
                 "name": "Image Resizer - Image Runner",
                 "applicationCategory": "MultimediaApplication",
                 "operatingSystem": "Web Browser",
@@ -147,7 +147,8 @@
     <!-- Global Telemetry -->
     <script src='js/site-config.js'></script>
     <script src='js/global-telemetry.js'></script>
-    <link rel="stylesheet" href="css/seo-content.css">\n</head>
+    <link rel="stylesheet" href="css/seo-content.css">
+</head>
 <body>
     <!-- Header -->
     <header class="header">
@@ -425,23 +426,23 @@
                 <h2 style="font-size: 20px; font-weight: 600; color: #1a1a1a; margin-bottom: 20px;">Frequently Asked Questions</h2>
                 
                 <details style="background: white; border-radius: 10px; padding: 15px 20px; margin-bottom: 10px; border: 1px solid #e5e5e5;">
-                    <summary style="font-weight: 600; cursor: pointer; color: #333;">Passport photo ke liye image size kya hona chahiye?</summary>
-                    <p style="margin-top: 10px; color: #666; line-height: 1.6;">Indian passport photo के लिए 35x45mm या 413x531 pixels set करें। US visa के लिए 51x51mm (600x600 pixels)। हमारा Passport Photo Maker tool सभी specifications ready-made देता है।</p>
+                    <summary style="font-weight: 600; cursor: pointer; color: #333;">What size should a passport photo be?</summary>
+                    <p style="margin-top: 10px; color: #666; line-height: 1.6;">Indian passport photos are 35x45 mm (about 413x531 px). US visa photos are 2x2 in (about 600x600 px). Use the Passport Photo Maker presets for exact sizes.</p>
                 </details>
                 
                 <details style="background: white; border-radius: 10px; padding: 15px 20px; margin-bottom: 10px; border: 1px solid #e5e5e5;">
-                    <summary style="font-weight: 600; cursor: pointer; color: #333;">Image ko 50KB ya 100KB mein resize kaise karein?</summary>
-                    <p style="margin-top: 10px; color: #666; line-height: 1.6;">Specific KB target के लिए पहले dimensions सही करें, फिर <a href="image-compress.html" style="color: #4a90d9;">Image Compressor</a> से quality adjust करके required range hit करें। Passport/document use-case के लिए <a href="passport-photo.html" style="color: #4a90d9;">Passport Photo Maker</a> best रहता है।</p>
+                    <summary style="font-weight: 600; cursor: pointer; color: #333;">How do I reach 50KB or 100KB?</summary>
+                    <p style="margin-top: 10px; color: #666; line-height: 1.6;">Resize to the right dimensions first, then use the <a href="image-compress.html" style="color: #4a90d9;">Image Compressor</a> to adjust quality and hit the target range. For strict limits, use the <a href="passport-photo.html" style="color: #4a90d9;">Passport Photo Maker</a> presets.</p>
                 </details>
                 
                 <details style="background: white; border-radius: 10px; padding: 15px 20px; margin-bottom: 10px; border: 1px solid #e5e5e5;">
-                    <summary style="font-weight: 600; cursor: pointer; color: #333;">Kya quality kam hoti hai resize karne se?</summary>
-                    <p style="margin-top: 10px; color: #666; line-height: 1.6;">हम high-quality algorithms use करते हैं। Quality slider से 90-100% रखें for best results। Enlarging images से थोड़ी quality loss हो सकती है।</p>
+                    <summary style="font-weight: 600; cursor: pointer; color: #333;">Does resizing reduce quality?</summary>
+                    <p style="margin-top: 10px; color: #666; line-height: 1.6;">Downscaling keeps images sharp. Keep quality at 90-100% for best results. Upscaling can soften details.</p>
                 </details>
                 
                 <details style="background: white; border-radius: 10px; padding: 15px 20px; margin-bottom: 10px; border: 1px solid #e5e5e5;">
-                    <summary style="font-weight: 600; cursor: pointer; color: #333;">SSC, UPSC forms ke liye image size kya hona chahiye?</summary>
-                    <p style="margin-top: 10px; color: #666; line-height: 1.6;">Most government exams require 3.5cm x 4.5cm (35x45mm) photo with size between 10KB-200KB। हमारा <a href="passport-photo.html" style="color: #4a90d9;">Passport Photo Maker</a> में सभी exam presets available हैं।</p>
+                    <summary style="font-weight: 600; cursor: pointer; color: #333;">What size is required for government exam forms?</summary>
+                    <p style="margin-top: 10px; color: #666; line-height: 1.6;">Many exam forms require 35x45 mm photos with 10KB-200KB limits. Use the <a href="passport-photo.html" style="color: #4a90d9;">Passport Photo Maker</a> presets for exam-specific sizes.</p>
                 </details>
             </article>
             
@@ -491,7 +492,14 @@
             <p style="margin-bottom: 10px;">&copy; 2026 Image Runner. All rights reserved.</p>
             <p style="font-size: 13px;">100% browser-based processing. Your images never leave your device.</p>
         </div>
-    </footer>
+    <div class="footer-links" style="margin-top:12px; display:flex; flex-wrap:wrap; gap:12px; justify-content:center; font-size:13px;">
+  <a href="about.html" style="color: inherit; text-decoration: none;">About</a>
+  <a href="privacy.html" style="color: inherit; text-decoration: none;">Privacy</a>
+  <a href="terms.html" style="color: inherit; text-decoration: none;">Terms</a>
+  <a href="contact.html" style="color: inherit; text-decoration: none;">Contact</a>
+  <a href="blog.html" style="color: inherit; text-decoration: none;">Blog</a>
+</div>
+</footer>
 
     <script>
         function shareOnFacebook() { window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(window.location.href), '_blank'); }
