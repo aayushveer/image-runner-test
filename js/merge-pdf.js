@@ -7,6 +7,7 @@
 const MergePdfApp = {
     files: [],
     mergedBlob: null,
+    defaultFileName: '',
     utils: null,
     maxFiles: 40,
     maxFileSize: 40 * 1024 * 1024,
@@ -55,6 +56,7 @@ const MergePdfApp = {
             downloadInfo: document.getElementById('download-info'),
             pdfName: document.getElementById('pdf-name'),
             pdfSize: document.getElementById('pdf-size'),
+            downloadName: document.getElementById('download-name'),
             btnDownload: document.getElementById('btn-download'),
             btnMore: document.getElementById('btn-more'),
 
@@ -88,6 +90,14 @@ const MergePdfApp = {
         this.el.btnMerge?.addEventListener('click', () => this.mergeFiles());
         this.el.btnDownload?.addEventListener('click', () => this.downloadMergedPdf());
         this.el.btnMore?.addEventListener('click', () => this.reset());
+
+        if (this.el.downloadName) {
+            const syncName = () => this.updateDownloadNameDisplay();
+            this.el.downloadName.addEventListener('input', syncName);
+            this.el.downloadName.addEventListener('change', syncName);
+            this.el.downloadName.addEventListener('keyup', syncName);
+            this.el.downloadName.addEventListener('focus', (event) => event.target.select());
+        }
     },
 
     showPage(name) {
@@ -286,28 +296,86 @@ const MergePdfApp = {
         const totalPages = this.files.reduce((sum, item) => sum + item.pageCount, 0);
         this.el.downloadInfo.textContent = `${this.files.length} PDF files merged • ${totalPages} total pages`;
 
-        const dateStamp = new Date().toISOString().slice(0, 10);
-        const fileName = `merged-pdf-${dateStamp}.pdf`;
-
-        this.el.pdfName.textContent = fileName;
+        this.defaultFileName = this.buildDefaultFileName();
+        if (this.el.downloadName) {
+            this.el.downloadName.value = '';
+            this.el.downloadName.placeholder = this.defaultFileName;
+        }
+        this.updateDownloadNameDisplay();
         this.el.pdfSize.textContent = this.utils.formatFileSize(this.mergedBlob?.size || 0);
         this.showPage('download');
     },
 
+    buildDefaultFileName() {
+        const dateStamp = new Date().toISOString().slice(0, 10);
+        if (!this.files.length) return `merged-pdf-${dateStamp}.pdf`;
+        if (this.files.length === 1) {
+            const baseName = this.sanitizeFileName(this.files[0].name || `merged-pdf-${dateStamp}.pdf`);
+            return this.ensurePdfExtension(baseName);
+        }
+        const base = this.stripPdfExtension(this.files[0].name || 'merged-pdf');
+        const mergedName = `${base}-merged-${dateStamp}.pdf`;
+        return this.ensurePdfExtension(this.sanitizeFileName(mergedName));
+    },
+
+    stripPdfExtension(name) {
+        return String(name || '').replace(/\.pdf$/i, '');
+    },
+
+    ensurePdfExtension(name) {
+        const trimmed = String(name || '').trim();
+        if (!trimmed) return '';
+        return trimmed.toLowerCase().endsWith('.pdf') ? trimmed : `${trimmed}.pdf`;
+    },
+
+    sanitizeFileName(name) {
+        return String(name || '').replace(/[\\/:*?"<>|]+/g, '').trim();
+    },
+
+    getOutputFileName() {
+        // Fetch fresh from DOM to guarantee accuracy at click time
+        const inputEl = document.getElementById('download-name');
+        const rawValue = inputEl ? inputEl.value.trim() : '';
+        const inputValue = this.sanitizeFileName(rawValue);
+        const base = inputValue || this.defaultFileName || this.buildDefaultFileName();
+        return this.ensurePdfExtension(base) || 'merged.pdf';
+    },
+
+    updateDownloadNameDisplay() {
+        const fileName = this.getOutputFileName();
+        if (this.el.pdfName) this.el.pdfName.textContent = fileName;
+    },
+
     downloadMergedPdf() {
         if (!this.mergedBlob) return;
-        const dateStamp = new Date().toISOString().slice(0, 10);
-        this.utils.downloadBlob(this.mergedBlob, `merged-pdf-${dateStamp}.pdf`);
+        const finalName = this.getOutputFileName();
+        
+        // Bulletproof download fallback
+        const url = URL.createObjectURL(this.mergedBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = finalName;
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        
+        // Cleanup
+        setTimeout(() => {
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }, 100);
     },
 
     reset() {
         this.files = [];
         this.mergedBlob = null;
+        this.defaultFileName = '';
         this.el.btnMerge.disabled = true;
         if (this.el.fileList) this.el.fileList.innerHTML = '';
         if (this.el.fileCount) this.el.fileCount.textContent = '0';
         if (this.el.fileCountBadge) this.el.fileCountBadge.textContent = '0';
         if (this.el.totalPages) this.el.totalPages.textContent = '0';
+        if (this.el.downloadName) this.el.downloadName.value = '';
         this.showPage('upload');
     },
 
