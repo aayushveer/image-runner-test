@@ -69,8 +69,13 @@ svg { display: block; max-width: 100%; }
 }
 .nav__link:hover { color: var(--text); background: var(--bg); }
 
-.page { display: none; flex: 1; }
-.page.active { display: flex; align-items: center; justify-content: center; }
+.page { display: none; flex: 1; order: 1; }
+.page.active {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 28px;
+}
 
 .upload-box {
     text-align: center;
@@ -125,7 +130,14 @@ svg { display: block; max-width: 100%; }
 
 .privacy-badge svg { width: 15px; height: 15px; }
 
-#page-editor.active { display: flex; align-items: stretch; }
+#page-editor.active {
+    display: flex;
+    align-items: stretch;
+    padding-top: 0;
+}
+
+.seo-content { order: 2; }
+.footer { order: 3; }
 .editor { display: flex; width: 100%; min-height: calc(100vh - 120px); }
 
 .editor__files {
@@ -247,6 +259,40 @@ svg { display: block; max-width: 100%; }
     display: flex;
     flex-direction: column;
     gap: 16px;
+}
+
+.rename-field {
+    margin-top: 18px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.rename-field label {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.rename-field input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 14px;
+    background: #fff;
+}
+
+.rename-field input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.rename-hint {
+    font-size: 12px;
+    color: var(--text-muted);
 }
 
 .panel-title { font-size: 18px; font-weight: 600; text-align: center; }

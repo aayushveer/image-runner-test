@@ -1,148 +1,393 @@
 'use strict';
 
+// Premium Background Remover - Enhanced JavaScript
 let removeBackgroundFn = null;
 let preloadFn = null;
 
 const MODEL_VERSION = '1.6.0';
 const MODEL_CONFIGS = [
-  {
-    publicPath: `https://staticimgly.com/@imgly/background-removal-data/${MODEL_VERSION}/dist/`,
-    model: 'isnet_quint8',
-    device: 'cpu'
-  },
-  {
-    publicPath: `https://staticimgly.com/@imgly/background-removal/${MODEL_VERSION}/dist/`,
-    model: 'isnet_fp16',
-    device: 'cpu'
-  }
+  { publicPath: `https://staticimgly.com/@imgly/background-removal-data/${MODEL_VERSION}/dist/`, model: 'isnet_quint8', device: 'cpu' },
+  { publicPath: `https://staticimgly.com/@imgly/background-removal/${MODEL_VERSION}/dist/`, model: 'isnet_fp16', device: 'cpu' }
 ];
 
 const App = {
   utils: window.ImageRunnerUtils || {},
-
+  
+  // State
   sourceFile: null,
   sourceUrl: '',
   outputBlob: null,
   outputUrl: '',
-  processingInputBlob: null,
-  processingInputUrl: '',
-  activeModelConfig: null,
   modelReady: false,
   isProcessing: false,
   customBgImage: null,
-  compareDragging: false,
-  modelProgressTimer: null,
-
+  activeModelConfig: null,
+  
+  // View mode: 'original', 'result', 'split'
+  viewMode: 'result',
+  
+  // Slider state
+  sliderPosition: 50,
+  isDragging: false,
+  
   el: {},
-
+  
   init() {
     this.cache();
     this.bind();
+    this.initSlider();
     this.updateModeVisibility();
     this.warmupModel();
   },
-
+  
   cache() {
+    const $ = (id) => document.getElementById(id);
     this.el = {
-      modelState: document.getElementById('model-state'),
-      modelProgressText: document.getElementById('model-progress-text'),
-      modelProgressBar: document.getElementById('model-progress-bar'),
-      dropzone: document.getElementById('dropzone'),
-      fileInput: document.getElementById('file-input'),
-      uploadNote: document.getElementById('upload-note'),
-      previewNote: document.getElementById('preview-note'),
-      processNote: document.getElementById('process-note'),
-
-      beforeImg: document.getElementById('before-img'),
-      compare: document.getElementById('compare'),
-      afterImg: document.getElementById('after-img'),
-      btnToggleCompare: document.getElementById('btn-toggle-compare'),
-
-      edgeSoftness: document.getElementById('edge-softness'),
-      edgeSoftnessValue: document.getElementById('edge-softness-value'),
-      alphaBoost: document.getElementById('alpha-boost'),
-      alphaBoostValue: document.getElementById('alpha-boost-value'),
-
-      bgMode: document.getElementById('bg-mode'),
-      bgColor: document.getElementById('bg-color'),
-      colorWrap: document.getElementById('color-wrap'),
-      imageWrap: document.getElementById('image-wrap'),
-      bgImageInput: document.getElementById('bg-image-input'),
-      bgImageName: document.getElementById('bg-image-name'),
-
-      btnRemove: document.getElementById('btn-remove'),
-      btnDownload: document.getElementById('btn-download'),
-      btnReset: document.getElementById('btn-reset'),
-
-      processing: document.getElementById('processing'),
-      processingText: document.getElementById('processing-text'),
-      progressBar: document.getElementById('progress-bar'),
-      toast: document.getElementById('toast')
+      modelState: $('model-state'),
+      modelProgressText: $('model-progress-text'),
+      modelProgressBar: $('model-progress-bar'),
+      dropzone: $('dropzone'),
+      fileInput: $('file-input'),
+      uploadNote: $('upload-note'),
+      previewNote: $('preview-note'),
+      processNote: $('process-note'),
+      beforeImg: $('before-img'),
+      afterImg: $('after-img'),
+      compareContainer: $('compare-container'),
+      compareAfter: $('compare-after'),
+      compareSlider: $('compare-slider'),
+      btnViewOriginal: $('btn-view-original'),
+      btnViewResult: $('btn-view-result'),
+      btnViewSplit: $('btn-view-split'),
+      btnZoomIn: $('btn-zoom-in'),
+      btnZoomOut: $('btn-zoom-out'),
+      btnZoomFit: $('btn-zoom-fit'),
+      edgeSoftness: $('edge-softness'),
+      edgeSoftnessValue: $('edge-softness-value'),
+      alphaBoost: $('alpha-boost'),
+      alphaBoostValue: $('alpha-boost-value'),
+      bgMode: $('bg-mode'),
+      bgColor: $('bg-color'),
+      colorWrap: $('color-wrap'),
+      imageWrap: $('image-wrap'),
+      bgImageInput: $('bg-image-input'),
+      bgImageName: $('bg-image-name'),
+      btnRemove: $('btn-remove'),
+      btnDownload: $('btn-download'),
+      btnReset: $('btn-reset'),
+      processing: $('processing'),
+      processingText: $('processing-text'),
+      progressBar: $('progress-bar'),
+      toast: $('toast'),
+      toastMessage: $('toast-message'),
+      imageInfo: $('image-info'),
+      infoSize: $('info-size'),
+      infoDim: $('info-dim'),
+      infoFormat: $('info-format'),
+      manualControls: $('manual-controls'),
+      qualityWrap: $('quality-wrap'),
+      exportQuality: $('export-quality'),
+      qualityValue: $('quality-value')
     };
   },
-
+  
   bind() {
-    this.el.fileInput?.addEventListener('change', (e) => this.handleFile(e.target.files?.[0]));
-
-    this.el.dropzone?.addEventListener('dragover', (e) => {
+    const { fileInput, dropzone, btnRemove, btnDownload, btnReset, bgMode, edgeSoftness, alphaBoost, bgImageInput } = this.el;
+    
+    // File input
+    fileInput?.addEventListener('change', (e) => this.handleFile(e.target.files?.[0]));
+    
+    // Dropzone drag & drop
+    dropzone?.addEventListener('dragover', (e) => {
       e.preventDefault();
-      this.el.dropzone.classList.add('is-over');
+      dropzone.classList.add('is-over');
     });
-
-    this.el.dropzone?.addEventListener('dragleave', () => {
-      this.el.dropzone.classList.remove('is-over');
-    });
-
-    this.el.dropzone?.addEventListener('drop', (e) => {
+    dropzone?.addEventListener('dragleave', () => dropzone.classList.remove('is-over'));
+    dropzone?.addEventListener('drop', (e) => {
       e.preventDefault();
-      this.el.dropzone.classList.remove('is-over');
+      dropzone.classList.remove('is-over');
       this.handleFile(e.dataTransfer?.files?.[0]);
     });
-
-    this.el.btnToggleCompare?.addEventListener('click', () => {
-      this.toggleCompare();
+    
+    // Buttons
+    btnRemove?.addEventListener('click', () => this.process());
+    btnDownload?.addEventListener('click', () => this.download());
+    btnReset?.addEventListener('click', () => this.reset());
+    
+    // Sliders
+    edgeSoftness?.addEventListener('input', (e) => {
+      this.el.edgeSoftnessValue.textContent = e.target.value;
     });
-
-    this.el.edgeSoftness?.addEventListener('input', (e) => {
-      this.el.edgeSoftnessValue.textContent = String(e.target.value || 0);
+    alphaBoost?.addEventListener('input', (e) => {
+      this.el.alphaBoostValue.textContent = e.target.value;
     });
-
-    this.el.alphaBoost?.addEventListener('input', (e) => {
-      this.el.alphaBoostValue.textContent = String(e.target.value || 0);
-    });
-
-    this.el.bgMode?.addEventListener('change', () => this.updateModeVisibility());
-
-    this.el.bgImageInput?.addEventListener('change', async (e) => {
+    
+    // Background mode
+    bgMode?.addEventListener('change', () => this.updateModeVisibility());
+    
+    // Custom background image
+    bgImageInput?.addEventListener('change', async (e) => {
       const file = e.target.files?.[0];
       if (!file || !file.type.startsWith('image/')) return;
       try {
         this.customBgImage = await this.fileToImage(file);
         this.el.bgImageName.textContent = file.name;
-        this.notify('Custom background image ready.');
+        this.showToast('Custom background image loaded', 'success');
       } catch {
-        this.notify('Could not load custom background image.');
-      } finally {
-        e.target.value = '';
+        this.showToast('Could not load background image', 'error');
+      }
+      e.target.value = '';
+    });
+    
+    // Quality slider
+    this.el.exportQuality?.addEventListener('input', (e) => {
+      this.el.qualityValue.textContent = `${e.target.value}%`;
+    });
+    
+    // Presets
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+      btn.addEventListener('click', () => this.selectPreset(btn.dataset.preset));
+    });
+    
+    // Export format options
+    document.querySelectorAll('.export-option').forEach(option => {
+      option.addEventListener('click', () => this.selectExportFormat(option));
+    });
+    
+    // View buttons
+    this.el.btnViewOriginal?.addEventListener('click', () => this.setViewMode('original'));
+    this.el.btnViewResult?.addEventListener('click', () => this.setViewMode('result'));
+    this.el.btnViewSplit?.addEventListener('click', () => this.setViewMode('split'));
+    
+    // Zoom buttons
+    this.el.btnZoomIn?.addEventListener('click', () => this.zoomIn());
+    this.el.btnZoomOut?.addEventListener('click', () => this.zoomOut());
+    this.el.btnZoomFit?.addEventListener('click', () => this.zoomFit());
+    
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (e.code === 'Space') {
+        e.preventDefault();
+        this.toggleCompare();
       }
     });
-
-    this.el.btnRemove?.addEventListener('click', () => this.process());
-    this.el.btnDownload?.addEventListener('click', () => this.download());
-    this.el.btnReset?.addEventListener('click', () => this.reset());
+    
+    // Toast close on click
+    this.el.toast?.addEventListener('click', () => this.el.toast.classList.remove('show'));
   },
-
+  
+  initSlider() {
+    const slider = this.el.compareSlider;
+    const container = this.el.compareContainer;
+    if (!slider || !container) return;
+    
+    const moveSlider = (e) => {
+      const rect = container.getBoundingClientRect();
+      let x = (e.clientX || e.touches?.[0]?.clientX) - rect.left;
+      x = Math.max(0, Math.min(x, rect.width));
+      const percent = (x / rect.width) * 100;
+      this.sliderPosition = percent;
+      this.updateSliderPosition();
+    };
+    
+    container.addEventListener('mousedown', (e) => {
+      this.isDragging = true;
+      moveSlider(e);
+    });
+    
+    document.addEventListener('mousemove', (e) => {
+      if (this.isDragging) moveSlider(e);
+    });
+    
+    document.addEventListener('mouseup', () => {
+      this.isDragging = false;
+    });
+    
+    // Touch support
+    container.addEventListener('touchstart', (e) => {
+      this.isDragging = true;
+      moveSlider(e.touches[0]);
+    });
+    container.addEventListener('touchmove', (e) => {
+      if (this.isDragging) {
+        e.preventDefault();
+        moveSlider(e.touches[0]);
+      }
+    });
+    container.addEventListener('touchend', () => this.isDragging = false);
+  },
+  
+  updateSliderPosition() {
+    const after = this.el.compareAfter;
+    const slider = this.el.compareSlider;
+    if (after) {
+      after.style.clipPath = `inset(0 ${100 - this.sliderPosition}% 0 0)`;
+    }
+    if (slider) {
+      slider.style.left = `${this.sliderPosition}%`;
+    }
+  },
+  
+  setViewMode(mode) {
+    this.viewMode = mode;
+    const after = this.el.compareAfter;
+    
+    // Update button states
+    document.querySelectorAll('.compare-actions button').forEach(btn => btn.classList.remove('active'));
+    
+    switch (mode) {
+      case 'original':
+        after.style.clipPath = 'inset(0 100% 0 0)';
+        this.el.btnViewOriginal?.classList.add('active');
+        break;
+      case 'result':
+        after.style.clipPath = 'inset(0 0% 0 0)';
+        this.el.btnViewResult?.classList.add('active');
+        break;
+      case 'split':
+        after.style.clipPath = `inset(0 ${100 - this.sliderPosition}% 0 0)`;
+        this.el.btnViewSplit?.classList.add('active');
+        break;
+    }
+  },
+  
+  toggleCompare() {
+    if (this.viewMode === 'result') {
+      this.setViewMode('original');
+    } else {
+      this.setViewMode('result');
+    }
+  },
+  
+  zoomIn() {
+    const img = this.el.beforeImg;
+    if (img) {
+      const current = parseFloat(img.style.maxWidth || '100%');
+      img.style.maxWidth = `${Math.min(current + 25, 400)}%`;
+      img.style.maxHeight = `${Math.min(current + 25, 400)}%`;
+    }
+  },
+  
+  zoomOut() {
+    const img = this.el.beforeImg;
+    if (img) {
+      const current = parseFloat(img.style.maxWidth || '100%');
+      img.style.maxWidth = `${Math.max(current - 25, 50)}%`;
+      img.style.maxHeight = `${Math.max(current - 25, 50)}%`;
+    }
+  },
+  
+  zoomFit() {
+    const img = this.el.beforeImg;
+    if (img) {
+      img.style.maxWidth = '100%';
+      img.style.maxHeight = '100%';
+    }
+  },
+  
+  selectPreset(preset) {
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.preset === preset);
+    });
+    
+    const manualControls = this.el.manualControls;
+    if (manualControls) {
+      manualControls.style.display = preset === 'custom' ? 'block' : 'none';
+    }
+    
+    if (preset === 'hair') {
+      this.el.edgeSoftness.value = 4;
+      this.el.edgeSoftnessValue.textContent = '4';
+      this.el.alphaBoost.value = 8;
+      this.el.alphaBoostValue.textContent = '8';
+    } else if (preset === 'product') {
+      this.el.edgeSoftness.value = 1;
+      this.el.edgeSoftnessValue.textContent = '1';
+      this.el.alphaBoost.value = 20;
+      this.el.alphaBoostValue.textContent = '20';
+    } else {
+      this.el.edgeSoftness.value = 2;
+      this.el.edgeSoftnessValue.textContent = '2';
+      this.el.alphaBoost.value = 12;
+      this.el.alphaBoostValue.textContent = '12';
+    }
+    
+    this.showToast(`Preset: ${preset === 'auto' ? 'Auto AI' : preset === 'hair' ? 'Fine Hair' : preset === 'product' ? 'Product' : 'Manual'}`, 'success');
+  },
+  
+  selectExportFormat(option) {
+    document.querySelectorAll('.export-option').forEach(opt => opt.classList.remove('selected'));
+    option.classList.add('selected');
+    option.querySelector('input').checked = true;
+    
+    const format = option.querySelector('input').value;
+    const qualityWrap = this.el.qualityWrap;
+    if (qualityWrap) {
+      qualityWrap.style.display = format !== 'png' ? 'block' : 'none';
+    }
+    
+    this.showToast(`Export format: ${format.toUpperCase()}`, 'success');
+  },
+  
+  updateModeVisibility() {
+    const mode = this.el.bgMode.value;
+    this.el.colorWrap.style.display = mode === 'color' ? 'block' : 'none';
+    this.el.imageWrap.style.display = mode === 'image' ? 'block' : 'none';
+  },
+  
+  async handleFile(file) {
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      this.showNote(this.el.uploadNote, 'Please choose a valid image file (JPG, PNG, WebP, HEIC)', 'error');
+      return;
+    }
+    
+    this.cleanup();
+    this.sourceFile = file;
+    this.sourceUrl = URL.createObjectURL(file);
+    
+    // Show image info
+    this.el.imageInfo.style.display = 'block';
+    this.el.infoSize.textContent = this.formatFileSize(file.size);
+    this.el.infoFormat.textContent = file.type.split('/')[1].toUpperCase();
+    
+    // Load image to get dimensions
+    const img = new Image();
+    img.onload = () => {
+      this.el.infoDim.textContent = `${img.width} × ${img.height}`;
+      this.el.beforeImg.src = this.sourceUrl;
+      this.el.afterImg.src = this.sourceUrl;
+    };
+    img.src = this.sourceUrl;
+    
+    this.showNote(this.el.uploadNote, `Image loaded: ${file.name} (${this.formatFileSize(file.size)})`, 'ok');
+    this.showNote(this.el.previewNote, 'Image ready. Click "Remove Background" to process.', 'ok');
+    this.el.btnDownload.disabled = true;
+    
+    this.setViewMode('result');
+    this.updateProcessButtonState();
+  },
+  
   async warmupModel() {
-    this.setModelBadge('Preparing AI model...', 'loading');
+    this.showModelBadge('Preparing AI model...', 'loading');
     this.setModelProgress(0);
-    this.startModelProgressFallback();
-
+    
+    // Simulated progress
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += Math.random() * 3;
+      if (progress > 90) progress = 90;
+      this.setModelProgress(Math.round(progress));
+    }, 200);
+    
     try {
+      // Try loading from CDN
       const sources = [
         `https://cdn.jsdelivr.net/npm/@imgly/background-removal@${MODEL_VERSION}/+esm`,
         `https://unpkg.com/@imgly/background-removal@${MODEL_VERSION}/+esm`
       ];
-
+      
       for (const src of sources) {
         try {
           const mod = await import(src);
@@ -151,223 +396,135 @@ const App = {
             preloadFn = typeof mod.preload === 'function' ? mod.preload : null;
             break;
           }
-        } catch {
-          // continue
-        }
+        } catch { /* continue */ }
       }
-
-      if (!removeBackgroundFn) {
-        throw new Error('AI module unavailable');
-      }
-
-      if (preloadFn) {
-        for (const cfg of MODEL_CONFIGS) {
-          try {
-            await preloadFn({
-              ...cfg,
-              progress: (_key, current, total) => {
-                if (!total || total <= 0) return;
-                const pct = Math.max(0, Math.min(100, Math.round((current / total) * 100)));
-                this.setModelProgress(pct);
-              }
-            });
-            this.activeModelConfig = { ...cfg };
-            break;
-          } catch {
-            // continue
+      
+      if (!removeBackgroundFn) throw new Error('AI module unavailable');
+      
+      // Try preloading with fallback
+      for (const cfg of MODEL_CONFIGS) {
+        try {
+          if (preloadFn) {
+            await preloadFn({ ...cfg, progress: (key, curr, tot) => {
+              if (tot) this.setModelProgress(Math.round((curr / tot) * 100));
+            }});
           }
-        }
+          this.activeModelConfig = { ...cfg };
+          break;
+        } catch { /* continue */ }
       }
-
+      
       this.modelReady = true;
-      this.stopModelProgressFallback();
+      clearInterval(interval);
       this.setModelProgress(100);
-      this.setModelBadge('AI model ready', 'ok');
-      this.updateProcessButtonState();
+      this.showModelBadge('AI model ready', 'ok');
+      this.showNote(this.el.processNote, 'AI ready! Upload an image to start.', 'ok');
     } catch (error) {
       console.error(error);
       this.modelReady = false;
-      this.stopModelProgressFallback();
+      clearInterval(interval);
       this.setModelProgress(0);
-      this.setModelBadge('AI setup issue. Refresh once.', 'error');
-      this.updateProcessButtonState();
+      this.showModelBadge('Setup issue. Refresh to retry.', 'error');
+      this.showNote(this.el.processNote, 'AI model failed to load. Please refresh the page.', 'error');
     }
+    
+    this.updateProcessButtonState();
   },
-
-  startModelProgressFallback() {
-    this.stopModelProgressFallback();
-    this.modelProgressTimer = setInterval(() => {
-      const current = parseInt((this.el.modelProgressText?.textContent || '0').replace('%', ''), 10) || 0;
-      if (current >= 92) return;
-      this.setModelProgress(current + 1);
-    }, 180);
-  },
-
-  stopModelProgressFallback() {
-    if (!this.modelProgressTimer) return;
-    clearInterval(this.modelProgressTimer);
-    this.modelProgressTimer = null;
-  },
-
+  
   setModelProgress(percent) {
     const bounded = Math.max(0, Math.min(100, Math.round(percent)));
-    if (this.el.modelProgressText) this.el.modelProgressText.textContent = `${bounded}%`;
-    if (this.el.modelProgressBar) this.el.modelProgressBar.style.width = `${bounded}%`;
+    this.el.modelProgressText.textContent = `${bounded}%`;
+    this.el.modelProgressBar.style.width = `${bounded}%`;
   },
-
-  setModelBadge(text, mode) {
-    if (!this.el.modelState) return;
+  
+  showModelBadge(text, mode) {
     this.el.modelState.textContent = text;
     this.el.modelState.classList.remove('chip--loading', 'chip--ok', 'chip--error');
-    if (mode === 'ok') this.el.modelState.classList.add('chip--ok');
-    else if (mode === 'error') this.el.modelState.classList.add('chip--error');
-    else this.el.modelState.classList.add('chip--loading');
+    this.el.modelState.classList.add(`chip--${mode}`);
   },
-
-  async handleFile(file) {
-    if (!file) return;
-    if (!file.type.startsWith('image/')) {
-      this.setNote(this.el.uploadNote, 'Please choose a valid image file.', 'error');
-      return;
-    }
-
-    this.cleanupSource();
-    this.cleanupOutput();
-
-    this.sourceFile = file;
-    this.sourceUrl = URL.createObjectURL(file);
-    this.el.beforeImg.src = this.sourceUrl;
-    this.el.afterImg.src = this.sourceUrl;
-    this.showAfter();
-
-    this.setNote(this.el.uploadNote, 'Image loaded successfully. Click Remove Background to continue.', 'ok');
-    this.setNote(this.el.previewNote, `${file.name} (${this.formatFileSize(file.size)})`, 'ok');
-
-    this.updateProcessButtonState();
-    this.el.btnDownload.disabled = true;
-
-    if (file.size > 12 * 1024 * 1024) {
-      this.setNote(this.el.uploadNote, 'Large file detected. Input will be auto-optimized for stable processing.', 'ok');
-    }
-  },
-
+  
   updateProcessButtonState() {
-    if (!this.el.btnRemove) return;
     this.el.btnRemove.disabled = !this.sourceFile || !this.modelReady || this.isProcessing;
   },
-
-  toggleCompare() {
-    const isShowingBefore = this.el.beforeImg.style.display !== 'none';
-    if (isShowingBefore) {
-      this.showAfter();
-    } else {
-      this.showBefore();
-    }
-  },
-
-  showBefore() {
-    this.el.afterImg.style.display = 'none';
-    this.el.beforeImg.style.display = 'block';
-    if (this.el.btnToggleCompare) this.el.btnToggleCompare.textContent = 'Show After';
-  },
-
-  showAfter() {
-    this.el.beforeImg.style.display = 'none';
-    this.el.afterImg.style.display = 'block';
-    if (this.el.btnToggleCompare) this.el.btnToggleCompare.textContent = 'Show Before';
-  },
-
-  updateModeVisibility() {
-    const mode = this.el.bgMode.value;
-    this.el.colorWrap.style.display = mode === 'color' ? 'block' : 'none';
-    this.el.imageWrap.style.display = mode === 'image' ? 'block' : 'none';
-  },
-
+  
   async process() {
     if (!this.sourceFile || this.isProcessing) return;
     if (!this.modelReady) {
-      this.notify('Model is not ready yet. Please wait a moment.');
+      this.showToast('AI model is not ready yet. Please wait.', 'error');
       return;
     }
-
+    
     this.isProcessing = true;
     this.updateProcessButtonState();
-    this.setProcessing(true, 'Removing background...');
-    this.setProgress(6);
-
+    this.showProcessing(true, 'Analyzing image...');
+    this.setProgress(5);
+    
     try {
-      const inputBlob = await this.prepareProcessingInput(this.sourceFile);
-      this.setProgress(16);
-      const removed = await this.removeWithFallback(inputBlob);
-      this.setProgress(48);
-
-      const edgeSoftness = Number(this.el.edgeSoftness.value || 2);
-      const alphaBoost = Number(this.el.alphaBoost.value || 12);
+      this.showProcessing(true, 'Loading AI model...');
+      this.setProgress(15);
+      
+      const removed = await this.removeWithFallback(this.sourceFile);
+      this.setProgress(55);
+      
+      const edgeSoftness = parseInt(this.el.edgeSoftness.value || 2);
+      const alphaBoost = parseInt(this.el.alphaBoost.value || 12);
+      
+      this.showProcessing(true, 'Refining edges...');
       const refined = await this.refineAlpha(removed, edgeSoftness, alphaBoost);
-      this.setProgress(76);
-
+      this.setProgress(75);
+      
       const mode = this.el.bgMode.value;
+      this.showProcessing(true, 'Applying background...');
       const finalBlob = await this.applyBackground(refined, mode);
       this.setProgress(100);
-
+      
       this.cleanupOutput();
       this.outputBlob = finalBlob;
       this.outputUrl = URL.createObjectURL(finalBlob);
-
+      
       this.el.afterImg.src = this.outputUrl;
-      this.setNote(this.el.processNote, `Done. Output size: ${this.formatFileSize(finalBlob.size)}`, 'ok');
-      this.notify('Background removed successfully.');
+      this.showProcessing(false);
+      this.showNote(this.el.processNote, `Done! Output: ${this.formatFileSize(finalBlob.size)}`, 'ok');
+      this.showToast('Background removed successfully!', 'success');
       this.el.btnDownload.disabled = false;
+      this.setViewMode('result');
+      
     } catch (error) {
       console.error(error);
-      this.setNote(this.el.processNote, `Process failed: ${error?.message || 'unknown error'}`, 'error');
-      this.notify('Background removal failed. Please retry.');
+      this.showProcessing(false);
+      this.showNote(this.el.processNote, `Error: ${error?.message || 'Processing failed'}`, 'error');
+      this.showToast('Background removal failed. Please try again.', 'error');
       this.el.btnDownload.disabled = true;
     } finally {
       this.isProcessing = false;
       this.updateProcessButtonState();
-      this.setProcessing(false, '');
     }
   },
-
+  
   async removeWithFallback(file) {
     const configs = this.activeModelConfig
-      ? [this.activeModelConfig, ...MODEL_CONFIGS.filter((cfg) => cfg.publicPath !== this.activeModelConfig.publicPath)]
+      ? [this.activeModelConfig, ...MODEL_CONFIGS.filter(c => c.publicPath !== this.activeModelConfig.publicPath)]
       : MODEL_CONFIGS;
-
-    let lastError = null;
-
+    
+    let lastError;
     for (const cfg of configs) {
       try {
         const out = await removeBackgroundFn(file, {
           ...cfg,
-          output: {
-            format: 'image/png',
-            quality: 0.98
-          },
-          progress: (_key, current, total) => {
-            if (!total || total <= 0) return;
-            const pct = Math.round((current / total) * 24);
-            this.setProgress(24 + Math.max(0, Math.min(24, pct)));
+          output: { format: 'image/png', quality: 0.98 },
+          progress: (key, curr, tot) => {
+            if (tot) this.setProgress(15 + Math.round((curr / tot) * 40));
           }
         });
-
         this.activeModelConfig = { ...cfg };
         return out;
       } catch (error) {
         lastError = error;
       }
     }
-
-    throw new Error(lastError?.message || 'All model endpoints failed');
+    throw new Error(lastError?.message || 'All AI models failed');
   },
-
-  async prepareProcessingInput(file) {
-    // Return file directly to let @imgly handle internal scaling 
-    // and correctly restore the alpha mask up to the original size!
-    return file;
-  },
-
+  
   async refineAlpha(blob, softness, boost) {
     const img = await this.blobToImage(blob);
     const canvas = document.createElement('canvas');
@@ -375,83 +532,64 @@ const App = {
     canvas.height = img.naturalHeight;
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
     ctx.drawImage(img, 0, 0);
-
+    
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const data = imageData.data;
-
     const totalPixels = canvas.width * canvas.height;
+    
+    // Alpha boost
     const gamma = 1 - Math.min(boost, 30) / 100;
     for (let i = 3; i < data.length; i += 4) {
       if (data[i] === 0 || data[i] === 255) continue;
       const n = data[i] / 255;
       data[i] = Math.max(0, Math.min(255, Math.round(Math.pow(n, gamma) * 255)));
     }
-
-    // Skip heavy blur on very large frames to avoid browser unresponsive state.
+    
+    // Edge blur (if small enough)
     if (softness > 0 && totalPixels <= 2200000) {
-      const radius = softness > 3 ? 2 : 1;
-      await this.blurAlpha(data, canvas.width, canvas.height, radius);
-    } else if (softness > 0 && totalPixels > 2200000) {
-      this.setNote(this.el.processNote, 'Large image detected: edge blur reduced for stability.', 'ok');
+      await this.blurAlpha(data, canvas.width, canvas.height, softness > 3 ? 2 : 1);
     }
-
+    
     ctx.putImageData(imageData, 0, 0);
-
-    return await new Promise((resolve, reject) => {
-      canvas.toBlob((out) => {
-        if (out) resolve(out);
-        else reject(new Error('Alpha refinement failed'));
-      }, 'image/png', 0.98);
+    return new Promise((resolve, reject) => {
+      canvas.toBlob(out => out ? resolve(out) : reject(new Error('Refinement failed')), 'image/png', 0.98);
     });
   },
-
+  
   async blurAlpha(data, width, height, radius) {
-    const copy = new Uint8ClampedArray(data.length);
-    copy.set(data);
-
-    for (let y = 0; y < height; y += 1) {
-      for (let x = 0; x < width; x += 1) {
-        let sum = 0;
-        let count = 0;
-
-        for (let dy = -radius; dy <= radius; dy += 1) {
-          for (let dx = -radius; dx <= radius; dx += 1) {
-            const nx = x + dx;
-            const ny = y + dy;
+    const copy = new Uint8ClampedArray(data);
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        let sum = 0, count = 0;
+        for (let dy = -radius; dy <= radius; dy++) {
+          for (let dx = -radius; dx <= radius; dx++) {
+            const nx = x + dx, ny = y + dy;
             if (nx < 0 || ny < 0 || nx >= width || ny >= height) continue;
             const idx = (ny * width + nx) * 4 + 3;
             sum += copy[idx];
-            count += 1;
+            count++;
           }
         }
-
         const alphaIdx = (y * width + x) * 4 + 3;
         if (copy[alphaIdx] > 0 && copy[alphaIdx] < 255) {
           data[alphaIdx] = Math.round(sum / count);
         }
       }
-
-      if (y % 60 === 0) {
-        await new Promise((resolve) => requestAnimationFrame(resolve));
-      }
+      if (y % 60 === 0) await new Promise(r => requestAnimationFrame(r));
     }
   },
-
+  
   async applyBackground(blob, mode) {
-    if (mode === 'transparent') {
-      return blob;
-    }
-
+    if (mode === 'transparent') return blob;
+    
     const cutout = await this.blobToImage(blob);
     const canvas = document.createElement('canvas');
     canvas.width = cutout.naturalWidth;
     canvas.height = cutout.naturalHeight;
     const ctx = canvas.getContext('2d');
-
+    
     if (mode === 'image') {
-      if (!this.customBgImage) {
-        throw new Error('Please upload custom background image first');
-      }
+      if (!this.customBgImage) throw new Error('Upload custom background first');
       this.drawCover(ctx, this.customBgImage, canvas.width, canvas.height);
     } else if (mode === 'color') {
       ctx.fillStyle = this.el.bgColor.value || '#f8fafc';
@@ -460,36 +598,34 @@ const App = {
       ctx.fillStyle = mode === 'white' ? '#ffffff' : '#000000';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
-
+    
     ctx.drawImage(cutout, 0, 0);
-
-    return await new Promise((resolve, reject) => {
-      canvas.toBlob((out) => {
-        if (out) resolve(out);
-        else reject(new Error('Background compose failed'));
-      }, 'image/png');
+    
+    // Get selected format
+    const formatInput = document.querySelector('input[name="export-format"]:checked');
+    const format = formatInput?.value || 'png';
+    const quality = parseInt(this.el.exportQuality?.value || 92) / 100;
+    
+    return new Promise((resolve, reject) => {
+      canvas.toBlob(out => out ? resolve(out) : reject(new Error('Background compose failed')), `image/${format}`, quality);
     });
   },
-
+  
   drawCover(ctx, image, targetWidth, targetHeight) {
     const sw = image.naturalWidth || image.width;
     const sh = image.naturalHeight || image.height;
     const scale = Math.max(targetWidth / sw, targetHeight / sh);
-    const dw = sw * scale;
-    const dh = sh * scale;
-    const dx = (targetWidth - dw) / 2;
-    const dy = (targetHeight - dh) / 2;
-    ctx.drawImage(image, dx, dy, dw, dh);
+    ctx.drawImage(image, (targetWidth - sw * scale) / 2, (targetHeight - sh * scale) / 2, sw * scale, sh * scale);
   },
-
+  
   async download() {
     if (!this.outputBlob) return;
-
-    const mode = this.el.bgMode.value;
-    const ext = 'png'; // Always output high quality PNG
     const base = this.sourceFile?.name?.replace(/\.[^/.]+$/, '') || 'image';
+    const formatInput = document.querySelector('input[name="export-format"]:checked');
+    const format = formatInput?.value || 'png';
+    const ext = format === 'jpeg' ? 'jpg' : format;
     const fileName = `${base}-bg-removed.${ext}`;
-
+    
     if (this.utils?.downloadBlob) {
       this.utils.downloadBlob(this.outputBlob, fileName);
     } else {
@@ -500,124 +636,107 @@ const App = {
       a.click();
       URL.revokeObjectURL(url);
     }
-
-    this.notify('Download started.');
+    this.showToast('Download started!', 'success');
   },
-
+  
   reset() {
-    this.cleanupSource();
-    this.cleanupOutput();
-    this.cleanupProcessingInput();
-
+    this.cleanup();
     this.sourceFile = null;
     this.customBgImage = null;
-
     this.el.fileInput.value = '';
     this.el.beforeImg.removeAttribute('src');
     this.el.afterImg.removeAttribute('src');
-    this.showAfter();
-
+    this.el.imageInfo.style.display = 'none';
+    
     this.el.bgMode.value = 'transparent';
     this.el.bgColor.value = '#f8fafc';
     this.el.bgImageInput.value = '';
-    this.el.bgImageName.textContent = 'No custom background image selected.';
-
+    this.el.bgImageName.textContent = 'No image selected.';
+    
     this.el.edgeSoftness.value = '2';
     this.el.edgeSoftnessValue.textContent = '2';
     this.el.alphaBoost.value = '12';
     this.el.alphaBoostValue.textContent = '12';
-
-    this.setNote(this.el.uploadNote, 'Tip: clear subject + contrast background gives best edges.', '');
-    this.setNote(this.el.previewNote, 'Upload image to start preview.', '');
-    this.setNote(this.el.processNote, 'Process button becomes active once model loading is complete.', '');
-
+    
+    // Reset presets
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.preset === 'auto');
+    });
+    this.el.manualControls.style.display = 'none';
+    
+    this.showNote(this.el.uploadNote, 'Tip: Use clear subjects with contrasting backgrounds for perfect edges.', '');
+    this.showNote(this.el.previewNote, 'Upload an image to start previewing.', '');
+    this.showNote(this.el.processNote, 'Process button becomes active once the AI model is ready.', '');
+    
     this.updateModeVisibility();
     this.updateProcessButtonState();
     this.el.btnDownload.disabled = true;
+    this.setViewMode('result');
+    this.sliderPosition = 50;
+    this.updateSliderPosition();
+    
+    this.showToast('Reset complete', 'success');
   },
-
-  cleanupSource() {
-    if (this.sourceUrl) {
-      URL.revokeObjectURL(this.sourceUrl);
-      this.sourceUrl = '';
-    }
-  },
-
-  cleanupOutput() {
-    if (this.outputUrl) {
-      URL.revokeObjectURL(this.outputUrl);
-      this.outputUrl = '';
-    }
+  
+  cleanup() {
+    if (this.sourceUrl) { URL.revokeObjectURL(this.sourceUrl); this.sourceUrl = ''; }
+    if (this.outputUrl) { URL.revokeObjectURL(this.outputUrl); this.outputUrl = ''; }
     this.outputBlob = null;
   },
-
-  cleanupProcessingInput() {
-    if (this.processingInputUrl) {
-      URL.revokeObjectURL(this.processingInputUrl);
-      this.processingInputUrl = '';
-    }
-    this.processingInputBlob = null;
+  
+  cleanupOutput() {
+    if (this.outputUrl) { URL.revokeObjectURL(this.outputUrl); this.outputUrl = ''; }
+    this.outputBlob = null;
   },
-
-  setProcessing(open, text) {
-    this.el.processing.classList.toggle('is-open', open);
-    this.el.processing.setAttribute('aria-hidden', open ? 'false' : 'true');
+  
+  showProcessing(show, text) {
+    this.el.processing.classList.toggle('is-open', show);
     if (text) this.el.processingText.textContent = text;
-    if (!open) this.setProgress(0);
+    if (!show) this.setProgress(0);
   },
-
+  
   setProgress(percent) {
     this.el.progressBar.style.width = `${Math.max(0, Math.min(100, percent))}%`;
   },
-
-  setNote(el, text, kind) {
+  
+  showNote(el, text, kind) {
     if (!el) return;
     el.textContent = text;
     el.classList.remove('error', 'ok');
     if (kind === 'error') el.classList.add('error');
     if (kind === 'ok') el.classList.add('ok');
   },
-
-  notify(message) {
-    if (!this.el.toast || !message) return;
-    this.el.toast.textContent = message;
-    this.el.toast.classList.add('show');
+  
+  showToast(message, type = '') {
+    const toast = this.el.toast;
+    const msgEl = this.el.toastMessage;
+    if (!toast || !msgEl) return;
+    msgEl.textContent = message;
+    toast.className = 'toast show ' + type;
     clearTimeout(this._toastTimer);
-    this._toastTimer = setTimeout(() => this.el.toast.classList.remove('show'), 2200);
+    this._toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
   },
-
+  
   blobToImage(blob) {
     return new Promise((resolve, reject) => {
       const url = URL.createObjectURL(blob);
       const img = new Image();
-      img.onload = () => {
-        URL.revokeObjectURL(url);
-        resolve(img);
-      };
-      img.onerror = () => {
-        URL.revokeObjectURL(url);
-        reject(new Error('Image decode failed'));
-      };
+      img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
+      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Image decode failed')); };
       img.src = url;
     });
   },
-
+  
   fileToImage(file) {
     return new Promise((resolve, reject) => {
       const url = URL.createObjectURL(file);
       const img = new Image();
-      img.onload = () => {
-        URL.revokeObjectURL(url);
-        resolve(img);
-      };
-      img.onerror = () => {
-        URL.revokeObjectURL(url);
-        reject(new Error('Image decode failed'));
-      };
+      img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
+      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Image decode failed')); };
       img.src = url;
     });
   },
-
+  
   formatFileSize(bytes) {
     if (this.utils?.formatFileSize) return this.utils.formatFileSize(bytes);
     if (bytes >= 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;

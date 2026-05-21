@@ -1,0 +1,35 @@
+# Security Policy for Image Runner
+# https://www.imgrunner.com
+# Last Updated: 2026-05-19
+
+Contact: security@imgrunner.com
+Expires: 2027-01-01T00:00:00.000Z
+
+# Encryption
+Encryption: PGP key available at https://www.imgrunner.com/.well-known/pgp-key.txt
+
+# Our Commitment
+We are committed to ensuring the security of our users' data. All image processing happens client-side in the browser. No files are uploaded to our servers.
+
+# Reporting Security Issues
+If you discover a security vulnerability, please report it to us via email. We respond within 24-48 hours and work to resolve issues promptly.
+
+# Scope
+This policy applies to all Image Runner web applications and services.
+
+# Bug Bounty
+We appreciate responsible disclosure of security issues. While we cannot offer monetary rewards at this time, we'll credit security researchers in our release notes (with permission).# Security Policy for Image Runner
+# https://www.imgrunner.com
+# Last Updated: 2026-05-19
+
+Contact: security@imgrunner.com
+Expires: 2027-01-01T00:00:00.000Z
+
+# Our Commitment
+We are committed to ensuring the security of our users' data. All image processing happens client-side in the browser. No files are uploaded to our servers.
+
+# Reporting Security Issues
+If you discover a security vulnerability, please report it to us via email at security@imgrunner.com. We respond within 24-48 hours and work to resolve issues promptly.
+
+# Scope
+This policy applies to all Image Runner web applications and services.

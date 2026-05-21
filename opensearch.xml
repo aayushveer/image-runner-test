@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:moz="http://www.mozilla.org/2006/browser/search/">
+    <ShortName>Image Runner</ShortName>
+    <Description>Free online image and PDF tools - compress, resize, remove backgrounds, merge PDFs, and more.</Description>
+    <Contact>contact@imgrunner.com</Contact>
+    <Url type="text/html" template="https://www.imgrunner.com/search?q={searchTerms}"/>
+    <Url type="application/x-suggestions+json" template="https://www.imgrunner.com/suggestions?q={searchTerms}"/>
+    <Image width="16" height="16">https://www.imgrunner.com/favicon.ico</Image>
+    <Image width="48" height="48">https://www.imgrunner.com/favicon-48.png</Image>
+    <Image width="128" height="128">https://www.imgrunner.com/apple-touch-icon.png</Image>
+    <Query role="example" searchTerms="compress image" />
+    <Developer>Image Runner Team</Developer>
+    <ApplicationName>Image Runner</ApplicationName>
+    <ApplicationVersion>1.0</ApplicationVersion>
+    <Language>en-us</Language>
+    <InputEncoding>UTF-8</InputEncoding>
+    <OutputEncoding>UTF-8</OutputEncoding>
+    <moz:SearchForm>https://www.imgrunner.com/search</moz:SearchForm>
+</OpenSearchDescription>
