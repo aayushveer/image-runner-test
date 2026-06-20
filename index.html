@@ -41,6 +41,39 @@
     <script src="js/global-telemetry.js"></script>
     
     <style>
+        :root {
+            /* Dark theme colors (default) */
+            --bg-primary: linear-gradient(135deg, #0f172a 0%, #1a2847 50%, #0f1f3a 100%);
+            --bg-primary-rgba: rgba(15, 23, 42, 0.7);
+            --bg-secondary: rgba(30, 41, 59, 0.8);
+            --bg-secondary-light: rgba(30, 41, 59, 0.6);
+            --text-primary: #e2e8f0;
+            --text-secondary: #cbd5e1;
+            --text-tertiary: #94a3b8;
+            --border-color: rgba(148, 163, 184, 0.1);
+            --border-color-light: rgba(148, 163, 184, 0.15);
+            --border-color-lighter: rgba(148, 163, 184, 0.2);
+            --accent-blue: #3b82f6;
+            --accent-blue-light: #60a5fa;
+            --accent-purple: #8b5cf6;
+        }
+
+        html.light-theme {
+            --bg-primary: linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #f1f5f9 100%);
+            --bg-primary-rgba: rgba(255, 255, 255, 0.95);
+            --bg-secondary: rgba(241, 245, 249, 0.9);
+            --bg-secondary-light: rgba(248, 250, 252, 0.7);
+            --text-primary: #0f172a;
+            --text-secondary: #1e293b;
+            --text-tertiary: #475569;
+            --border-color: rgba(71, 85, 105, 0.1);
+            --border-color-light: rgba(71, 85, 105, 0.15);
+            --border-color-lighter: rgba(71, 85, 105, 0.2);
+            --accent-blue: #2563eb;
+            --accent-blue-light: #3b82f6;
+            --accent-purple: #7c3aed;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -53,11 +86,12 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1a2847 50%, #0f1f3a 100%);
-            color: #e2e8f0;
+            background: var(--bg-primary);
+            color: var(--text-primary);
             line-height: 1.6;
             overflow-x: hidden;
             min-height: 100vh;
+            transition: background 0.5s ease, color 0.5s ease;
         }
 
         /* Animated background elements */
@@ -72,6 +106,12 @@
             animation: float 20s ease-in-out infinite;
             pointer-events: none;
             z-index: 1;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        html.light-theme body::before {
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.08) 0%, transparent 70%);
         }
 
         body::after {
@@ -85,6 +125,12 @@
             animation: float 25s ease-in-out infinite reverse;
             pointer-events: none;
             z-index: 1;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        html.light-theme body::after {
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.06) 0%, transparent 70%);
         }
 
         @keyframes float {
@@ -129,10 +175,11 @@
             position: relative;
             z-index: 10;
             backdrop-filter: blur(10px);
-            background: rgba(15, 23, 42, 0.7);
-            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+            background: var(--bg-primary-rgba);
+            border-bottom: 1px solid var(--border-color);
             padding: 1.5rem 2rem;
             animation: slideInDown 0.6s ease-out;
+            transition: background 0.5s ease, border-color 0.5s ease;
         }
 
         .header-content {
@@ -149,7 +196,7 @@
             gap: 0.75rem;
             font-size: 1.5rem;
             font-weight: 700;
-            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -164,13 +211,39 @@
         .logo-icon {
             width: 32px;
             height: 32px;
-            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
             color: white;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            background: none;
+            border: 2px solid var(--border-color-lighter);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+        }
+
+        .theme-toggle:hover {
+            background: var(--bg-secondary);
+            border-color: var(--accent-blue);
+            transform: scale(1.1);
+        }
+
+        .theme-toggle:active {
+            transform: scale(0.95);
         }
 
         /* Main Container */
@@ -199,16 +272,22 @@
             border-radius: 2rem;
             font-size: 0.875rem;
             font-weight: 500;
-            color: #60a5fa;
+            color: var(--accent-blue-light);
             margin-bottom: 1.5rem;
             backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        html.light-theme .hero-badge {
+            background: rgba(37, 99, 235, 0.08);
+            border-color: rgba(37, 99, 235, 0.3);
         }
 
         .hero-badge::before {
             content: '';
             width: 8px;
             height: 8px;
-            background: #3b82f6;
+            background: var(--accent-blue);
             border-radius: 50%;
             animation: pulse 2s ease-in-out infinite;
         }
@@ -224,13 +303,21 @@
             line-height: 1.2;
         }
 
+        html.light-theme .hero h1 {
+            background: linear-gradient(135deg, #0f172a 0%, #475569 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
         .hero p {
             font-size: 1.25rem;
-            color: #cbd5e1;
+            color: var(--text-secondary);
             max-width: 600px;
             margin: 0 auto 2rem;
             font-weight: 300;
             line-height: 1.8;
+            transition: color 0.5s ease;
         }
 
         /* Upload Area - Premium Glassmorphism */
@@ -253,6 +340,11 @@
             overflow: hidden;
         }
 
+        html.light-theme .upload-box {
+            background: linear-gradient(135deg, rgba(241, 245, 249, 0.9) 0%, rgba(248, 250, 252, 0.8) 100%);
+            border-color: rgba(71, 85, 105, 0.2);
+        }
+
         .upload-box::before {
             content: '';
             position: absolute;
@@ -262,11 +354,21 @@
             transition: opacity 0.4s ease;
         }
 
+        html.light-theme .upload-box::before {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0) 0%, rgba(124, 58, 237, 0.08) 100%);
+        }
+
         .upload-box:hover {
             border-color: rgba(59, 130, 246, 0.4);
             background: linear-gradient(135deg, rgba(30, 41, 59, 1) 0%, rgba(20, 30, 50, 0.9) 100%);
             transform: translateY(-4px);
             box-shadow: 0 20px 60px rgba(59, 130, 246, 0.2);
+        }
+
+        html.light-theme .upload-box:hover {
+            border-color: rgba(37, 99, 235, 0.4);
+            background: linear-gradient(135deg, rgba(241, 245, 249, 1) 0%, rgba(241, 245, 249, 0.95) 100%);
+            box-shadow: 0 20px 60px rgba(37, 99, 235, 0.1);
         }
 
         .upload-box:hover::before {
@@ -278,6 +380,12 @@
             background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(139, 92, 246, 0.1) 100%);
             box-shadow: 0 0 40px rgba(59, 130, 246, 0.3);
             transform: scale(1.02);
+        }
+
+        html.light-theme .upload-box.drag-over {
+            border-color: rgba(37, 99, 235, 0.8);
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(124, 58, 237, 0.08) 100%);
+            box-shadow: 0 0 40px rgba(37, 99, 235, 0.2);
         }
 
         .upload-box-content {
@@ -297,6 +405,11 @@
             justify-content: center;
             font-size: 2rem;
             animation: float 3s ease-in-out infinite;
+            transition: background 0.5s ease;
+        }
+
+        html.light-theme .upload-icon {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(124, 58, 237, 0.15) 100%);
         }
 
         .upload-box input[type="file"] {
@@ -307,15 +420,17 @@
             display: inline-block;
             font-weight: 600;
             font-size: 1.1rem;
-            color: #e2e8f0;
+            color: var(--text-primary);
             margin-bottom: 0.5rem;
             cursor: pointer;
+            transition: color 0.5s ease;
         }
 
         .upload-hint {
-            color: #94a3b8;
+            color: var(--text-tertiary);
             font-size: 0.95rem;
             margin-top: 0.75rem;
+            transition: color 0.5s ease;
         }
 
         /* Features Grid */
@@ -337,6 +452,11 @@
             text-align: center;
         }
 
+        html.light-theme .feature-card {
+            background: rgba(241, 245, 249, 0.7);
+            border-color: rgba(71, 85, 105, 0.15);
+        }
+
         .feature-card:hover {
             border-color: rgba(59, 130, 246, 0.3);
             background: rgba(30, 41, 59, 0.8);
@@ -344,22 +464,35 @@
             box-shadow: 0 15px 40px rgba(59, 130, 246, 0.1);
         }
 
+        html.light-theme .feature-card:hover {
+            border-color: rgba(37, 99, 235, 0.3);
+            background: rgba(241, 245, 249, 0.95);
+            box-shadow: 0 15px 40px rgba(37, 99, 235, 0.1);
+        }
+
         .feature-icon {
             font-size: 2.5rem;
             margin-bottom: 1rem;
             display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.15);
         }
 
         .feature-card h3 {
             font-size: 1rem;
             font-weight: 600;
             margin-bottom: 0.5rem;
-            color: #e2e8f0;
+            color: var(--text-primary);
+            transition: color 0.5s ease;
         }
 
         .feature-card p {
             font-size: 0.875rem;
-            color: #94a3b8;
+            color: var(--text-tertiary);
+            transition: color 0.5s ease;
         }
 
         /* CTA Section */
@@ -373,20 +506,15 @@
             font-size: 1.75rem;
             font-weight: 700;
             margin-bottom: 1rem;
-            color: #e2e8f0;
+            color: var(--text-primary);
+            transition: color 0.5s ease;
         }
 
         .cta-section p {
-            color: #cbd5e1;
+            color: var(--text-secondary);
             margin-bottom: 2rem;
             font-size: 1.05rem;
-        }
-
-        .button-group {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
+            transition: color 0.5s ease;
         }
 
         .btn {
@@ -403,14 +531,23 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            background: linear-gradient(135deg, var(--accent-blue) 0%, #2563eb 100%);
             color: white;
             box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        html.light-theme .btn-primary {
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.25);
         }
 
         .btn-primary:hover {
             transform: translateY(-3px);
             box-shadow: 0 15px 40px rgba(59, 130, 246, 0.4);
+        }
+
+        html.light-theme .btn-primary:hover {
+            box-shadow: 0 15px 40px rgba(37, 99, 235, 0.3);
         }
 
         .btn-primary:active {
@@ -419,8 +556,15 @@
 
         .btn-secondary {
             background: rgba(59, 130, 246, 0.1);
-            color: #60a5fa;
+            color: var(--accent-blue-light);
             border: 2px solid rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        html.light-theme .btn-secondary {
+            background: rgba(37, 99, 235, 0.08);
+            color: var(--accent-blue);
+            border-color: rgba(37, 99, 235, 0.3);
         }
 
         .btn-secondary:hover {
@@ -429,13 +573,19 @@
             transform: translateY(-3px);
         }
 
+        html.light-theme .btn-secondary:hover {
+            background: rgba(37, 99, 235, 0.15);
+            border-color: rgba(37, 99, 235, 0.5);
+        }
+
         /* Trust Section */
         .trust-section {
             text-align: center;
             margin-top: 3rem;
             padding: 2rem;
-            border-top: 1px solid rgba(148, 163, 184, 0.1);
+            border-top: 1px solid var(--border-color);
             animation: slideInUp 0.8s ease-out 0.5s both;
+            transition: border-color 0.5s ease;
         }
 
         .trust-items {
@@ -459,23 +609,33 @@
 
         .trust-item span {
             font-size: 0.875rem;
-            color: #94a3b8;
+            color: var(--text-tertiary);
+            transition: color 0.5s ease;
         }
 
         .trust-item strong {
-            color: #e2e8f0;
+            color: var(--text-primary);
             font-weight: 600;
+            transition: color 0.5s ease;
         }
 
         /* Footer */
         footer {
             text-align: center;
             padding: 2rem;
-            color: #64748b;
-            border-top: 1px solid rgba(148, 163, 184, 0.1);
+            color: var(--text-tertiary);
+            border-top: 1px solid var(--border-color);
             margin-top: 4rem;
             font-size: 0.875rem;
             animation: slideInUp 0.8s ease-out 0.6s both;
+            transition: color 0.5s ease, border-color 0.5s ease;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
         }
 
         /* Responsive */
@@ -512,6 +672,57 @@
             background-size: 200% 100%;
             animation: shimmer 2s infinite;
         }
+
+        /* Trust section heading */
+        .trust-heading {
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+            transition: color 0.5s ease;
+        }
+
+        /* Trust values with accent colors */
+        .trust-value-1 {
+            font-weight: 700;
+            color: #60a5fa;
+            font-size: 1.5rem;
+        }
+
+        html.light-theme .trust-value-1 {
+            color: #3b82f6;
+        }
+
+        .trust-value-2 {
+            font-weight: 700;
+            color: #8b5cf6;
+            font-size: 1.5rem;
+        }
+
+        html.light-theme .trust-value-2 {
+            color: #7c3aed;
+        }
+
+        .trust-value-3 {
+            font-weight: 700;
+            color: #ec4899;
+            font-size: 1.5rem;
+        }
+
+        html.light-theme .trust-value-3 {
+            color: #db2777;
+        }
+
+        .trust-value-4 {
+            font-weight: 700;
+            color: #10b981;
+            font-size: 1.5rem;
+        }
+
+        html.light-theme .trust-value-4 {
+            color: #059669;
+        }
     </style>
 </head>
 <body>
@@ -522,6 +733,9 @@
                 <div class="logo-icon">📷</div>
                 <span>Image Runner</span>
             </a>
+            <button class="theme-toggle" id="theme-toggle" title="Toggle dark/light mode" aria-label="Toggle theme">
+                🌙
+            </button>
         </div>
     </header>
 
@@ -600,22 +814,22 @@
 
         <!-- Trust Section -->
         <section class="trust-section">
-            <h3 style="color: #e2e8f0; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem;">Trusted by</h3>
+            <h3 class="trust-heading">Trusted by</h3>
             <div class="trust-items">
                 <div class="trust-item">
-                    <span style="font-weight: 700; color: #60a5fa; font-size: 1.5rem;">10M+</span>
+                    <span class="trust-value-1">10M+</span>
                     <strong>Users Monthly</strong>
                 </div>
                 <div class="trust-item">
-                    <span style="font-weight: 700; color: #8b5cf6; font-size: 1.5rem;">100%</span>
+                    <span class="trust-value-2">100%</span>
                     <strong>Free Forever</strong>
                 </div>
                 <div class="trust-item">
-                    <span style="font-weight: 700; color: #ec4899; font-size: 1.5rem;">0</span>
+                    <span class="trust-value-3">0</span>
                     <strong>Ads or Tracking</strong>
                 </div>
                 <div class="trust-item">
-                    <span style="font-weight: 700; color: #10b981; font-size: 1.5rem;">∞</span>
+                    <span class="trust-value-4">∞</span>
                     <strong>No Limits</strong>
                 </div>
             </div>
@@ -662,6 +876,54 @@
                 alert(`${files.length} image(s) ready to resize!`);
             }
         }
+
+        // Theme Toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        const htmlElement = document.documentElement;
+
+        // Load saved theme preference
+        function loadThemePreference() {
+            const savedTheme = localStorage.getItem('theme-preference');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+            
+            if (theme === 'light') {
+                htmlElement.classList.add('light-theme');
+                themeToggle.textContent = '☀️';
+            } else {
+                htmlElement.classList.remove('light-theme');
+                themeToggle.textContent = '🌙';
+            }
+        }
+
+        // Toggle theme
+        themeToggle.addEventListener('click', () => {
+            htmlElement.classList.toggle('light-theme');
+            
+            if (htmlElement.classList.contains('light-theme')) {
+                localStorage.setItem('theme-preference', 'light');
+                themeToggle.textContent = '☀️';
+            } else {
+                localStorage.setItem('theme-preference', 'dark');
+                themeToggle.textContent = '🌙';
+            }
+        });
+
+        // Load theme on page load
+        loadThemePreference();
+
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            if (!localStorage.getItem('theme-preference')) {
+                if (e.matches) {
+                    htmlElement.classList.remove('light-theme');
+                    themeToggle.textContent = '🌙';
+                } else {
+                    htmlElement.classList.add('light-theme');
+                    themeToggle.textContent = '☀️';
+                }
+            }
+        });
     </script>
 
     <!-- Existing Scripts -->
