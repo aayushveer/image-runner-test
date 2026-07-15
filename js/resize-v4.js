@@ -19,12 +19,15 @@ const App = {
     bgColor: 'white',
     lockRatio: true,
     originalRatio: 1,
+    toastTimer: null,
+    themeStorageKey: 'imgrunner-theme',
+    themeMediaQuery: null,
 
     maxImages: 50,
     maxFileSize: 25 * 1024 * 1024,
     maxDimension: 12000,
     maxCanvasPixels: 60 * 1000 * 1000,
-    supportedInputTypes: new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']),
+    supportedInputTypes: new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/bmp', 'image/heic', 'image/heif']),
     outputFormats: {
         jpg: { mimeType: 'image/jpeg', ext: 'jpg', supportsQuality: true, supportsAlpha: false },
         png: { mimeType: 'image/png', ext: 'png', supportsQuality: false, supportsAlpha: true },
@@ -33,6 +36,7 @@ const App = {
     el: {},
 
     init() {
+        this.themeMediaQuery = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
         this.utils = window.ImageRunnerUtils || {
             downloadBlob: (blob, fileName) => {
                 const url = URL.createObjectURL(blob);
@@ -49,10 +53,12 @@ const App = {
         };
 
         this.cacheElements();
+        this.initTheme();
         this.bindEvents();
         this.syncLanguageControl();
         this.updateQualityAvailability();
         this.updateBackgroundAvailability();
+        this.updateTargetSizeAvailability();
     },
 
     cacheElements() {
@@ -63,10 +69,14 @@ const App = {
 
             backBtn: document.getElementById('back-btn'),
             languageSelect: document.getElementById('language-select'),
+            themeToggle: document.getElementById('theme-toggle'),
 
             dropzone: document.getElementById('dropzone'),
             fileInput: document.getElementById('file-input'),
             fileInputMore: document.getElementById('file-input-more'),
+            addMoreBtn: document.getElementById('add-more-btn'),
+            urlInput: document.getElementById('url-input'),
+            urlLoad: document.getElementById('url-load'),
 
             previewArea: document.getElementById('preview-area'),
             imageCount: document.getElementById('image-count'),
@@ -81,6 +91,11 @@ const App = {
             qualitySlider: document.getElementById('quality-slider'),
             qualityDisplay: document.getElementById('quality-display'),
             bgBtns: document.querySelectorAll('.bg-btn'),
+            targetSizeToggle: document.getElementById('target-size-toggle'),
+            targetSizeRow: document.getElementById('ts-row'),
+            targetSizeValue: document.getElementById('target-size-value'),
+            targetSizeUnit: document.getElementById('target-size-unit'),
+            targetSizeInfo: document.getElementById('ts-info'),
 
             btnResize: document.getElementById('btn-resize'),
             downloadInfo: document.getElementById('download-info'),
@@ -93,16 +108,48 @@ const App = {
 
             processing: document.getElementById('processing'),
             processingText: document.getElementById('processing-text'),
-            progressBar: document.getElementById('progress-bar')
+            progressBar: document.getElementById('progress-bar'),
+            toast: document.getElementById('toast')
         };
     },
 
     bindEvents() {
         this.el.backBtn?.addEventListener('click', (event) => this.goBack(event));
         this.el.languageSelect?.addEventListener('change', (event) => this.setLanguage(event.target.value));
+        this.el.themeToggle?.addEventListener('click', () => this.toggleTheme());
+
+        this.themeMediaQuery?.addEventListener?.('change', (event) => this.handleSystemThemeChange(event));
 
         this.el.fileInput?.addEventListener('change', (event) => this.handleFiles(event.target.files));
         this.el.fileInputMore?.addEventListener('change', (event) => this.handleFiles(event.target.files));
+        this.el.addMoreBtn?.addEventListener('click', () => this.el.fileInputMore?.click());
+
+        this.el.dropzone?.addEventListener('dragover', (event) => {
+            event.preventDefault();
+            this.el.dropzone.classList.add('drag-over');
+        });
+        this.el.dropzone?.addEventListener('dragleave', () => this.el.dropzone.classList.remove('drag-over'));
+        this.el.dropzone?.addEventListener('drop', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            this.el.dropzone.classList.remove('drag-over');
+            if (event.dataTransfer?.files?.length) this.handleFiles(event.dataTransfer.files);
+        });
+
+        this.el.urlLoad?.addEventListener('click', () => this.loadImageFromUrl());
+        this.el.urlInput?.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                this.loadImageFromUrl();
+            }
+        });
+
+        document.addEventListener('paste', (event) => this.handlePaste(event));
+        document.addEventListener('dragstart', (event) => {
+            if (event.target instanceof Element && event.target.closest('.img-thumb')) {
+                event.preventDefault();
+            }
+        }, true);
 
         document.body.addEventListener('dragover', (event) => event.preventDefault());
         document.body.addEventListener('drop', (event) => {
@@ -133,6 +180,7 @@ const App = {
             this.format = this.outputFormats[event.target.value] ? event.target.value : 'jpg';
             this.updateQualityAvailability();
             this.updateBackgroundAvailability();
+            this.updateTargetSizeAvailability();
         });
 
         this.el.qualitySlider?.addEventListener('input', (event) => {
@@ -154,6 +202,11 @@ const App = {
             });
         });
 
+        this.el.targetSizeToggle?.addEventListener('change', () => {
+            this.toggleTargetSizeRow();
+            this.updateTargetSizeAvailability();
+        });
+
         this.el.btnResize?.addEventListener('click', () => this.resize());
         this.el.btnDownload?.addEventListener('click', () => this.download());
         this.el.btnMore?.addEventListener('click', () => this.reset());
@@ -168,6 +221,9 @@ const App = {
         this.el.copyLinkBtn?.addEventListener('click', () => this.copyCurrentLink());
 
         window.addEventListener('imagerunner:languagechange', () => this.refreshDynamicText());
+        window.addEventListener('imagerunner:presetselected', (event) => {
+            if (this.images.length) this.applyPreset(event.detail);
+        });
     },
 
     t(key, params = {}) {
@@ -184,6 +240,81 @@ const App = {
         if (this.el.languageSelect && window.ImageRunnerI18n) {
             this.el.languageSelect.value = window.ImageRunnerI18n.getLanguage();
         }
+    },
+
+    initTheme() {
+        this.applyTheme(this.getInitialTheme(), false);
+    },
+
+    getInitialTheme() {
+        try {
+            const storedTheme = window.localStorage.getItem(this.themeStorageKey);
+            if (storedTheme === 'light' || storedTheme === 'dark') return storedTheme;
+        } catch (error) {
+            // Ignore storage failures in private or locked-down contexts.
+        }
+
+        return this.themeMediaQuery?.matches ? 'dark' : 'light';
+    },
+
+    getActiveTheme() {
+        return document.documentElement.classList.contains('light-theme') ? 'light' : 'dark';
+    },
+
+    applyTheme(theme, persist = true) {
+        const nextTheme = theme === 'dark' ? 'dark' : 'light';
+        document.documentElement.classList.toggle('light-theme', nextTheme === 'light');
+
+        if (this.el.themeToggle) {
+            const isLight = nextTheme === 'light';
+            this.el.themeToggle.textContent = isLight ? '☀️' : '🌙';
+            this.el.themeToggle.setAttribute('aria-label', isLight ? 'Switch to dark theme' : 'Switch to light theme');
+            this.el.themeToggle.title = isLight ? 'Switch to dark theme' : 'Switch to light theme';
+        }
+
+        if (persist) {
+            try {
+                window.localStorage.setItem(this.themeStorageKey, nextTheme);
+            } catch (error) {
+                // Ignore storage failures in private or locked-down contexts.
+            }
+        }
+
+        this.syncThemeColorMeta(nextTheme);
+    },
+
+    toggleTheme() {
+        this.applyTheme(this.getActiveTheme() === 'light' ? 'dark' : 'light');
+    },
+
+    handleSystemThemeChange(event) {
+        try {
+            const storedTheme = window.localStorage.getItem(this.themeStorageKey);
+            if (storedTheme === 'light' || storedTheme === 'dark') return;
+        } catch (error) {
+            return;
+        }
+
+        this.applyTheme(event.matches ? 'dark' : 'light', false);
+    },
+
+    syncThemeColorMeta(theme) {
+        const themeColor = theme === 'dark' ? '#0f172a' : '#ffffff';
+        document.querySelectorAll('meta[name="theme-color"]').forEach((meta) => {
+            const media = meta.getAttribute('media');
+            if (!media) {
+                meta.setAttribute('content', themeColor);
+                return;
+            }
+
+            if (theme === 'dark' && media.includes('prefers-color-scheme: dark')) {
+                meta.setAttribute('content', themeColor);
+            }
+
+            if (theme === 'light' && media.includes('prefers-color-scheme: light')) {
+                meta.setAttribute('content', themeColor);
+            }
+        });
     },
 
     refreshDynamicText() {
@@ -211,6 +342,7 @@ const App = {
         if (!fileList || !fileList.length) return;
 
         const files = Array.from(fileList);
+        const beforeCount = this.images.length;
         const remaining = this.maxImages - this.images.length;
         const skipped = { type: 0, size: 0, load: 0, extra: Math.max(0, files.length - Math.max(remaining, 0)) };
 
@@ -221,7 +353,7 @@ const App = {
         }
 
         for (const file of files.slice(0, remaining)) {
-            if (!this.supportedInputTypes.has(file.type)) {
+            if (!this.isSupportedFile(file)) {
                 skipped.type += 1;
                 continue;
             }
@@ -247,10 +379,19 @@ const App = {
             this.showPage('editor');
             this.updatePreview();
             this.updateDimensionPlaceholders();
+            this.applyPendingPreset();
             this.updateResolutionAvailability();
         }
 
+        const added = this.images.length - beforeCount;
+        if (added > 0) this.notify(this.t('upload.toast.added', { count: added }));
         this.reportSkippedFiles(skipped);
+    },
+
+    isSupportedFile(file) {
+        const type = String(file?.type || '').toLowerCase();
+        if (this.supportedInputTypes.has(type)) return true;
+        return type.startsWith('image/') && type !== 'image/svg+xml';
     },
 
     loadImage(file) {
@@ -288,6 +429,59 @@ const App = {
         if (this.el.fileInputMore) this.el.fileInputMore.value = '';
     },
 
+    async handlePaste(event) {
+        const files = Array.from(event.clipboardData?.files || []).filter((file) => this.isSupportedFile(file));
+        if (!files.length) return;
+        event.preventDefault();
+        await this.handleFiles(files);
+    },
+
+    async loadImageFromUrl() {
+        const rawUrl = this.el.urlInput?.value.trim();
+        let url;
+
+        try {
+            url = new URL(rawUrl);
+        } catch (error) {
+            this.notify('Enter a valid image URL.', true);
+            return;
+        }
+
+        try {
+            this.showProcessing(true);
+            this.updateProgress(0, 1, 'Loading image...');
+
+            const response = await fetch(url.href, { mode: 'cors' });
+            if (!response.ok) throw new Error('bad-response');
+
+            const blob = await response.blob();
+            if (!blob.type.startsWith('image/')) throw new Error('not-image');
+
+            const fileName = this.deriveFileNameFromUrl(url, blob.type);
+            const file = new File([blob], fileName, { type: blob.type });
+            await this.handleFiles([file]);
+            if (this.el.urlInput) this.el.urlInput.value = '';
+        } catch (error) {
+            this.notify('Could not load that image URL. Try a direct image link with CORS enabled.', true);
+        } finally {
+            this.showProcessing(false);
+        }
+    },
+
+    deriveFileNameFromUrl(url, type) {
+        const fromPath = decodeURIComponent(url.pathname.split('/').filter(Boolean).pop() || '');
+        if (fromPath && /\.[a-z0-9]+$/i.test(fromPath)) return fromPath.slice(0, 120);
+
+        const extByType = {
+            'image/jpeg': 'jpg',
+            'image/png': 'png',
+            'image/webp': 'webp',
+            'image/gif': 'gif',
+            'image/bmp': 'bmp'
+        };
+        return `remote-image.${extByType[type] || 'jpg'}`;
+    },
+
     reportSkippedFiles(skipped) {
         const messages = [];
         if (skipped.extra) messages.push(this.t('alerts.extraSkipped', { count: skipped.extra, max: this.maxImages }));
@@ -305,10 +499,15 @@ const App = {
             const thumb = document.createElement('div');
             thumb.className = 'img-thumb';
             thumb.dataset.idx = String(idx);
+            thumb.setAttribute('draggable', 'false');
+            thumb.addEventListener('dragstart', (event) => event.preventDefault());
 
             const image = document.createElement('img');
             image.src = img.url;
             image.alt = img.name;
+            image.draggable = false;
+            image.setAttribute('draggable', 'false');
+            image.addEventListener('dragstart', (event) => event.preventDefault());
 
             const remove = document.createElement('button');
             remove.className = 'img-remove';
@@ -342,7 +541,10 @@ const App = {
 
     updateDownloadInfo() {
         if (!this.el.downloadInfo) return;
-        this.el.downloadInfo.textContent = this.t('status.processedCount', { count: this.results.length });
+        const saved = this.results.reduce((total, result) => total + Math.max(0, result.originalSize - result.newSize), 0);
+        this.el.downloadInfo.textContent = this.results.length
+            ? this.t('download.info', { count: this.results.length, saved: this.utils.formatFileSize(saved) })
+            : this.t('status.processedCount', { count: 0 });
     },
 
     updateDimensionPlaceholders() {
@@ -406,7 +608,7 @@ const App = {
     syncQualityControls() {
         if (this.el.qualityInput) this.el.qualityInput.value = this.quality;
         if (this.el.qualitySlider) this.el.qualitySlider.value = this.quality;
-        if (this.el.qualityDisplay) this.el.qualityDisplay.textContent = `${this.quality}%`;
+        if (this.el.qualityDisplay) this.el.qualityDisplay.textContent = '%';
     },
 
     updateResolutionAvailability() {
@@ -423,6 +625,26 @@ const App = {
         document.querySelector('.quality-input-wrap')?.classList.toggle('is-disabled', disabled);
     },
 
+    updateTargetSizeAvailability() {
+        const format = this.outputFormats[this.format] || this.outputFormats.jpg;
+        const disabled = !format.supportsQuality;
+        const enabled = Boolean(this.el.targetSizeToggle?.checked);
+
+        [this.el.targetSizeValue, this.el.targetSizeUnit].forEach((element) => {
+            if (element) element.disabled = disabled || !enabled;
+        });
+
+        if (this.el.targetSizeInfo) {
+            this.el.targetSizeInfo.textContent = disabled ? 'JPG/WebP only' : '';
+            this.el.targetSizeInfo.className = disabled ? 'ts-info warn' : 'ts-info';
+        }
+    },
+
+    toggleTargetSizeRow() {
+        if (!this.el.targetSizeRow || !this.el.targetSizeToggle) return;
+        this.el.targetSizeRow.hidden = !this.el.targetSizeToggle.checked;
+    },
+
     updateBackgroundAvailability() {
         const format = this.outputFormats[this.format] || this.outputFormats.jpg;
         this.el.bgBtns.forEach((btn) => {
@@ -435,6 +657,29 @@ const App = {
             this.bgColor = 'white';
             this.el.bgBtns.forEach((btn) => btn.classList.toggle('active', btn.dataset.bg === 'white'));
         }
+    },
+
+    applyPendingPreset() {
+        return this.applyPreset(window.__pendingPreset);
+    },
+
+    applyPreset(preset) {
+        if (!preset || !Number.isFinite(preset.w) || !Number.isFinite(preset.h)) return false;
+
+        this.unit = 'pixels';
+        this.width = Math.max(1, Math.round(preset.w));
+        this.height = Math.max(1, Math.round(preset.h));
+        this.originalRatio = this.width / this.height;
+        this.lockRatio = true;
+
+        if (this.el.unitSelect) this.el.unitSelect.value = 'pixels';
+        this.el.lockBtn?.classList.add('active');
+        this.syncDimensionControls();
+        this.updateResolutionAvailability();
+
+        window.__pendingPreset = null;
+        this.notify(`Applied: ${preset.name || 'preset'} (${this.width} x ${this.height})`);
+        return true;
     },
 
     removeImage(idx) {
@@ -473,7 +718,7 @@ const App = {
             await this.delay(250);
             this.showDownload();
         } catch (error) {
-            this.notify(error?.message || this.t('alerts.resizeError'));
+            this.notify(error?.message || this.t('alerts.resizeError'), true);
         } finally {
             this.showProcessing(false);
         }
@@ -502,27 +747,22 @@ const App = {
             canvas.height = dimensions.height;
 
             const image = new Image();
-            image.onload = () => {
-                const bgColor = this.getCanvasBackground(format);
-                if (bgColor) {
-                    ctx.fillStyle = bgColor;
-                    ctx.fillRect(0, 0, dimensions.width, dimensions.height);
-                }
+            image.onload = async () => {
+                try {
+                    const bgColor = this.getCanvasBackground(format);
+                    if (bgColor) {
+                        ctx.fillStyle = bgColor;
+                        ctx.fillRect(0, 0, dimensions.width, dimensions.height);
+                    }
 
-                ctx.globalCompositeOperation = 'source-over';
-                ctx.imageSmoothingEnabled = true;
-                ctx.imageSmoothingQuality = 'high';
-                ctx.drawImage(image, 0, 0, dimensions.width, dimensions.height);
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = 'high';
+                    this.drawImageToCanvas(ctx, image, dimensions.width, dimensions.height);
 
-                const quality = format.supportsQuality ? this.quality / 100 : undefined;
-                canvas.toBlob((blob) => {
+                    const exportResult = await this.exportCanvas(canvas, format);
                     canvas.width = 0;
                     canvas.height = 0;
-
-                    if (!blob) {
-                        reject(new Error(this.t('alerts.formatUnsupported')));
-                        return;
-                    }
 
                     const baseName = this.sanitizeBaseName(img.name);
                     const prefix = String(index + 1).padStart(2, '0');
@@ -530,19 +770,100 @@ const App = {
 
                     resolve({
                         fileName,
-                        blob,
-                        url: URL.createObjectURL(blob),
+                        blob: exportResult.blob,
+                        url: URL.createObjectURL(exportResult.blob),
                         originalWidth: img.width,
                         originalHeight: img.height,
                         newWidth: dimensions.width,
                         newHeight: dimensions.height,
-                        originalName: img.name
+                        originalName: img.name,
+                        originalSize: img.size,
+                        newSize: exportResult.blob.size,
+                        qualityUsed: exportResult.quality,
+                        targetSizeUsed: exportResult.targeted
                     });
-                }, format.mimeType, quality);
+                } catch (error) {
+                    canvas.width = 0;
+                    canvas.height = 0;
+                    reject(error);
+                }
             };
             image.onerror = () => reject(new Error(this.t('alerts.resizeError')));
             image.src = img.url;
         });
+    },
+
+    drawImageToCanvas(ctx, image, width, height) {
+        ctx.drawImage(image, 0, 0, width, height);
+    },
+
+    async exportCanvas(canvas, format) {
+        const targetBytes = this.getTargetBytes();
+
+        if (!format.supportsQuality || !targetBytes) {
+            const quality = format.supportsQuality ? this.quality : null;
+            const blob = await this.canvasToBlob(canvas, format.mimeType, format.supportsQuality ? quality / 100 : undefined);
+            return { blob, quality, targeted: false };
+        }
+
+        let low = 10;
+        let high = 100;
+        let bestUnder = null;
+        let closest = null;
+
+        for (let i = 0; i < 8 && low <= high; i += 1) {
+            const quality = Math.floor((low + high) / 2);
+            const blob = await this.canvasToBlob(canvas, format.mimeType, quality / 100);
+            const candidate = { blob, quality, targeted: true };
+
+            if (!closest || Math.abs(blob.size - targetBytes) < Math.abs(closest.blob.size - targetBytes)) {
+                closest = candidate;
+            }
+
+            if (blob.size <= targetBytes) {
+                bestUnder = candidate;
+                low = quality + 1;
+            } else {
+                high = quality - 1;
+            }
+        }
+
+        const result = bestUnder || closest;
+        if (!result) throw new Error(this.t('alerts.formatUnsupported'));
+
+        if (this.el.targetSizeInfo) {
+            const hit = result.blob.size <= targetBytes;
+            this.el.targetSizeInfo.textContent = hit
+                ? this.t('alerts.targetSizeHit', { quality: result.quality, size: this.utils.formatFileSize(result.blob.size) })
+                : this.t('alerts.targetSizeMiss');
+            this.el.targetSizeInfo.className = hit ? 'ts-info ok' : 'ts-info warn';
+        }
+
+        return result;
+    },
+
+    canvasToBlob(canvas, mimeType, quality) {
+        return new Promise((resolve, reject) => {
+            canvas.toBlob((blob) => {
+                if (!blob) {
+                    reject(new Error(this.t('alerts.formatUnsupported')));
+                    return;
+                }
+                resolve(blob);
+            }, mimeType, quality);
+        });
+    },
+
+    getTargetBytes() {
+        if (!this.el.targetSizeToggle?.checked) return null;
+
+        const value = parseFloat(this.el.targetSizeValue?.value || '');
+        if (!Number.isFinite(value) || value <= 0) return null;
+
+        const unit = this.el.targetSizeUnit?.value || 'kb';
+        if (unit === 'bytes') return Math.round(value);
+        if (unit === 'mb') return Math.round(value * 1024 * 1024);
+        return Math.round(value * 1024);
     },
 
     getOutputDimensions(img) {
@@ -634,7 +955,13 @@ const App = {
             newDims.textContent = `${result.newWidth} x ${result.newHeight}`;
             dims.appendChild(newDims);
 
-            info.append(name, dims);
+            const size = document.createElement('div');
+            size.className = 'result-savings';
+            const savedBytes = Math.max(0, result.originalSize - result.newSize);
+            const qualityText = result.qualityUsed ? ` at ${result.qualityUsed}%` : '';
+            size.textContent = `${this.utils.formatFileSize(result.originalSize)} -> ${this.utils.formatFileSize(result.newSize)} (${this.utils.formatFileSize(savedBytes)} saved${qualityText})`;
+
+            info.append(name, dims, size);
             item.append(image, info);
             this.el.resultsList.appendChild(item);
         });
@@ -734,8 +1061,23 @@ const App = {
         if (this.el.progressBar) this.el.progressBar.style.width = `${pct}%`;
     },
 
-    notify(message) {
-        window.alert(message);
+    notify(message, isError = false) {
+        const text = String(message || '').trim();
+        if (!text) return;
+
+        if (!this.el.toast) {
+            window.alert(text);
+            return;
+        }
+
+        window.clearTimeout(this.toastTimer);
+        this.el.toast.textContent = text;
+        this.el.toast.classList.toggle('error', Boolean(isError));
+        this.el.toast.classList.add('show');
+
+        this.toastTimer = window.setTimeout(() => {
+            this.el.toast?.classList.remove('show');
+        }, 2800);
     },
 
     clampNumber(value, min, max, fallback) {

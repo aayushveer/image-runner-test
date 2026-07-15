@@ -1,6 +1,14 @@
 ﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
-  <title>Image Runner Icon</title>
-  <desc>IR monogram favicon for Image Runner</desc>
-  <rect width="64" height="64" fill="#1d4ed8"/>
-  <text x="32" y="43" fill="#ffffff" text-anchor="middle" font-size="34" font-family="Segoe UI, Arial, sans-serif" font-weight="700">IR</text>
+  <title>ImgRunner Logo Favicon</title>
+  <desc>Four-tile ImgRunner brand mark favicon</desc>
+  <defs>
+    <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="22" height="22" rx="5" fill="url(#lg)"/>
+  <rect x="34" y="8" width="22" height="22" rx="5" fill="#0f172a"/>
+  <rect x="8" y="34" width="22" height="22" rx="5" fill="#0f172a"/>
+  <rect x="34" y="34" width="22" height="22" rx="5" fill="url(#lg)"/>
 </svg>
