@@ -1,957 +1,510 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>Image Resizer Pro - Batch Resize Photos Online | Image Runner</title>
-    <meta name="description" content="Professional image resizer. Batch resize unlimited photos instantly. Free, fast, secure. No uploads. Works offline. Supports JPG, PNG, WebP.">
-    <meta name="author" content="Image Runner">
-    <meta name="robots" content="index, follow, max-image-preview:large">
-    
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://www.imgrunner.com/">
-    <meta property="og:title" content="Image Resizer Pro - Batch Resize Photos Online">
-    <meta property="og:description" content="Professional batch image resizer. Free, fast, secure. Resize unlimited photos instantly.">
-    <meta property="og:site_name" content="Image Runner">
-    
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Image Resizer Pro - Batch Resize Photos Online">
-    <meta name="twitter:description" content="Professional batch image resizer. Free, fast, secure.">
-    
-    <link rel="canonical" href="https://www.imgrunner.com/">
-    <meta name="theme-color" content="#0f172a">
-    
-    <link rel="icon" href="/favicon-48.png">
-    <link rel="shortcut icon" href="/favicon.ico">
-    <link rel="icon" href="/favicon.svg" sizes="any" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-    
-    <!-- JSZip for download -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
-    
-    <!-- Existing CSS -->
-    <link rel="stylesheet" href="css/resize-v4.css">
-    <script src="js/site-config.js"></script>
-    <script src="js/global-telemetry.js"></script>
-    
-    <style>
-        :root {
-            /* Dark theme colors (default) */
-            --bg-primary: linear-gradient(135deg, #0f172a 0%, #1a2847 50%, #0f1f3a 100%);
-            --bg-primary-rgba: rgba(15, 23, 42, 0.7);
-            --bg-secondary: rgba(30, 41, 59, 0.8);
-            --bg-secondary-light: rgba(30, 41, 59, 0.6);
-            --text-primary: #e2e8f0;
-            --text-secondary: #cbd5e1;
-            --text-tertiary: #94a3b8;
-            --border-color: rgba(148, 163, 184, 0.1);
-            --border-color-light: rgba(148, 163, 184, 0.15);
-            --border-color-lighter: rgba(148, 163, 184, 0.2);
-            --accent-blue: #3b82f6;
-            --accent-blue-light: #60a5fa;
-            --accent-purple: #8b5cf6;
-        }
-
-        html.light-theme {
-            --bg-primary: linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #f1f5f9 100%);
-            --bg-primary-rgba: rgba(255, 255, 255, 0.95);
-            --bg-secondary: rgba(241, 245, 249, 0.9);
-            --bg-secondary-light: rgba(248, 250, 252, 0.7);
-            --text-primary: #0f172a;
-            --text-secondary: #1e293b;
-            --text-tertiary: #475569;
-            --border-color: rgba(71, 85, 105, 0.1);
-            --border-color-light: rgba(71, 85, 105, 0.15);
-            --border-color-lighter: rgba(71, 85, 105, 0.2);
-            --accent-blue: #2563eb;
-            --accent-blue-light: #3b82f6;
-            --accent-purple: #7c3aed;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
-            min-height: 100vh;
-            transition: background 0.5s ease, color 0.5s ease;
-        }
-
-        /* Animated background elements */
-        body::before {
-            content: '';
-            position: fixed;
-            top: -50%;
-            right: -50%;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
-            animation: float 20s ease-in-out infinite;
-            pointer-events: none;
-            z-index: 1;
-            opacity: 1;
-            transition: opacity 0.5s ease;
-        }
-
-        html.light-theme body::before {
-            background: radial-gradient(circle, rgba(37, 99, 235, 0.08) 0%, transparent 70%);
-        }
-
-        body::after {
-            content: '';
-            position: fixed;
-            bottom: -50%;
-            left: -50%;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, transparent 70%);
-            animation: float 25s ease-in-out infinite reverse;
-            pointer-events: none;
-            z-index: 1;
-            opacity: 1;
-            transition: opacity 0.5s ease;
-        }
-
-        html.light-theme body::after {
-            background: radial-gradient(circle, rgba(124, 58, 237, 0.06) 0%, transparent 70%);
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(30px, 30px); }
-        }
-
-        @keyframes slideInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(40px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.8; }
-        }
-
-        @keyframes shimmer {
-            0% { background-position: -1000px 0; }
-            100% { background-position: 1000px 0; }
-        }
-
-        /* Header */
-        header {
-            position: relative;
-            z-index: 10;
-            backdrop-filter: blur(10px);
-            background: var(--bg-primary-rgba);
-            border-bottom: 1px solid var(--border-color);
-            padding: 1.5rem 2rem;
-            animation: slideInDown 0.6s ease-out;
-            transition: background 0.5s ease, border-color 0.5s ease;
-        }
-
-        .header-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-size: 1.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-decoration: none;
-            transition: transform 0.3s ease;
-        }
-
-        .logo:hover {
-            transform: scale(1.05);
-        }
-
-        .logo-icon {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            color: white;
-        }
-
-        /* Theme Toggle */
-        .theme-toggle {
-            background: none;
-            border: 2px solid var(--border-color-lighter);
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-            transition: all 0.3s ease;
-            color: var(--text-primary);
-        }
-
-        .theme-toggle:hover {
-            background: var(--bg-secondary);
-            border-color: var(--accent-blue);
-            transform: scale(1.1);
-        }
-
-        .theme-toggle:active {
-            transform: scale(0.95);
-        }
-
-        /* Main Container */
-        main {
-            position: relative;
-            z-index: 10;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 4rem 2rem;
-        }
-
-        /* Hero Section */
-        .hero {
-            text-align: center;
-            margin-bottom: 3rem;
-            animation: slideInUp 0.8s ease-out 0.1s both;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: rgba(59, 130, 246, 0.1);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            padding: 0.5rem 1rem;
-            border-radius: 2rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: var(--accent-blue-light);
-            margin-bottom: 1.5rem;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        html.light-theme .hero-badge {
-            background: rgba(37, 99, 235, 0.08);
-            border-color: rgba(37, 99, 235, 0.3);
-        }
-
-        .hero-badge::before {
-            content: '';
-            width: 8px;
-            height: 8px;
-            background: var(--accent-blue);
-            border-radius: 50%;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        .hero h1 {
-            font-size: clamp(2.5rem, 8vw, 4rem);
-            font-weight: 800;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, #ffffff 0%, #94a3b8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            line-height: 1.2;
-        }
-
-        html.light-theme .hero h1 {
-            background: linear-gradient(135deg, #0f172a 0%, #475569 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero p {
-            font-size: 1.25rem;
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin: 0 auto 2rem;
-            font-weight: 300;
-            line-height: 1.8;
-            transition: color 0.5s ease;
-        }
-
-        /* Upload Area - Premium Glassmorphism */
-        .upload-container {
-            position: relative;
-            max-width: 700px;
-            margin: 0 auto 3rem;
-            animation: slideInUp 0.8s ease-out 0.2s both;
-        }
-
-        .upload-box {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.6) 100%);
-            border: 2px solid rgba(148, 163, 184, 0.2);
-            border-radius: 20px;
-            padding: 3rem 2rem;
-            backdrop-filter: blur(20px);
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        html.light-theme .upload-box {
-            background: linear-gradient(135deg, rgba(241, 245, 249, 0.9) 0%, rgba(248, 250, 252, 0.8) 100%);
-            border-color: rgba(71, 85, 105, 0.2);
-        }
-
-        .upload-box::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0) 0%, rgba(139, 92, 246, 0.1) 100%);
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-
-        html.light-theme .upload-box::before {
-            background: linear-gradient(135deg, rgba(37, 99, 235, 0) 0%, rgba(124, 58, 237, 0.08) 100%);
-        }
-
-        .upload-box:hover {
-            border-color: rgba(59, 130, 246, 0.4);
-            background: linear-gradient(135deg, rgba(30, 41, 59, 1) 0%, rgba(20, 30, 50, 0.9) 100%);
-            transform: translateY(-4px);
-            box-shadow: 0 20px 60px rgba(59, 130, 246, 0.2);
-        }
-
-        html.light-theme .upload-box:hover {
-            border-color: rgba(37, 99, 235, 0.4);
-            background: linear-gradient(135deg, rgba(241, 245, 249, 1) 0%, rgba(241, 245, 249, 0.95) 100%);
-            box-shadow: 0 20px 60px rgba(37, 99, 235, 0.1);
-        }
-
-        .upload-box:hover::before {
-            opacity: 1;
-        }
-
-        .upload-box.drag-over {
-            border-color: rgba(59, 130, 246, 0.8);
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(139, 92, 246, 0.1) 100%);
-            box-shadow: 0 0 40px rgba(59, 130, 246, 0.3);
-            transform: scale(1.02);
-        }
-
-        html.light-theme .upload-box.drag-over {
-            border-color: rgba(37, 99, 235, 0.8);
-            background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(124, 58, 237, 0.08) 100%);
-            box-shadow: 0 0 40px rgba(37, 99, 235, 0.2);
-        }
-
-        .upload-box-content {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-        }
-
-        .upload-icon {
-            width: 60px;
-            height: 60px;
-            margin: 0 auto 1.5rem;
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(139, 92, 246, 0.2) 100%);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            animation: float 3s ease-in-out infinite;
-            transition: background 0.5s ease;
-        }
-
-        html.light-theme .upload-icon {
-            background: linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(124, 58, 237, 0.15) 100%);
-        }
-
-        .upload-box input[type="file"] {
-            display: none;
-        }
-
-        .upload-label {
-            display: inline-block;
-            font-weight: 600;
-            font-size: 1.1rem;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-            cursor: pointer;
-            transition: color 0.5s ease;
-        }
-
-        .upload-hint {
-            color: var(--text-tertiary);
-            font-size: 0.95rem;
-            margin-top: 0.75rem;
-            transition: color 0.5s ease;
-        }
-
-        /* Features Grid */
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1.5rem;
-            margin: 4rem 0;
-            animation: slideInUp 0.8s ease-out 0.3s both;
-        }
-
-        .feature-card {
-            background: rgba(30, 41, 59, 0.6);
-            border: 1px solid rgba(148, 163, 184, 0.15);
-            border-radius: 16px;
-            padding: 2rem;
-            backdrop-filter: blur(20px);
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-
-        html.light-theme .feature-card {
-            background: rgba(241, 245, 249, 0.7);
-            border-color: rgba(71, 85, 105, 0.15);
-        }
-
-        .feature-card:hover {
-            border-color: rgba(59, 130, 246, 0.3);
-            background: rgba(30, 41, 59, 0.8);
-            transform: translateY(-8px);
-            box-shadow: 0 15px 40px rgba(59, 130, 246, 0.1);
-        }
-
-        html.light-theme .feature-card:hover {
-            border-color: rgba(37, 99, 235, 0.3);
-            background: rgba(241, 245, 249, 0.95);
-            box-shadow: 0 15px 40px rgba(37, 99, 235, 0.1);
-        }
-
-        .feature-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            display: inline-block;
-            transition: transform 0.3s ease;
-        }
-
-        .feature-card:hover .feature-icon {
-            transform: scale(1.15);
-        }
-
-        .feature-card h3 {
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--text-primary);
-            transition: color 0.5s ease;
-        }
-
-        .feature-card p {
-            font-size: 0.875rem;
-            color: var(--text-tertiary);
-            transition: color 0.5s ease;
-        }
-
-        /* CTA Section */
-        .cta-section {
-            text-align: center;
-            padding: 3rem 2rem;
-            animation: slideInUp 0.8s ease-out 0.4s both;
-        }
-
-        .cta-section h2 {
-            font-size: 1.75rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-            transition: color 0.5s ease;
-        }
-
-        .cta-section p {
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-            font-size: 1.05rem;
-            transition: color 0.5s ease;
-        }
-
-        .btn {
-            padding: 1rem 2.5rem;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 1rem;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent-blue) 0%, #2563eb 100%);
-            color: white;
-            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
-            transition: all 0.3s ease;
-        }
-
-        html.light-theme .btn-primary {
-            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.25);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(59, 130, 246, 0.4);
-        }
-
-        html.light-theme .btn-primary:hover {
-            box-shadow: 0 15px 40px rgba(37, 99, 235, 0.3);
-        }
-
-        .btn-primary:active {
-            transform: translateY(-1px);
-        }
-
-        .btn-secondary {
-            background: rgba(59, 130, 246, 0.1);
-            color: var(--accent-blue-light);
-            border: 2px solid rgba(59, 130, 246, 0.3);
-            transition: all 0.3s ease;
-        }
-
-        html.light-theme .btn-secondary {
-            background: rgba(37, 99, 235, 0.08);
-            color: var(--accent-blue);
-            border-color: rgba(37, 99, 235, 0.3);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(59, 130, 246, 0.2);
-            border-color: rgba(59, 130, 246, 0.5);
-            transform: translateY(-3px);
-        }
-
-        html.light-theme .btn-secondary:hover {
-            background: rgba(37, 99, 235, 0.15);
-            border-color: rgba(37, 99, 235, 0.5);
-        }
-
-        /* Trust Section */
-        .trust-section {
-            text-align: center;
-            margin-top: 3rem;
-            padding: 2rem;
-            border-top: 1px solid var(--border-color);
-            animation: slideInUp 0.8s ease-out 0.5s both;
-            transition: border-color 0.5s ease;
-        }
-
-        .trust-items {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            flex-wrap: wrap;
-            margin-top: 1.5rem;
-        }
-
-        .trust-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .trust-icon {
-            font-size: 1.5rem;
-        }
-
-        .trust-item span {
-            font-size: 0.875rem;
-            color: var(--text-tertiary);
-            transition: color 0.5s ease;
-        }
-
-        .trust-item strong {
-            color: var(--text-primary);
-            font-weight: 600;
-            transition: color 0.5s ease;
-        }
-
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 2rem;
-            color: var(--text-tertiary);
-            border-top: 1px solid var(--border-color);
-            margin-top: 4rem;
-            font-size: 0.875rem;
-            animation: slideInUp 0.8s ease-out 0.6s both;
-            transition: color 0.5s ease, border-color 0.5s ease;
-        }
-
-        .button-group {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            main {
-                padding: 2rem 1rem;
-            }
-
-            .hero h1 {
-                font-size: 2rem;
-            }
-
-            .hero p {
-                font-size: 1rem;
-            }
-
-            .upload-box {
-                padding: 2rem 1.5rem;
-            }
-
-            .features {
-                gap: 1rem;
-            }
-
-            .trust-items {
-                gap: 1rem;
-            }
-        }
-
-        /* Loading state */
-        .loading {
-            position: relative;
-            background: linear-gradient(90deg, rgba(148, 163, 184, 0.1) 25%, rgba(148, 163, 184, 0.2) 50%, rgba(148, 163, 184, 0.1) 75%);
-            background-size: 200% 100%;
-            animation: shimmer 2s infinite;
-        }
-
-        /* Trust section heading */
-        .trust-heading {
-            color: var(--text-primary);
-            font-size: 0.95rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 1rem;
-            transition: color 0.5s ease;
-        }
-
-        /* Trust values with accent colors */
-        .trust-value-1 {
-            font-weight: 700;
-            color: #60a5fa;
-            font-size: 1.5rem;
-        }
-
-        html.light-theme .trust-value-1 {
-            color: #3b82f6;
-        }
-
-        .trust-value-2 {
-            font-weight: 700;
-            color: #8b5cf6;
-            font-size: 1.5rem;
-        }
-
-        html.light-theme .trust-value-2 {
-            color: #7c3aed;
-        }
-
-        .trust-value-3 {
-            font-weight: 700;
-            color: #ec4899;
-            font-size: 1.5rem;
-        }
-
-        html.light-theme .trust-value-3 {
-            color: #db2777;
-        }
-
-        .trust-value-4 {
-            font-weight: 700;
-            color: #10b981;
-            font-size: 1.5rem;
-        }
-
-        html.light-theme .trust-value-4 {
-            color: #059669;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+
+<title data-i18n="meta.title">Resize Images Online Free — Batch Photo Resizer, Compressor &amp; Converter | ImgRunner</title>
+<meta name="description" data-i18n-attr="content:meta.description" content="Resize, compress and convert JPG, PNG, WebP, GIF and HEIC images online — free, forever. 100% private, browser-only, batch up to 50 images. No uploads, no watermark, no login.">
+<meta name="keywords" content="resize image online, image resizer, batch resize, photo compressor, jpg to webp, png to jpg, reduce image size, kb to mb, passport photo size, instagram size, aadhaar photo, heic to jpg">
+<meta name="author" content="ImgRunner">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="googlebot" content="index, follow">
+<meta name="format-detection" content="telephone=no">
+
+<link rel="canonical" href="https://imgrunner.com/">
+<link rel="alternate" hreflang="en" href="https://imgrunner.com/?lang=en">
+<link rel="alternate" hreflang="hi" href="https://imgrunner.com/?lang=hi">
+<link rel="alternate" hreflang="es" href="https://imgrunner.com/?lang=es">
+<link rel="alternate" hreflang="pt" href="https://imgrunner.com/?lang=pt">
+<link rel="alternate" hreflang="fr" href="https://imgrunner.com/?lang=fr">
+<link rel="alternate" hreflang="id" href="https://imgrunner.com/?lang=id">
+<link rel="alternate" hreflang="ar" href="https://imgrunner.com/?lang=ar">
+<link rel="alternate" hreflang="x-default" href="https://imgrunner.com/">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ImgRunner">
+<meta property="og:url" content="https://imgrunner.com/">
+<meta property="og:title" content="ImgRunner — Free Online Image Resizer, Compressor & Converter">
+<meta property="og:description" content="Resize, compress and convert images in your browser. 100% private. No uploads. Free forever.">
+<meta property="og:image" content="https://imgrunner.com/og-image.png">
+<meta property="og:locale" content="en_US">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@imgrunner">
+<meta name="twitter:title" content="ImgRunner — Free Online Image Resizer">
+<meta name="twitter:description" content="Resize, compress and convert images in your browser. 100% private. Free forever.">
+<meta name="twitter:image" content="https://imgrunner.com/og-image.png">
+
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-48.png" sizes="48x48" type="image/png">
+<link rel="shortcut icon" href="favicon.ico">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ImgRunner">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- JSZip for ZIP downloads (deferred) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer crossorigin="anonymous"></script>
+
+<link rel="stylesheet" href="css/resize-v4.css">
+<link rel="stylesheet" href="css/app.css">
+
+<script src="js/site-config.js"></script>
+<script src="js/global-telemetry.js"></script>
+
+<!-- Structured Data: WebApplication + FAQ + HowTo + Breadcrumbs -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "@id": "https://imgrunner.com/#webapp",
+      "name": "ImgRunner — Free Online Image Resizer",
+      "url": "https://imgrunner.com/",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Any (browser-based)",
+      "browserRequirements": "Requires modern browser with HTML5 Canvas, File API and WebAssembly support",
+      "inLanguage": ["en","hi","es","pt","fr","id","ar"],
+      "isAccessibleForFree": true,
+      "offers": {"@type":"Offer","price":"0","priceCurrency":"USD"},
+      "featureList": [
+        "Batch resize up to 50 images at once",
+        "Multiple units: pixels, percent, cm, inches",
+        "Target file size (KB/MB) with auto-quality",
+        "JPG, PNG, WebP, GIF input; HEIC best-effort",
+        "One-click presets for common image sizes",
+        "Aspect ratio lock for proportional resizing",
+        "EXIF metadata strip",
+        "100% browser-based — no uploads",
+        "No watermark, no login, no limits",
+        "Free ZIP download",
+        "7 languages with auto-detection",
+        "Offline PWA support"
+      ],
+      "image": "https://imgrunner.com/og-image.png",
+      "description": "Resize, compress and convert images in your browser. Free forever."
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://imgrunner.com/#org",
+      "name": "ImgRunner",
+      "url": "https://imgrunner.com/",
+      "logo": "https://imgrunner.com/favicon.svg"
+    },
+    {
+      "@type": "HowTo",
+      "name": "How to resize an image online for free",
+      "description": "Three-step browser-only image resize workflow.",
+      "step": [
+        {"@type":"HowToStep","position":1,"name":"Upload","text":"Drop one or up to 50 images into the upload box, paste from clipboard, or pick a one-click preset first."},
+        {"@type":"HowToStep","position":2,"name":"Choose size","text":"Enter width and height in pixels, percent, centimeters or inches, or pick a preset like Passport 35x45mm, Instagram 1080x1080, WhatsApp DP 500x500."},
+        {"@type":"HowToStep","position":3,"name":"Download","text":"Click Resize. Single images download instantly; multiple images come as a free ZIP. No watermark."}
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {"@type":"Question","name":"Is ImgRunner really free?","acceptedAnswer":{"@type":"Answer","text":"Yes — 100% free, forever. No premium tier, no login, no watermark, no file-size limits, no daily caps."}},
+        {"@type":"Question","name":"Do my images get uploaded to a server?","acceptedAnswer":{"@type":"Answer","text":"No. All processing happens locally in your browser using HTML5 Canvas and WebAssembly. Your photos never leave your device."}},
+        {"@type":"Question","name":"What input formats are supported?","acceptedAnswer":{"@type":"Answer","text":"JPG, PNG, WebP, GIF, BMP and HEIC (iPhone). Output formats: JPG, PNG, WebP."}},
+        {"@type":"Question","name":"What is the passport photo size in India?","acceptedAnswer":{"@type":"Answer","text":"35x45 mm at 200 DPI (about 276x354 px). ImgRunner has a one-click Passport preset that sets this exactly."}},
+        {"@type":"Question","name":"How can I make an image under 20KB or 50KB?","acceptedAnswer":{"@type":"Answer","text":"Use the Target Size mode: type 20 (KB) and ImgRunner will binary-search the JPEG quality to hit your target byte count."}},
+        {"@type":"Question","name":"Does it strip EXIF metadata?","acceptedAnswer":{"@type":"Answer","text":"Yes. The Strip EXIF toggle is on by default, so GPS location and camera info are removed on output for privacy."}}
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type":"ListItem","position":1,"name":"Home","item":"https://imgrunner.com/"},
+        {"@type":"ListItem","position":2,"name":"Resize Image","item":"https://imgrunner.com/?tool=resize"},
+        {"@type":"ListItem","position":3,"name":"Compress Image","item":"https://imgrunner.com/?tool=compress"}
+      ]
+    }
+  ]
+}
+</script>
 </head>
 <body>
-    <!-- Header -->
-    <header>
-        <div class="header-content">
-            <a href="index.html" class="logo">
-                <div class="logo-icon">📷</div>
-                <span>Image Runner</span>
-            </a>
-            <button class="theme-toggle" id="theme-toggle" title="Toggle dark/light mode" aria-label="Toggle theme">
-                🌙
+
+<!-- ====================== HEADER ====================== -->
+<header class="header">
+  <div class="container header__inner">
+    <div style="display:flex;align-items:center;">
+      <a href="index.html" class="back-btn" id="back-btn" aria-label="Go back" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </a>
+      <a href="index.html" class="logo" aria-label="ImgRunner home">
+        <svg class="logo__icon" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#2563eb"/>
+              <stop offset="100%" stop-color="#7c3aed"/>
+            </linearGradient>
+          </defs>
+          <rect x="2" y="2" width="13" height="13" rx="3" fill="url(#lg)"/>
+          <rect x="17" y="2" width="13" height="13" rx="3" fill="#0f172a"/>
+          <rect x="2" y="17" width="13" height="13" rx="3" fill="#0f172a"/>
+          <rect x="17" y="17" width="13" height="13" rx="3" fill="url(#lg)"/>
+        </svg>
+        <span>ImgRunner</span>
+        <span class="logo__badge" data-i18n="brand.badge">Free · Private</span>
+      </a>
+    </div>
+
+    <nav class="nav" aria-label="Tool navigation">
+      <a href="#features" class="nav__link" data-i18n="nav.features">Features</a>
+      <a href="#presets" class="nav__link" data-i18n="nav.presets">Presets</a>
+      <a href="#how" class="nav__link" data-i18n="nav.how">How it works</a>
+      <a href="#faq" class="nav__link" data-i18n="nav.faq">FAQ</a>
+    </nav>
+
+    <div style="display:flex;align-items:center;gap:8px;">
+      <label for="language-select" class="sr-only" data-i18n="nav.language">Language</label>
+      <select id="language-select" class="lang-select" aria-label="Language">
+        <option value="en">🌐 English</option>
+        <option value="hi">🌐 हिंदी</option>
+        <option value="es">🌐 Español</option>
+        <option value="pt">🌐 Português</option>
+        <option value="fr">🌐 Français</option>
+        <option value="id">🌐 Indonesia</option>
+        <option value="ar">🌐 العربية</option>
+      </select>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme" title="Toggle dark / light">🌙</button>
+    </div>
+  </div>
+</header>
+
+<main class="container" style="flex:1;width:100%;">
+
+<!-- ====================== PAGE 1: UPLOAD ====================== -->
+<section id="page-upload" class="page active">
+  <div class="upload-box">
+    <h1 class="upload-title" data-i18n="upload.title">Resize Images — Free, Forever</h1>
+    <p class="upload-desc" data-i18n-html="upload.description">
+      Resize <span class="highlight">JPG</span>, <span class="highlight">PNG</span>, <span class="highlight">WebP</span>, <span class="highlight">GIF</span> and <span class="highlight">HEIC</span> in your browser. Batch up to 50 images. 100% private — files never leave your device.
+    </p>
+
+    <div class="trust-row">
+      <span class="trust-pill">🔒 <span data-i18n="trust.private">100% Private</span></span>
+      <span class="trust-pill">⚡ <span data-i18n="trust.fast">Instant</span></span>
+      <span class="trust-pill">∞ <span data-i18n="trust.unlimited">Unlimited</span></span>
+      <span class="trust-pill">🆓 <span data-i18n="trust.free">Free Forever</span></span>
+    </div>
+
+    <div class="dropzone" id="dropzone">
+      <label for="file-input" class="upload-btn" data-i18n="upload.select">Select Images</label>
+      <p class="upload-hint" data-i18n="upload.dropHint">or drop images here · paste · Ctrl+V</p>
+      <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp,image/gif,image/bmp,image/heic,image/heif,image/*" multiple hidden>
+      <input type="file" id="file-input-more" accept="image/*" multiple hidden>
+      <p class="upload-meta" data-i18n="upload.meta">JPG · PNG · WebP · GIF · HEIC · up to 50 images · 25 MB each</p>
+    </div>
+
+    <!-- Smart paste-from-URL -->
+    <div class="url-paste" id="url-paste">
+      <span class="url-paste__label" data-i18n="upload.fromUrl">Or paste an image URL:</span>
+      <input type="url" id="url-input" placeholder="https://example.com/image.jpg" data-i18n-attr="placeholder:upload.urlPlaceholder">
+      <button id="url-load" class="btn-link" data-i18n="upload.loadUrl">Load</button>
+    </div>
+
+    <!-- One-click presets (presets.js auto-injects above this anchor too) -->
+    <div id="presets-anchor"></div>
+
+    <!-- Feature highlights (SEO body content) -->
+    <div id="features" class="features-grid">
+      <div class="feat"><div class="feat__icon">🔒</div><h3 data-i18n="feat.privateTitle">100% Private</h3><p data-i18n="feat.privateDesc">Files never leave your device. No server, no upload, no tracking.</p></div>
+      <div class="feat"><div class="feat__icon">⚡</div><h3 data-i18n="feat.fastTitle">Instant</h3><p data-i18n="feat.fastDesc">WebAssembly-grade Canvas processing in milliseconds.</p></div>
+      <div class="feat"><div class="feat__icon">📦</div><h3 data-i18n="feat.batchTitle">Batch 50</h3><p data-i18n="feat.batchDesc">Resize up to 50 images at once and download as a single ZIP.</p></div>
+      <div class="feat"><div class="feat__icon">🎯</div><h3 data-i18n="feat.targetTitle">Target Size</h3><p data-i18n="feat.targetDesc">Type a KB target — ImgRunner finds the perfect quality.</p></div>
+      <div class="feat"><div class="feat__icon">🌍</div><h3 data-i18n="feat.langTitle">7 Languages</h3><p data-i18n="feat.langDesc">English, हिंदी, Español, Português, Français, Indonesia, العربية.</p></div>
+      <div class="feat"><div class="feat__icon">📱</div><h3 data-i18n="feat.pwaTitle">Offline PWA</h3><p data-i18n="feat.pwaDesc">Install on phone or desktop. Works without internet after first load.</p></div>
+    </div>
+  </div>
+
+  <!-- SEO body content -->
+  <article class="seo-body">
+    <h2 id="how" data-i18n="seo.howTitle">How to Resize an Image Online</h2>
+    <ol class="seo-steps">
+      <li data-i18n-html="seo.step1"><strong>Upload</strong> — drop, paste or pick one or up to 50 images.</li>
+      <li data-i18n-html="seo.step2"><strong>Choose size</strong> — enter width and height in pixels, percent, cm or inches, or pick a one-click preset (Passport, Instagram, WhatsApp DP, Aadhaar, UPSC).</li>
+      <li data-i18n-html="seo.step3"><strong>Resize</strong> — click <em>Resize Image</em>. Optionally enable <em>Target Size</em> to hit an exact KB.</li>
+      <li data-i18n-html="seo.step4"><strong>Download</strong> — single images download directly; multiple images pack into a free ZIP. No watermark.</li>
+    </ol>
+
+    <h2 data-i18n="seo.featuresTitle">Everything ImgRunner does — for free</h2>
+    <ul class="seo-list">
+      <li data-i18n-html="seo.feature1"><strong>Batch resize</strong> — 50 images in one go, packed into a ZIP.</li>
+      <li data-i18n-html="seo.feature2"><strong>Target file size</strong> — type "20 KB" and we binary-search the quality slider.</li>
+      <li data-i18n-html="seo.feature3"><strong>Multiple units</strong> — pixels, percent, centimeters and inches (DPI aware).</li>
+      <li data-i18n-html="seo.feature4"><strong>One-click presets</strong> — Passport, Instagram, WhatsApp DP, Aadhaar and UPSC sizes in one tap.</li>
+      <li data-i18n-html="seo.feature5"><strong>EXIF strip</strong> — GPS and camera metadata removed by default.</li>
+      <li data-i18n-html="seo.feature6"><strong>HEIC input</strong> — iPhone photos welcome.</li>
+      <li data-i18n-html="seo.feature7"><strong>Aspect ratio lock</strong> — keep proportions while editing one side.</li>
+      <li data-i18n-html="seo.feature8"><strong>Quality slider</strong> — fine-tune JPG/WebP quality 10–100%.</li>
+      <li data-i18n-html="seo.feature9"><strong>Output formats</strong> — JPG, PNG, WebP with transparency support.</li>
+      <li data-i18n-html="seo.feature10"><strong>No watermark</strong> — clean output every time.</li>
+      <li data-i18n-html="seo.feature11"><strong>No login</strong> — open and use, no accounts.</li>
+      <li data-i18n-html="seo.feature12"><strong>Free ZIP download</strong> — multi-file output as a single archive.</li>
+    </ul>
+
+    <h2>Popular use cases for ImgRunner</h2>
+    <ul class="seo-list">
+      <li><strong>Passport photo resize</strong> — quickly prepare 35x45 mm images for Indian passport forms.</li>
+      <li><strong>Aadhaar and PAN photo resize</strong> — create compliant ID photos without installing software.</li>
+      <li><strong>Instagram and WhatsApp sizes</strong> — make square posts, story images, and DP photos in seconds.</li>
+      <li><strong>KB size reduction</strong> — reduce an image to 20 KB, 50 KB, 100 KB, or other target sizes for forms.</li>
+      <li><strong>WebP, JPG, PNG conversion</strong> — switch formats while keeping the workflow simple and browser-only.</li>
+      <li><strong>Batch image resizing</strong> — resize multiple files at once and download them as one ZIP.</li>
+    </ul>
+
+    <h2>Common image sizes people search for</h2>
+    <ul class="seo-list">
+      <li><strong>Passport photo size</strong> — 35x45 mm / 413x531 px style output for Indian form workflows.</li>
+      <li><strong>WhatsApp DP size</strong> — 500x500 px for clean profile pictures.</li>
+      <li><strong>Instagram post size</strong> — 1080x1080 px for square social posts.</li>
+      <li><strong>Instagram story size</strong> — 1080x1920 px for vertical story content.</li>
+      <li><strong>Aadhaar photo size</strong> — quick resize for Indian identity documents and form uploads.</li>
+      <li><strong>Photo under 20 KB or 50 KB</strong> — useful for government forms and low-size upload limits.</li>
+    </ul>
+
+    <h2>Why people choose ImgRunner</h2>
+    <ul class="seo-list">
+      <li><strong>Private by default</strong> — images stay on your device and never leave the browser.</li>
+      <li><strong>No login and no watermark</strong> — open the site and use it immediately.</li>
+      <li><strong>Fast on mobile and desktop</strong> — works in the browser without extra apps.</li>
+      <li><strong>Simple controls</strong> — width, height, output format, quality, and target size in one panel.</li>
+      <li><strong>Built for real search intent</strong> — form photos, social media sizes, and file-size reduction in one tool.</li>
+    </ul>
+
+    <h2 id="faq" data-i18n="seo.faqTitle">Frequently Asked Questions</h2>
+    <div class="seo-faq" id="faq-list"></div>
+  </article>
+</section>
+
+<!-- ====================== PAGE 2: EDITOR ====================== -->
+<section id="page-editor" class="page">
+  <div class="editor">
+    <!-- Preview column -->
+    <div class="editor__preview">
+      <div class="preview-header">
+        <button id="add-more-btn" class="add-more-btn" data-i18n="editor.addMore">+ Add More</button>
+        <span class="image-counter" id="image-count">0 images</span>
+      </div>
+      <div class="preview-area" id="preview-area"></div>
+
+      <!-- Before/After slider (rendered after first resize) -->
+      <div id="before-after" class="before-after" style="display:none;">
+        <div class="ba-label" data-i18n="editor.beforeAfter">Before / After</div>
+        <div class="ba-frame">
+          <img id="ba-after" alt="after">
+          <div id="ba-clip" class="ba-clip"><img id="ba-before" alt="before"></div>
+          <div id="ba-handle" class="ba-handle" aria-label="Drag to compare"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings column -->
+    <div class="editor__settings">
+      <h2 class="settings-title" data-i18n="editor.settingsTitle">Resize Settings</h2>
+
+      <form class="settings-form" id="settings-form" onsubmit="return false;">
+
+        <!-- Dimensions -->
+        <div class="settings-section">
+          <div class="section-label" data-i18n="editor.dimensions">Dimensions</div>
+
+          <div class="dimension-grid">
+            <div class="dim-field">
+              <label for="width-input" data-i18n="editor.width">Width</label>
+              <input type="number" id="width-input" min="1" step="1" inputmode="numeric">
+            </div>
+            <button type="button" id="lock-btn" class="lock-btn active" aria-label="Lock aspect ratio" title="Lock aspect ratio">
+              <svg class="lock-icon locked" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 1 1 8 0v3"/></svg>
+              <svg class="lock-icon unlocked" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 1 1 8 0"/></svg>
             </button>
-        </div>
-    </header>
-
-    <!-- Main Content -->
-    <main>
-        <!-- Hero Section -->
-        <section class="hero">
-            <div class="hero-badge">
-                ⚡ Zero Configuration • Instant Results
+            <div class="dim-field">
+              <label for="height-input" data-i18n="editor.height">Height</label>
+              <input type="number" id="height-input" min="1" step="1" inputmode="numeric">
             </div>
-            <h1>Professional Image Resizer</h1>
-            <p>Batch resize unlimited photos instantly. No uploads, no limits, no watermarks. 100% private, 100% secure.</p>
-        </section>
+          </div>
 
-        <!-- Upload Area -->
-        <div class="upload-container">
-            <div class="upload-box" id="dropzone">
-                <div class="upload-box-content">
-                    <div class="upload-icon">🖼️</div>
-                    <label class="upload-label">
-                        <input type="file" id="file-input" accept="image/*" multiple>
-                        Click to upload or drag & drop
-                    </label>
-                    <p class="upload-hint">Supports JPG, PNG, WebP, GIF • Max 100MB per image</p>
-                </div>
+          <div class="unit-row">
+            <select id="unit-select" aria-label="Unit">
+              <option value="pixels" data-i18n="units.pixels">Pixels (px)</option>
+              <option value="percent" data-i18n="units.percent">Percentage (%)</option>
+              <option value="cm" data-i18n="units.cm">Centimeters (cm)</option>
+              <option value="inches" data-i18n="units.inches">Inches (in)</option>
+            </select>
+            <div class="resolution-field" id="resolution-wrap">
+              <input type="number" id="resolution-input" min="1" max="600" value="72" inputmode="numeric">
+              <span class="unit-label">DPI</span>
             </div>
+          </div>
+
         </div>
 
-        <!-- Features Grid -->
-        <section class="features">
-            <div class="feature-card">
-                <div class="feature-icon">⚡</div>
-                <h3>Lightning Fast</h3>
-                <p>Process images instantly in your browser</p>
+        <!-- Output -->
+        <div class="settings-section">
+          <div class="section-label" data-i18n="editor.output">Output</div>
+
+          <div class="output-grid">
+            <div class="output-field">
+              <label for="format-select" data-i18n="editor.format">Format</label>
+              <select id="format-select">
+                <option value="jpg">JPG</option>
+                <option value="png">PNG</option>
+                <option value="webp">WebP</option>
+              </select>
             </div>
-            <div class="feature-card">
-                <div class="feature-icon">🔒</div>
-                <h3>100% Private</h3>
-                <p>Files never leave your device</p>
+            <div class="output-field">
+              <label for="quality-input" data-i18n="editor.quality">Quality</label>
+              <div class="quality-input-wrap">
+                <input type="range" id="quality-slider" min="10" max="100" step="1" value="90">
+                <input type="number" id="quality-input" min="10" max="100" value="90" step="1" inputmode="numeric" class="quality-number-input">
+                <span id="quality-display" class="quality-value" aria-hidden="true">%</span>
+              </div>
             </div>
-            <div class="feature-card">
-                <div class="feature-icon">📦</div>
-                <h3>Batch Processing</h3>
-                <p>Resize 100+ images at once</p>
+          </div>
+
+          <div class="bg-row">
+            <span class="bg-label" data-i18n="editor.background">Background</span>
+            <div class="bg-options" id="bg-options">
+              <button type="button" class="bg-btn active" data-bg="white" title="White"><span class="bg-circle white"></span></button>
+              <button type="button" class="bg-btn" data-bg="black" title="Black"><span class="bg-circle black"></span></button>
+              <button type="button" class="bg-btn" data-bg="transparent" title="Transparent (PNG/WebP)"><span class="bg-circle transparent"></span></button>
             </div>
-            <div class="feature-card">
-                <div class="feature-icon">⚙️</div>
-                <h3>Full Control</h3>
-                <p>Pixels, %, CM, inches, DPI settings</p>
+          </div>
+
+          <!-- Target file size mode -->
+          <div class="target-size">
+            <label class="ts-toggle">
+              <input type="checkbox" id="target-size-toggle">
+              <span data-i18n="editor.targetSize">Target file size</span>
+            </label>
+            <div class="ts-row" id="ts-row" hidden>
+              <input type="number" id="target-size-value" min="1" placeholder="20" inputmode="numeric">
+              <select id="target-size-unit" aria-label="Unit">
+                <option value="kb">KB</option>
+                <option value="mb">MB</option>
+                <option value="bytes">Bytes</option>
+              </select>
+              <span class="ts-info" id="ts-info"></span>
             </div>
-            <div class="feature-card">
-                <div class="feature-icon">🎨</div>
-                <h3>Format Support</h3>
-                <p>JPG, PNG, WebP, GIF output</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">✨</div>
-                <h3>Quality Control</h3>
-                <p>Adjust compression 10-100%</p>
-            </div>
-        </section>
+          </div>
 
-        <!-- CTA Section -->
-        <section class="cta-section">
-            <h2>Ready to resize like a pro?</h2>
-            <p>Join millions who trust Image Runner for their image processing</p>
-            <div class="button-group">
-                <button class="btn btn-primary" onclick="document.getElementById('file-input').click()">
-                    📤 Start Resizing Now
-                </button>
-                <button class="btn btn-secondary">
-                    📚 Learn More
-                </button>
-            </div>
-        </section>
+          <!-- Strip EXIF -->
+          <label class="ts-toggle">
+            <input type="checkbox" id="strip-exif" checked>
+            <span data-i18n="editor.stripExif">Strip EXIF / GPS metadata (privacy)</span>
+          </label>
+        </div>
 
-        <!-- Trust Section -->
-        <section class="trust-section">
-            <h3 class="trust-heading">Trusted by</h3>
-            <div class="trust-items">
-                <div class="trust-item">
-                    <span class="trust-value-1">10M+</span>
-                    <strong>Users Monthly</strong>
-                </div>
-                <div class="trust-item">
-                    <span class="trust-value-2">100%</span>
-                    <strong>Free Forever</strong>
-                </div>
-                <div class="trust-item">
-                    <span class="trust-value-3">0</span>
-                    <strong>Ads or Tracking</strong>
-                </div>
-                <div class="trust-item">
-                    <span class="trust-value-4">∞</span>
-                    <strong>No Limits</strong>
-                </div>
-            </div>
-        </section>
-    </main>
+        <button type="button" id="btn-resize" class="resize-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          <span data-i18n="editor.resize">Resize Image</span>
+        </button>
 
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2026 Image Runner. All rights reserved. • Completely private • Browser-based processing • No servers involved</p>
-    </footer>
+        <div class="privacy-note">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span data-i18n="editor.privacy">Image files are processed locally in your browser</span>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
 
-    <!-- Drag & Drop Functionality -->
-    <script>
-        const dropzone = document.getElementById('dropzone');
-        const fileInput = document.getElementById('file-input');
+<!-- ====================== PAGE 3: DOWNLOAD ====================== -->
+<section id="page-download" class="page">
+  <div class="download-box">
+    <div class="success-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+    </div>
+    <h2 class="download-title" data-i18n="download.title">Images Resized!</h2>
+    <p class="download-info" id="download-info">0 images processed</p>
 
-        // Drag events
-        dropzone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropzone.classList.add('drag-over');
-        });
+    <div class="results" id="results-list"></div>
 
-        dropzone.addEventListener('dragleave', () => {
-            dropzone.classList.remove('drag-over');
-        });
+    <button type="button" id="btn-download" class="download-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+      <span data-i18n="download.download">Download</span>
+    </button>
 
-        dropzone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropzone.classList.remove('drag-over');
-            handleFiles(e.dataTransfer.files);
-        });
+    <div class="share-section">
+      <p class="share-label" data-i18n="share.label">Share this tool:</p>
+      <div class="share-buttons">
+        <button class="share-btn share-btn--facebook" data-share="facebook" aria-label="Share on Facebook">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.56 9.88v-7H8v-2.88h2.44V9.84c0-2.42 1.44-3.76 3.64-3.76 1.06 0 2.16.19 2.16.19v2.38h-1.22c-1.2 0-1.57.74-1.57 1.5v1.81h2.67L15.7 14.88h-2.25v7A10 10 0 0 0 22 12z"/></svg>
+        </button>
+        <button class="share-btn share-btn--twitter" data-share="twitter" aria-label="Share on Twitter">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22.46 6c-.77.35-1.6.58-2.46.69a4.3 4.3 0 0 0 1.88-2.38 8.59 8.59 0 0 1-2.72 1.04 4.28 4.28 0 0 0-7.32 3.91A12.16 12.16 0 0 1 3 4.79a4.28 4.28 0 0 0 1.32 5.72c-.7-.02-1.36-.21-1.94-.53v.05a4.28 4.28 0 0 0 3.43 4.2 4.27 4.27 0 0 1-1.93.07 4.29 4.29 0 0 0 4 2.98A8.59 8.59 0 0 1 2 19.54a12.13 12.13 0 0 0 6.58 1.93c7.88 0 12.2-6.53 12.2-12.2 0-.19 0-.37-.01-.56A8.7 8.7 0 0 0 22.46 6z"/></svg>
+        </button>
+        <button class="share-btn share-btn--whatsapp" data-share="whatsapp" aria-label="Share on WhatsApp">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9s-.5-.1-.7.2c-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.4-2.3-1.4-.9-.8-1.5-1.7-1.6-2-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.1-.6-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.3-.7.3-1.2.2-1.4-.1-.1-.3-.2-.5-.3z M12 2a10 10 0 0 0-8.5 15.3L2 22l4.8-1.5A10 10 0 1 0 12 2z"/></svg>
+        </button>
+        <button class="share-btn share-btn--copy" id="copy-link-btn" aria-label="Copy link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </button>
+      </div>
+    </div>
 
-        dropzone.addEventListener('click', () => {
-            fileInput.click();
-        });
+    <div class="more-actions">
+      <button type="button" id="btn-more" class="link-btn" data-i18n="download.more">Resize more images</button>
+    </div>
+  </div>
+</section>
 
-        fileInput.addEventListener('change', (e) => {
-            handleFiles(e.target.files);
-        });
+</main>
 
-        function handleFiles(files) {
-            console.log(`Files selected: ${files.length}`);
-            if (files.length > 0) {
-                alert(`${files.length} image(s) ready to resize!`);
-            }
-        }
+<!-- Processing overlay -->
+<div class="processing" id="processing">
+  <div class="processing__modal">
+    <div class="spinner"></div>
+    <p id="processing-text" data-i18n="processing.resizing">Resizing...</p>
+    <div class="progress"><div class="progress__bar" id="progress-bar"></div></div>
+  </div>
+</div>
 
-        // Theme Toggle
-        const themeToggle = document.getElementById('theme-toggle');
-        const htmlElement = document.documentElement;
+<!-- Toast -->
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-        // Load saved theme preference
-        function loadThemePreference() {
-            const savedTheme = localStorage.getItem('theme-preference');
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            const theme = savedTheme || (prefersDark ? 'dark' : 'light');
-            
-            if (theme === 'light') {
-                htmlElement.classList.add('light-theme');
-                themeToggle.textContent = '☀️';
-            } else {
-                htmlElement.classList.remove('light-theme');
-                themeToggle.textContent = '🌙';
-            }
-        }
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <p>
+      <strong>ImgRunner</strong> — <span data-i18n="footer.tagline">Free, private, browser-based image resizer. No login. No watermark. Forever.</span>
+    </p>
+    <p style="margin-top:6px;">
+      <a href="#faq" class="link-btn" data-i18n="footer.faq">FAQ</a> ·
+      <a href="#how" class="link-btn" data-i18n="footer.how">How it works</a> ·
+      <span data-i18n="footer.copyright">© 2026 ImgRunner. All rights reserved.</span>
+    </p>
+    <p style="margin-top:6px;font-size:11px;opacity:.7;" data-i18n="footer.privacy">Image files are processed locally in your browser.</p>
+  </div>
+</footer>
 
-        // Toggle theme
-        themeToggle.addEventListener('click', () => {
-            htmlElement.classList.toggle('light-theme');
-            
-            if (htmlElement.classList.contains('light-theme')) {
-                localStorage.setItem('theme-preference', 'light');
-                themeToggle.textContent = '☀️';
-            } else {
-                localStorage.setItem('theme-preference', 'dark');
-                themeToggle.textContent = '🌙';
-            }
-        });
+<!-- Scripts: load order matters -->
+<script src="js/shared-utils.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/presets.js" defer></script>
+<script src="js/resize-v4.js" defer></script>
+<script src="js/bug-report.js" defer></script>
 
-        // Load theme on page load
-        loadThemePreference();
-
-        // Listen for system theme changes
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-            if (!localStorage.getItem('theme-preference')) {
-                if (e.matches) {
-                    htmlElement.classList.remove('light-theme');
-                    themeToggle.textContent = '🌙';
-                } else {
-                    htmlElement.classList.add('light-theme');
-                    themeToggle.textContent = '☀️';
-                }
-            }
-        });
-    </script>
-
-    <!-- Existing Scripts -->
-    <script src="js/shared-utils.js"></script>
-    <script src="js/resize-v4.js"></script>
-    <script src="js/bug-report.js" defer></script>
-
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "Image Resizer Pro",
-        "applicationCategory": "MultimediaApplication",
-        "operatingSystem": "Web Browser",
-        "offers": {
-            "@type": "Offer",
-            "price": "0",
-            "priceCurrency": "USD"
-        },
-        "featureList": [
-            "Batch resize unlimited images",
-            "Multiple format support",
-            "100% browser-based processing",
-            "No file uploads required",
-            "Custom dimensions in any unit",
-            "Quality control slider"
-        ]
-    }
-    </script>
+<!-- Service worker for offline PWA -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+</script>
 </body>
 </html>
