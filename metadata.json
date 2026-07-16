@@ -1,0 +1,6 @@
+{
+  "name": "ImgRunner - Free Image Resizer",
+  "description": "Resize, compress and convert JPG, PNG, WebP, GIF, and HEIC images privately in your browser.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
