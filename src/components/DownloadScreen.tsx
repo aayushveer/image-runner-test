@@ -7,7 +7,7 @@ interface DownloadScreenProps {
   results: ResizeResult[];
   activeImage: ProcessedImage | null;
   activeResult: ResizeResult | null;
-  sliderRef: React.RefObject<HTMLDivElement>;
+  sliderRef: React.RefObject<HTMLDivElement | null>;
   sliderPos: number;
   handleMouseMove: (e: React.MouseEvent) => void;
   handleTouchMove: (e: React.TouchEvent) => void;
@@ -20,6 +20,8 @@ interface DownloadScreenProps {
   copyLink: () => void;
   resetAll: () => void;
   t: (key: string, params?: any) => string;
+  onSelectResult: (resultId: string) => void;
+  selectedResultId: string | null;
 }
 
 export function DownloadScreen({
@@ -38,6 +40,8 @@ export function DownloadScreen({
   downloadAll,
   share,
   copyLink,
+  onSelectResult,
+  selectedResultId,
   resetAll,
   t
 }: DownloadScreenProps) {
@@ -111,10 +115,17 @@ export function DownloadScreen({
           {results.map((res) => {
             const savings = Math.max(0, res.originalSize - res.newSize);
             const savingsPct = Math.round((savings / res.originalSize) * 100);
+            const isSelected = selectedResultId === res.id;
             return (
-              <div key={res.id} className="flex items-center justify-between p-3.5 text-left">
+              <div key={res.id}
+                onClick={() => onSelectResult?.(res.id)}
+                className={`flex items-center justify-between p-3.5 text-left transition-all cursor-pointer ${
+                  isSelected
+                    ? 'bg-[#1a73e8]/10 dark:bg-[#8ab4f8]/10 border-l-2 border-[#1a73e8] dark:border-[#8ab4f8]'
+                    : 'hover:bg-slate-50 dark:hover:bg-[#2d2f31]/50'
+                }`}>
                 <div className="flex items-center gap-3 min-w-0">
-                  <img src={res.url} alt="" className="w-10 h-10 object-cover rounded-xl border bg-gray-900" />
+                  <img src={res.url} alt="" className={`w-10 h-10 object-cover rounded-xl border bg-gray-900 ${isSelected ? 'ring-2 ring-[#1a73e8] dark:ring-[#8ab4f8]' : ''}`} />
                   <div className="min-w-0">
                     <span className="font-semibold text-xs sm:text-sm block truncate text-slate-900 dark:text-white">{res.originalName}</span>
                     <span className={`text-[10px] font-medium mt-0.5 block ${theme === 'dark' ? 'text-[#9aa0a6]' : 'text-slate-600'}`}>
@@ -127,7 +138,7 @@ export function DownloadScreen({
                   </div>
                 </div>
                 <button
-                  onClick={() => downloadSingleResult(res)}
+                  onClick={(e) => { e.stopPropagation(); downloadSingleResult(res); }}
                   className={`p-2 rounded-full border hover:scale-105 active:scale-95 transition-all text-xs font-semibold flex items-center gap-1 cursor-pointer ${
                     theme === 'dark'
                       ? 'bg-[#1e1f20] border-[#3c4043] hover:bg-[#8ab4f8]/10 hover:border-[#8ab4f8] text-white'

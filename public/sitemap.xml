@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://imgrunner.com/</loc>
+    <lastmod>2026-07-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://imgrunner.com/en" />
+    <xhtml:link rel="alternate" hreflang="hi" href="https://imgrunner.com/hi" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://imgrunner.com/es" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://imgrunner.com/pt" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://imgrunner.com/fr" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://imgrunner.com/id" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://imgrunner.com/ar" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://imgrunner.com/" />
+    <image:image>
+      <image:loc>https://imgrunner.com/og-image.png</image:loc>
+      <image:title>ImgRunner — Free Online Image Resizer</image:title>
+      <image:caption>Free online image resizer and compressor tool. Batch resize JPG, PNG, WebP to exact KB sizes.</image:caption>
+    </image:image>
+  </url>
+</urlset>

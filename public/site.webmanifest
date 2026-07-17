@@ -1,7 +1,7 @@
 {
-  "name": "ImgRunner",
+  "name": "ImgRunner — Free Online Image Resizer & Compressor",
   "short_name": "ImgRunner",
-  "description": "Free, private, browser-based image resizer.",
+  "description": "Free, private, browser-based image resizer. Batch resize JPG, PNG, WebP, GIF, HEIC. Compress to exact 20KB, 50KB, 100KB. No upload, no login, forever free.",
   "icons": [
     {
       "src": "/icon-192.png",
@@ -19,5 +19,18 @@
   "theme_color": "#1a73e8",
   "background_color": "#ffffff",
   "display": "standalone",
-  "start_url": "/"
+  "start_url": "/",
+  "scope": "/",
+  "orientation": "any",
+  "categories": ["photo", "utilities", "design"],
+  "lang": "en",
+  "dir": "ltr",
+  "screenshots": [
+    {
+      "src": "/og-image.png",
+      "sizes": "1200x630",
+      "type": "image/png",
+      "label": "ImgRunner Image Resizer Tool"
+    }
+  ]
 }

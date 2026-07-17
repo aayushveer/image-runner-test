@@ -1,6 +1,7 @@
 import {StrictMode} from 'react';
 import {createRoot} from 'react-dom/client';
 import App from './App.tsx';
+import ErrorBoundary from './components/ErrorBoundary.tsx';
 import './index.css';
 
 const clearLegacyServiceWorker = async () => {
@@ -21,8 +22,23 @@ clearLegacyServiceWorker().catch(() => {
   // Cache cleanup is best-effort; the app should still render if it fails.
 });
 
-createRoot(document.getElementById('root')!).render(
+const rootEl = document.getElementById('root')!;
+
+// Detect theme before mount to pass to ErrorBoundary
+const detectTheme = (): 'dark' | 'light' => {
+  try {
+    const stored = localStorage.getItem('imgrunner-theme');
+    if (stored === 'light' || stored === 'dark') return stored;
+  } catch {}
+  if (window.matchMedia?.('(prefers-color-scheme: dark)').matches) return 'dark';
+  return 'light';
+};
+
+createRoot(rootEl).render(
   <StrictMode>
-    <App />
+    <ErrorBoundary theme={detectTheme()}>
+      <App />
+    </ErrorBoundary>
   </StrictMode>,
 );
+

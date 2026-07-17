@@ -1,0 +1,26 @@
+# ImgRunner Robots.txt
+User-agent: *
+Allow: /
+Disallow: /assets/
+
+# Crawl-delay recommendation for heavy crawlers
+Crawl-delay: 1
+
+# Sitemaps
+Sitemap: https://imgrunner.com/sitemap.xml
+
+# Allow all major search bots to index fully
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Yandex
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
